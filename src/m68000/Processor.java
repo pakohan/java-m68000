@@ -27,20 +27,20 @@ public class Processor {
 		case DS :
 			break;
 		case CLR :
-			if (this.befehle.argumente.getArg().equals("D1")) {
+			if (this.befehle.getArgumente().getArg().equals("D1")) {
 				this.Datenregister[1] = 0;
 			}
 			break;
 		case  MOVE :
-			if (this.befehle.argumente.getPostfix().equals("D1")) {
-				this.Datenregister[1] = M68000.speicher.getData(this.befehle.argumente.getArg());
-			} else if (this.befehle.argumente.getArg().equals("D1")) {
-				M68000.speicher.set(this.befehle.argumente.getPostfix() ,this.Datenregister[1]);
+			if (this.befehle.getArgumente().getPostfix().equals("D1")) {
+				this.Datenregister[1] = M68000.speicher.getData(this.befehle.getArgumente().getArg());
+			} else if (this.befehle.getArgumente().getArg().equals("D1")) {
+				M68000.speicher.set(this.befehle.getArgumente().getPostfix() ,this.Datenregister[1]);
 			}
 			break;
 		case ADD :
-			if (this.befehle.argumente.getPostfix().equals("D1")) {
-				this.Datenregister[1] = this.Datenregister[1] + M68000.speicher.getData(this.befehle.argumente.getArg());
+			if (this.befehle.getArgumente().getPostfix().equals("D1")) {
+				this.Datenregister[1] = this.Datenregister[1] + M68000.speicher.getData(this.befehle.getArgumente().getArg());
 			}
 			break;
 		default :

@@ -5,12 +5,7 @@ import java.io.*;
 public class Interpreter {
 	private Interpreter() {	}
 	static Program prog = new Program();
-	static Program first = new Program();
 
-	static {
-		first.next = prog;
-		prog.prev = first;
-	}
 	public final static Program einlesen(final String sourcefile) throws IOException {
 		LineNumberReader source = new LineNumberReader(new FileReader(sourcefile));
 		String[] part = new String[3];
@@ -24,7 +19,6 @@ public class Interpreter {
 			System.out.println(part.length);
 		}
 		
-		first = first.next.next;
 		/*Program link = first;
 		while (link != null) {
 			switch (link.getPrefix()) {
@@ -52,22 +46,19 @@ public class Interpreter {
 			}
 			link = link.next;
 		}*/
-		return first;
+		return prog;
 	}
 	
 	public final static void addCommand(String[] befehlsfolge) {
 		switch (befehlsfolge.length) {
 			case 1:
-				prog = prog.addCommand(befehlsfolge[0], "", "");
-				prog.setPrev(prog);
+				prog.addCommand(befehlsfolge[0], "", "");
 				break;				
 			case 2:
-				prog = prog.addCommand(befehlsfolge[0], befehlsfolge[1], "");
-				prog.setPrev(prog);
+				prog.addCommand(befehlsfolge[0], befehlsfolge[1], "");
 				break;
 			case 3:
-				prog = prog.addCommand(befehlsfolge[1], befehlsfolge[2], befehlsfolge[0]);
-				prog.setPrev(prog);
+				prog.addCommand(befehlsfolge[1], befehlsfolge[2], befehlsfolge[0]);
 				break;
 			default:
 		}
