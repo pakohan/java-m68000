@@ -1,36 +1,28 @@
 package m68000;
 
-import m68000.Command.Befehlssatz;
-
 public final class Program {
-	private static Program pointer;
+	private static Program pointer = new Program();
 	private Program prev;
 	private Program next;
 	private Command befehl;
 	private String marker;
 	private Arguments argumente;
 	
-	static {
-		pointer = new Program();
-	}
-	
 	public Program() {
-		this.setPrev(null);
-		this.setNext(null);
-		pointer.setPrev(this);
+		this.prev = null;
+		this.next = null;
 	}
 	
-	public Program(final String com, final String arg, final String mark) {
-		this.befehl    = new Command(com); 
+	public Program(final Program pre, final Program nex, final String com, final String arg, final String mark) {
+		this.prev = pre;
+		this.next = nex;
+		this.marker = mark;
+		this.befehl = new Command(com);
 		this.argumente = new Arguments(arg);
-		this.marker    = mark;
 	}
 	
 	public void addCommand(final String com, final String arg, final String mark) {
-		pointer = new Program(com, arg, mark);
-		pointer.setPrev(this);
-		this.setNext(pointer);
-		pointer = this.getNext().getNext();
+		this.next = new Program(this, this.next, com, arg, mark);
 	}
 	
 	public Program jump() {
@@ -43,10 +35,6 @@ public final class Program {
 		return helppointer;
 	}
 	
-	public Befehlssatz getPrefix() {
-		return this.befehl.getPrefix();
-	}
-	
 	public void setPrev(final Program com) {
 		this.prev = com;
 	}
@@ -55,15 +43,17 @@ public final class Program {
 		return this.next;
 	}
 	
-	public void printData() {
-		System.out.printf("Der Marker ist {%s},"
-				        + "der Befehl ist {%s},"
-				        + "das Argument ist {%s}%n",
-				        this.marker,
-				        this.befehl,
-				        this.argumente);
-				
-
+	@Override
+	public final String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append("Der Marker ist {");
+		str.append(this.marker);
+		str.append("}, der Befehl ist {");
+		str.append(this.befehl);
+		str.append("},das Argument ist {");
+		str.append(this.argumente);
+		str.append("}");
+		return str.toString();
 	}
 
 	public final Program getPointer() {
