@@ -3,29 +3,34 @@ package m68000;
 import m68000.Command.Befehlssatz;
 
 public final class Program {
+	private static Program pointer;
 	private Program prev;
 	private Program next;
-	private Program pointer;
 	private Command befehl;
 	private String marker;
 	private Arguments argumente;
 	
+	static {
+		pointer = new Program();
+	}
+	
 	public Program() {
-		this.prev = null;
-		this.next = null;
-		this.pointer = this.next;
+		this.setPrev(null);
+		this.setNext(null);
+		pointer.setPrev(this);
 	}
 	
 	public Program(final String com, final String arg, final String mark) {
 		this.befehl    = new Command(com); 
 		this.argumente = new Arguments(arg);
 		this.marker    = mark;
-		this.next      = null;
 	}
 	
 	public void addCommand(final String com, final String arg, final String mark) {
-		this.pointer = new Program(com, arg, mark);
-		this.getNext().setPrev(this);
+		pointer = new Program(com, arg, mark);
+		pointer.setPrev(this);
+		this.setNext(pointer);
+		pointer = this.getNext().getNext();
 	}
 	
 	public Program jump() {
