@@ -1,3 +1,7 @@
+/*
+ * @author Patrick "Tux" Kohan
+ * @version 2011.04.19
+ */
 package m68000;
 
 import java.util.regex.Pattern;

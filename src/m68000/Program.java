@@ -1,3 +1,7 @@
+/*
+ * @author Patrick "Tux" Kohan
+ * @version 2011.04.19
+ */
 package m68000;
 
 public final class Program {
@@ -13,6 +17,12 @@ public final class Program {
 		befehl = new Command("HEAD");
 		marker = "HEAD";
 		argumente = new Arguments("HEAD");
+	}
+	
+	public Program(final Command com, final Arguments arg, final String mark) {
+		this.marker = mark;
+		this.befehl = com;
+		this.argumente = arg;
 	}
 	
 	public Program(final Program pre, final Program nex, final String com, final String arg, final String mark) {
@@ -53,6 +63,12 @@ public final class Program {
 		str.append(this.argumente);
 		str.append("}");
 		return str.toString();
+	}
+	
+	@Override
+	public final Program clone() {
+		Program klon = new Program(this.befehl, this.argumente, this.marker);
+		return klon;
 	}
 
 	public final Command getBefehl() {
