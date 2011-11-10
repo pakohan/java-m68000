@@ -6,89 +6,168 @@ package m68000;
 
 import java.util.Scanner;
 
+/**
+ * The Class RAM.
+ */
 public final class RAM {
-	private Scanner SCANNER = new Scanner(System.in);
-	Speicher Register;
+
+    /** The SCANNER. */
+    private static final Scanner SCANNER = new Scanner(System.in);
+
+    /** The register. */
+    private Speicher register;
 
 
-	public RAM() {
-		this.Register = new Speicher();
-	}
-	
-	public final void addSpeicher(final String stelle) {
-		System.out.printf("Welcher Wert ist an Stelle %s im Haupstspeicher gespeichert?", stelle);
-		this.Register = this.Register.add(this.Register, stelle, SCANNER.nextInt());
-	}
-	
-	public final void printData() {
-		while (this.Register.prev != null) {
-			System.out.printf("An der Speicherstelle %s beträgt der Wert %d%n%n", this.Register.Stelle, this.Register.wert);
-		this.Register = this.Register.prev;
-		}
-	}
-	
-	public int getData(final String str) {
-		Speicher pointer = this.Register;
-		while (pointer != null) {
-			if (pointer.Stelle.equals(str)) {
-				return pointer.wert;
-			}
-			pointer = pointer.next;
-		}
-		return 0; 
-	}
+    /**
+     * Instantiates a new rAM.
+     */
+    public RAM() {
+        this.register = new Speicher();
+    }
 
-	public void set(String postfix, int i) {
-		Speicher pointer = this.Register;
-		pointer.set(postfix, i);
-	}
-	
-	public void addSpeicherPlatz(final String stelle) {
-		this.Register = this.Register.add(this.Register, stelle, 0);		
-	}
-	
-	static final class Speicher {
-		String Stelle;
-		int wert;
-		Speicher next;
-		Speicher prev;
+    /**
+     * Adds the speicher.
+     *
+     * @param stelle the stelle
+     */
+    public void addSpeicher(final String stelle) {
+        System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
+              + " gespeichert?", stelle);
+        this.register = this.register.add(this.register, stelle,
+                SCANNER.nextInt());
+    }
 
-		public Speicher() {
-			this.next = null;
-		}
-		
-		public Speicher(String bezeichner, int data) {
-			this.Stelle = bezeichner;
-			this.wert = data;
-		}
+    /**
+     * Prints the data.
+     */
+    public void printData() {
+        while (this.register.prev != null) {
+            System.out.printf("An der Speicherstelle %s beträgt der Wert "
+                  + "%d%n%n", this.register.stelle, this.register.wert);
+        this.register = this.register.prev;
+        }
+    }
 
-		public Speicher add(final Speicher old, final String bezeichner, final int data) {
-			this.next = new Speicher(bezeichner, data);
-			this.next.prev = this;
-			return this.next;
-		}
+    /**
+     * Gets the data.
+     *
+     * @param str the str
+     * @return the data
+     */
+    public int getData(final String str) {
+        Speicher pointer = this.register;
+        while (pointer != null) {
+            if (pointer.stelle.equals(str)) {
+                return pointer.wert;
+            }
+            pointer = pointer.next;
+        }
+        return 0;
+    }
 
-		public void set(String postfix, int i) {
-			if (this == null) {
-				System.out.println("FEHLER!");
-			}
-			if (this.Stelle.equals(postfix)) {
-				return;
-			} else {
-				this.next.set(postfix, i);
-			}
-		}
-		
-		public final int search(final String arg) {
-			if (this == null) {
-				System.out.println("FEHLER!");
-			}
-			if (this.Stelle.equals(arg)) {
-				return this.wert;
-			} else {
-				return this.next.search(arg);
-			}
-		}
-	}
+    /**
+     * Sets the.
+     *
+     * @param postfix the postfix
+     * @param i the i
+     */
+    public void set(final String postfix, final int i) {
+        Speicher pointer = this.register;
+        pointer.set(postfix, i);
+    }
+
+    /**
+     * Adds the speicher platz.
+     *
+     * @param stelle the stelle
+     */
+    public void addSpeicherPlatz(final String stelle) {
+        this.register = this.register.add(this.register, stelle, 0);
+    }
+
+    /**
+     * The Class Speicher.
+     */
+    static final class Speicher {
+
+        /** The stelle. */
+        private String stelle;
+
+        /** The wert. */
+        private int wert;
+
+        /** The next. */
+        private Speicher next;
+
+        /** The prev. */
+        private Speicher prev;
+
+        /**
+         * Instantiates a new speicher.
+         */
+        public Speicher() {
+            this.next = null;
+        }
+
+        /**
+         * Instantiates a new speicher.
+         *
+         * @param bezeichner the bezeichner
+         * @param data the data
+         */
+        public Speicher(final String bezeichner, final int data) {
+            this.stelle = bezeichner;
+            this.wert = data;
+        }
+
+        /**
+         * Adds the.
+         *
+         * @param old the old
+         * @param bezeichner the bezeichner
+         * @param data the data
+         * @return the speicher
+         */
+        public Speicher add(final Speicher old, final String bezeichner,
+                final int data) {
+            this.next = new Speicher(bezeichner, data);
+            this.next.prev = this;
+            return this.next;
+        }
+
+        /**
+         * Sets the.
+         *
+         * @param postfix the postfix
+         * @param i the i
+         */
+        public void set(final String postfix, final int i) {
+            if (this == null) {
+                System.out.println("FEHLER!");
+            }
+            if (this.stelle.equals(postfix)) {
+                return;
+            } else {
+                this.next.set(postfix, i);
+            }
+        }
+
+        /**
+         * Search.
+         *
+         * @param arg the arg
+         * @return the int
+         */
+        public int search(final String arg) {
+            if (this == null) {
+                System.out.println("FEHLER!");
+            }
+            if (this.stelle.equals(arg)) {
+                return this.wert;
+            } else {
+                return this.next.search(arg);
+            }
+        }
+    }
 
 }
