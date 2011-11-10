@@ -8,7 +8,11 @@ public final class Program {
 	private Arguments argumente;
 	
 	public Program() {
-		this(null, null, "HEAD", "HEAD", "HEAD");
+		prev = null;
+		next = null;
+		befehl = new Command("HEAD");
+		marker = "HEAD";
+		argumente = new Arguments("HEAD");
 	}
 	
 	public Program(final Program pre, final Program nex, final String com, final String arg, final String mark) {
@@ -17,6 +21,7 @@ public final class Program {
 		this.marker = mark;
 		this.befehl = new Command(com);
 		this.argumente = new Arguments(arg);
+		this.prev.setNext(this);
 	}
 	
 	public Program jump() {
