@@ -1,7 +1,6 @@
 package m68000;
 
 public final class Program {
-	private static Program pointer = new Program();
 	private Program prev;
 	private Program next;
 	private Command befehl;
@@ -9,8 +8,7 @@ public final class Program {
 	private Arguments argumente;
 	
 	public Program() {
-		this.prev = null;
-		this.next = null;
+		this(null, null, "HEAD", "HEAD", "HEAD");
 	}
 	
 	public Program(final Program pre, final Program nex, final String com, final String arg, final String mark) {
@@ -19,10 +17,6 @@ public final class Program {
 		this.marker = mark;
 		this.befehl = new Command(com);
 		this.argumente = new Arguments(arg);
-	}
-	
-	public void addCommand(final String com, final String arg, final String mark) {
-		this.next = new Program(this, this.next, com, arg, mark);
 	}
 	
 	public Program jump() {
@@ -35,8 +29,8 @@ public final class Program {
 		return helppointer;
 	}
 	
-	public void setPrev(final Program com) {
-		this.prev = com;
+	public void setPrev(final Program pre) {
+		this.prev = pre;
 	}
 	
 	public Program getNext() {
@@ -54,14 +48,6 @@ public final class Program {
 		str.append(this.argumente);
 		str.append("}");
 		return str.toString();
-	}
-
-	public final Program getPointer() {
-		return pointer;
-	}
-
-	public final void setPointer(Program pointer) {
-		this.pointer = pointer;
 	}
 
 	public final Command getBefehl() {

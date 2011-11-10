@@ -1,10 +1,18 @@
 package m68000;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class Interpreter {
 	private Interpreter() {	}
-	static Program prog = new Program();
+	static Program prog;
+	
+	static {
+		prog = new Program();
+		prog.setNext(prog);
+		prog.setPrev(prog);
+
+	}
 
 	public final static Program einlesen(final String sourcefile) throws IOException {
 		LineNumberReader source = new LineNumberReader(new FileReader(sourcefile));
@@ -14,9 +22,7 @@ public class Interpreter {
 
 		while((line = source.readLine()) != null) {
 			part = line.split(";");
-			//part = part.split(" ", 3);
-			addCommand(part);
-			System.out.println(part.length);
+			addCommand(recognizeLine(part[0]));
 		}
 		
 		/*Program link = first;
@@ -49,16 +55,32 @@ public class Interpreter {
 		return prog;
 	}
 	
+	public final static String[] recognizeLine(final String str) {
+		Scanner scan = new Scanner(str);
+		String[] parts;
+		String[] parts2 = new String[3];
+		int j = 0;
+		while (scan.hasNext()) {
+			parts2[j] = scan.next();
+			j++;
+		}
+		parts = new String[j];
+		for (int i = 0; i < j; i++) {
+			parts[i] = parts2[i];
+		}
+		return parts;
+	}
+	
 	public final static void addCommand(String[] befehlsfolge) {
 		switch (befehlsfolge.length) {
 			case 1:
-				prog.addCommand(befehlsfolge[0], "", "");
+				prog.setPrev(new Program(prog.getPrev(), prog, befehlsfolge[0], "", ""));
 				break;				
 			case 2:
-				prog.addCommand(befehlsfolge[0], befehlsfolge[1], "");
+				prog.setPrev(new Program(prog.getPrev(), prog, befehlsfolge[0], befehlsfolge[1], ""));
 				break;
 			case 3:
-				prog.addCommand(befehlsfolge[1], befehlsfolge[2], befehlsfolge[0]);
+				prog.setPrev(new Program(prog.getPrev(), prog, befehlsfolge[1], befehlsfolge[2], befehlsfolge[0]));
 				break;
 			default:
 		}

@@ -3,7 +3,7 @@ package m68000;
 import java.util.regex.Pattern;
 
 public final class Command {
-	static enum Befehlssatz {ORG, BRA, EQU, DC, DS, CLR, MOVE, ADD, END, ZERO};
+	static enum Befehlssatz {ORG, BRA, EQU, DC, DS, CLR, MOVE, ADD, END, ZERO, HEAD};
 
 	private Befehlssatz prefix;
 	private String postfix;
@@ -11,7 +11,6 @@ public final class Command {
 	
 	public Command(final String str) {
 		Pattern p = Pattern.compile("[.]");
-		p.split(str);
 		if (str.contains(".")) {
 			String[] parts = new String[2];
 			parts = p.split(str);
@@ -48,6 +47,8 @@ public final class Command {
 			command = Befehlssatz.ADD;
 		} else if (com.equals("END")) {
 			command = Befehlssatz.END;
+		} else if (com.equals("HEAD")) {
+			command = Befehlssatz.HEAD;
 		}
 		return command;
 	}
