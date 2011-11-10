@@ -3,6 +3,8 @@ package m68000;
 import java.io.*;
 import java.util.Scanner;
 
+import m68000.Command.Befehlssatz;
+
 public class Interpreter {
 	private Interpreter() {	}
 	static Program prog;
@@ -25,21 +27,21 @@ public class Interpreter {
 			addCommand(recognizeLine(part[0]));
 		}
 		
-		/*Program link = first;
-		while (link != null) {
-			switch (link.getPrefix()) {
+		while (prog.getNext().getBefehl().getPrefix() != Befehlssatz.HEAD) {
+			prog = prog.getNext();
+			switch (prog.getBefehl().getPrefix()) {
 			case ORG:
 				break;
 			case BRA:
 				break;
 			case EQU :
-				M68000.speicher.addSpeicher(link.marker);
+				M68000.speicher.addSpeicher(prog.getMarker());
 				break;
 			case DC :
-				M68000.speicher.addSpeicher(link.marker);
+				M68000.speicher.addSpeicher(prog.getMarker());
 				break;
 			case DS :
-				M68000.speicher.addSpeicherPlatz(link.marker);
+				M68000.speicher.addSpeicherPlatz(prog.getMarker());
 				break;
 			case CLR :
 				break;
@@ -47,11 +49,15 @@ public class Interpreter {
 				break;
 			case ADD :
 				break;
+			case HEAD :
+				break;
+			case END :
+				break;
 			default :
-				System.err.println("Befehl nicht gefunden!");
+				System.err.println("Befehl nicht gefunden!" + prog.getBefehl().getPrefix());
 			}
-			link = link.next;
-		}*/
+		}
+		prog = prog.getNext();
 		return prog;
 	}
 	

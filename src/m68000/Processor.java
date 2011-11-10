@@ -3,22 +3,22 @@ package m68000;
 public class Processor {
 	private int[] Datenregister = new int[8];
 	private Program exe;
+	private boolean finished = false;
 	
 	public Processor(final Program programm) {
 		this.exe = programm;
 	}
 	
 	public final void step() {
-		System.out.println(this.exe);
-		if (this.exe.getNext() == null) {
-			throw new NullPointerException("Programm fertig");
-		}
+		
+		exe = exe.getNext();
+		System.err.println(this.exe);
+
 		switch (this.exe.getBefehl().getPrefix()) {
 		case ORG:
 			break;
 		case BRA:
 			this.exe = this.exe.jump();
-			System.out.println(this.exe);
 			break;
 		case EQU :
 			break;
@@ -43,13 +43,17 @@ public class Processor {
 				this.Datenregister[1] = this.Datenregister[1] + M68000.speicher.getData(this.exe.getArgumente().getArg());
 			}
 			break;
+		case HEAD :
+			break;
+		case END :
+			this.finished = true;
+			break;
 		default :
 			System.err.println("Befehl nicht gefunden!");
 		}
-		this.exe = this.exe.getNext();
 	}
 	
-	public final boolean nextFinish() {
-		return (this.exe == null);
+	public final boolean isfinished() {
+		return finished;
 	}
 }
