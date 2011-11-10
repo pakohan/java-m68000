@@ -41,7 +41,7 @@ public final class Arguments {
      *
      * @return the arg
      */
-    public String getArg() {
+    public String getPrefix() {
         return this.prefix;
     }
 

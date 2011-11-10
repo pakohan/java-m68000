@@ -74,7 +74,7 @@ public final class Program {
      */
     public Program jump() {
         Program helppointer = this;
-        String search = this.argumente.getArg();
+        String search = this.argumente.getPrefix();
         helppointer = this.next;
         while (helppointer != null && !helppointer.marker.equals(search)) {
             helppointer = helppointer.next;
@@ -185,9 +185,9 @@ public final class Program {
     /**
      * Sets the next.
      *
-     * @param next the new next
+     * @param nex the new next
      */
-    public void setNext(final Program next) {
-        this.next = next;
+    public void setNext(final Program nex) {
+        this.next = nex;
     }
 }

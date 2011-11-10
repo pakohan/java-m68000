@@ -30,6 +30,63 @@ public class Processor {
     }
 
     /**
+     * Move.
+     *
+     * @param args the args
+     */
+    public final void move(final Arguments args) {
+        int x = getData(args.getPrefix());
+        setData(args.getPostfix(), x);
+    }
+
+    /**
+     * Clr.
+     *
+     * @param args the args
+     */
+    public final void clr(final Arguments args) {
+        setData(args.getPrefix(), 0);
+    }
+
+    /**
+     * Adds the.
+     *
+     * @param args the args
+     */
+    public final void add(final Arguments args) {
+        int x = getData(args.getPrefix());
+        x = x + getData(args.getPostfix());
+        setData(args.getPostfix(), x);
+    }
+
+    /**
+     * Sets the data.
+     *
+     * @param dataPlace the data place
+     * @param x the x
+     */
+    public final void setData(final String dataPlace, final int x) {
+        if (dataPlace.equals("D1")) {
+            datenregister[1] = x;
+        } else {
+            M68000.speicher.set(dataPlace, x);
+        }
+    }
+
+    /**
+     * Gets the data.
+     *
+     * @param dataPlace the data place
+     * @return the data
+     */
+    public final int getData(final String dataPlace) {
+        if (dataPlace.equals("D1")) {
+            return datenregister[1];
+        } else {
+            return M68000.speicher.getData(dataPlace);
+        }
+    }
+    /**
      * Step.
      *
      * @param com the com
@@ -49,25 +106,13 @@ public class Processor {
         case DS :
             break;
         case CLR :
-            if (command.getArgumente().getArg().equals("D1")) {
-                this.datenregister[1] = 0;
-            }
+            clr(command.getArgumente());
             break;
         case  MOVE :
-            if (command.getArgumente().getPostfix().equals("D1")) {
-                this.datenregister[1] = M68000.speicher
-                        .getData(command.getArgumente().getArg());
-            } else if (command.getArgumente().getArg().equals("D1")) {
-                M68000.speicher.set(command.getArgumente().getPostfix(),
-                        this.datenregister[1]);
-            }
+            move(command.getArgumente());
             break;
         case ADD :
-            if (command.getArgumente().getPostfix().equals("D1")) {
-                this.datenregister[1] = this.datenregister[1]
-                        + M68000.speicher
-                        .getData(command.getArgumente().getArg());
-            }
+            add(command.getArgumente());
             break;
         case HEAD :
             break;
