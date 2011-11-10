@@ -33,19 +33,20 @@ public final class RAM {
     public void addSpeicher(final String stelle) {
         System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
               + " gespeichert?", stelle);
-        this.register = this.register.add(this.register, stelle,
+        this.register.next = new Speicher(this.register.next, stelle,
                 SCANNER.nextInt());
+    }
+    
+    public void stepnext() {
+    	this.register = this.register.next;
     }
 
     /**
      * Prints the data.
      */
-    public void printData() {
-        while (this.register.prev != null) {
-            System.out.printf("An der Speicherstelle %s beträgt der Wert "
-                  + "%d%n%n", this.register.stelle, this.register.wert);
-        this.register = this.register.prev;
-        }
+    public String toString() {
+        return "An der Speicherstelle " + this.register.stelle +
+        		" beträgt der Wert " + this.register.wert;
     }
 
     /**
@@ -55,14 +56,7 @@ public final class RAM {
      * @return the data
      */
     public int getData(final String str) {
-        Speicher pointer = this.register;
-        while (pointer != null) {
-            if (pointer.stelle.equals(str)) {
-                return pointer.wert;
-            }
-            pointer = pointer.next;
-        }
-        return 0;
+    	return this.register.getData(str);
     }
 
     /**
@@ -72,19 +66,15 @@ public final class RAM {
      * @param i the i
      */
     public void set(final String postfix, final int i) {
-        Speicher pointer = this.register;
-        pointer.set(postfix, i);
+    	this.register.setData(postfix, i);
     }
-
-    /**
-     * Adds the speicher platz.
-     *
-     * @param stelle the stelle
-     */
-    public void addSpeicherPlatz(final String stelle) {
-        this.register = this.register.add(this.register, stelle, 0);
+    public String getStelle() {
+    	return this.register.stelle;
     }
-
+    
+    public Speicher getNext() {
+    	return this.register.next;
+    }
     /**
      * The Class Speicher.
      */
@@ -96,17 +86,15 @@ public final class RAM {
         /** The wert. */
         private int wert;
 
-        /** The next. */
-        private Speicher next;
-
-        /** The prev. */
-        private Speicher prev;
+		private Speicher next;
 
         /**
          * Instantiates a new speicher.
          */
         public Speicher() {
-            this.next = null;
+            this.wert = 0;
+            this.stelle = "HEAD";
+            this.next = this;
         }
 
         /**
@@ -115,59 +103,68 @@ public final class RAM {
          * @param bezeichner the bezeichner
          * @param data the data
          */
-        public Speicher(final String bezeichner, final int data) {
+        public Speicher(final Speicher head, final String bezeichner, final int data) {
             this.stelle = bezeichner;
             this.wert = data;
+            this.next = head;
+        }
+        
+        public String getStelle() {
+        	return this.stelle;
+        }
+        
+        public Speicher getNext() {
+        	return this.next;
         }
 
         /**
-         * Adds the.
-         *
-         * @param old the old
-         * @param bezeichner the bezeichner
-         * @param data the data
-         * @return the speicher
-         */
-        public Speicher add(final Speicher old, final String bezeichner,
-                final int data) {
-            this.next = new Speicher(bezeichner, data);
-            this.next.prev = this;
-            return this.next;
-        }
-
-        /**
-         * Sets the.
+         * Sets the data at the given storage adress.
          *
          * @param postfix the postfix
          * @param i the i
          */
-        public void set(final String postfix, final int i) {
+        public void setData(final String speicheradresse, final int i) {
             if (this == null) {
-                System.out.println("FEHLER!");
+                System.err.println("FEHLER!");
             }
-            if (this.stelle.equals(postfix)) {
+            if (this.stelle.equals(speicheradresse)) {
+            	this.wert = i;
                 return;
             } else {
-                this.next.set(postfix, i);
+                this.next.setData(speicheradresse, i);
             }
         }
 
         /**
-         * Search.
+         * Search for the storage adress and return its contents.
          *
          * @param arg the arg
          * @return the int
          */
-        public int search(final String arg) {
+        public int getData(final String arg) {
             if (this == null) {
                 System.out.println("FEHLER!");
+                return 0;
             }
             if (this.stelle.equals(arg)) {
                 return this.wert;
             } else {
-                return this.next.search(arg);
+                return this.next.getData(arg);
             }
         }
     }
+
+	public void addSpeicher(String marker, String prefix) {
+		Scanner sc = new Scanner(prefix);
+		int x;
+		if (sc.hasNextInt()) {
+			x = sc.nextInt();
+		} else {
+		System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
+                + " gespeichert?", marker);
+		x = SCANNER.nextInt();
+		}
+          this.register.next = new Speicher(this.register.next, marker, x);		
+	}
 
 }

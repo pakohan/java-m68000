@@ -33,6 +33,9 @@ public final class M68000 {
         while (!core1.isfinished()) {
             core1.step();
         }
-        speicher.printData();
+        while (!speicher.getNext().getStelle().equals("HEAD")) {
+        	speicher.stepnext();
+        	System.out.println(speicher);
+        }
     }
 }

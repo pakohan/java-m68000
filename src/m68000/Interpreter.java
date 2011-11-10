@@ -62,10 +62,10 @@ public final class Interpreter {
                 M68000.speicher.addSpeicher(prog.getMarker());
                 break;
             case DC :
-                M68000.speicher.addSpeicher(prog.getMarker());
+                M68000.speicher.addSpeicher(prog.getMarker(), prog.getArgumente().getPrefix());
                 break;
             case DS :
-                M68000.speicher.addSpeicherPlatz(prog.getMarker());
+                M68000.speicher.addSpeicher(prog.getMarker(), "0");
                 break;
             case CLR :
                 break;
