@@ -26,6 +26,10 @@ public final class M68000 {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(final String[] args) throws IOException {
+    	if (args.length < 1) {
+    		System.err.println("Fehler: Assemblerdatei als Argument angeben!");
+    		return;
+    	}
         Program prog = Interpreter.readSourceFile(args[0]);
 
         Processor core1 = new Processor(prog);
