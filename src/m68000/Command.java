@@ -95,17 +95,19 @@ public final class Command implements Cloneable {
      * @param str the whole Command (postfix and prefix)
      */
     public Command(final String str) {
-        Pattern p = Pattern.compile("[.]");
+
+    	Pattern p = Pattern.compile("[.]");
+
         if (str.contains(".")) {
-            String[] parts;
-            parts = p.split(str);
-            this.postfix = parts[1];
-            this.prefix = recognizePrefix(parts[0]);
-            this.twoparts = true;
+            String[] parts = p.split(str);
+            this.postfix   = parts[1];
+            this.prefix    = recognizePrefix(parts[0]);
+            this.twoparts  = true;
         } else {
-            this.prefix = recognizePrefix(str);
-            this.twoparts = false;
+            this.prefix    = recognizePrefix(str);
+            this.twoparts  = false;
         }
+
     }
 
     /**
@@ -117,11 +119,13 @@ public final class Command implements Cloneable {
      * @param str the Postfix
      */
     public Command(final Befehlssatz com, final String... str) {
-        if (str.length > 0) {
+
+    	if (str.length > 0) {
             this.twoparts = true;
-            this.postfix = str[0];
+            this.postfix  = str[0];
         }
-        this.prefix = com;
+
+    	this.prefix = com;
     }
 
     /**
@@ -130,7 +134,9 @@ public final class Command implements Cloneable {
      * @return true, if the Command consists of two parts
      */
     public boolean hastwoparts() {
-        return this.twoparts;
+
+    	return this.twoparts;
+
     }
 
     /**
@@ -144,7 +150,9 @@ public final class Command implements Cloneable {
      * @return the Command Prefix as one of the enum Befehlssatz
      */
     private static Befehlssatz recognizePrefix(final String com) {
-        Befehlssatz command = Befehlssatz.ZERO;
+
+    	Befehlssatz command = Befehlssatz.ZERO;
+
         if (com.equals("ORG")) {
             command = Befehlssatz.ORG;
         } else if (com.equals("BRA")) {
@@ -172,7 +180,9 @@ public final class Command implements Cloneable {
         } else if (com.equals("DIV")) {
             command = Befehlssatz.DIV;
         }
+
         return command;
+
     }
 
     /**
@@ -181,7 +191,9 @@ public final class Command implements Cloneable {
      * @return the prefix
      */
     public Befehlssatz getPrefix() {
-        return this.prefix;
+
+    	return this.prefix;
+
     }
 
     /**
@@ -190,26 +202,34 @@ public final class Command implements Cloneable {
      * @return the postfix
      */
     public String getPostfix() {
-        return this.postfix;
+
+    	return this.postfix;
+
     }
 
     @Override
     public String toString() {
-        if (this.twoparts) {
+
+    	if (this.twoparts) {
             return this.prefix + "," + this.postfix;
         } else {
-            return "" + this.prefix;
+            return this.prefix.toString();
         }
+
     }
 
     @Override
     public Command clone() {
-        Command klon;
-        if (this.twoparts) {
+
+    	Command klon;
+
+    	if (this.twoparts) {
             klon = new Command(this.prefix, this.postfix);
         } else {
             klon = new Command(this.prefix);
         }
-        return klon;
+
+    	return klon;
+
     }
 }

@@ -61,17 +61,18 @@ public final class Argument implements Cloneable {
      * @param arg the Argument
      */
     public Argument(final String arg) {
+
         if (arg.contains(",")) {
-            String[] split;
-            split = arg.split(",");
-            this.prefix = split[0];
-            this.postfix = split[1];
-            this.twoparts = true;
+            String[] split = arg.split(",");
+            this.prefix    = split[0];
+            this.postfix   = split[1];
+            this.twoparts  = true;
         } else {
-            this.prefix = arg;
-            this.postfix = "";
-            this.twoparts = false;
+            this.prefix    = arg;
+            this.postfix   = "";
+            this.twoparts  = false;
         }
+
     }
 
     /**
@@ -82,15 +83,17 @@ public final class Argument implements Cloneable {
      * @param arg the Argument
      */
     public Argument(final String... arg) {
-        if (arg.length > 1) {
-            this.prefix = arg[0];
-            this.postfix = arg[1];
+
+    	if (arg.length > 1) {
+            this.prefix   = arg[0];
+            this.postfix  = arg[1];
             this.twoparts = true;
         } else {
-            this.prefix = arg[0];
-            this.postfix = "";
+            this.prefix   = arg[0];
+            this.postfix  = "";
             this.twoparts = false;
         }
+
     }
 
     /**
@@ -99,7 +102,9 @@ public final class Argument implements Cloneable {
      * @return the Prefix
      */
     public String getPrefix() {
-        return this.prefix;
+
+    	return this.prefix;
+
     }
 
     /**
@@ -108,7 +113,9 @@ public final class Argument implements Cloneable {
      * @return the Postfix
      */
     public String getPostfix() {
-        return this.postfix;
+
+    	return this.postfix;
+
     }
 
     /**
@@ -117,26 +124,34 @@ public final class Argument implements Cloneable {
      * @return true, the Argument has got a Prefix AND a Postfix
      */
     public boolean hastwoparts() {
-        return this.twoparts;
+
+    	return this.twoparts;
+
     }
 
     @Override
     public String toString() {
-        if (this.twoparts) {
+
+    	if (this.twoparts) {
             return this.prefix + "," + this.postfix;
         } else {
             return this.prefix;
         }
+
     }
 
     @Override
     public Argument clone() {
         Argument klon;
+
         if (this.twoparts) {
             klon = new Argument(this.prefix, this.postfix);
         } else {
             klon = new Argument(this.prefix);
         }
+
         return klon;
+
     }
+
 }

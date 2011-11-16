@@ -20,6 +20,11 @@ import java.io.IOException;
 
 /**
  * The Class M68000.
+ * <iframe width="560"
+ * height="315"
+ * src="http://www.youtube.com/embed/b-Cr0EWwaTk"
+ * frameborder="0"
+ * allowfullscreen></iframe>
  */
 public final class M68000 {
 
