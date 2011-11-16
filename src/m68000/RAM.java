@@ -27,14 +27,14 @@ public final class RAM {
     private static final Scanner SCANNER = new Scanner(System.in);
 
     /** The register. */
-    private Speicher register;
+    private LinkedList<Speicher> register;
 
 
     /**
      * Instantiates a new rAM.
      */
     public RAM() {
-        this.register = new Speicher();
+        this.register = new LinkedList<Speicher>(new Speicher());
     }
 
     /**
@@ -45,20 +45,22 @@ public final class RAM {
     public void addSpeicher(final String stelle) {
         System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
               + " gespeichert?", stelle);
-        this.register.next = new Speicher(this.register.next, stelle,
-                SCANNER.nextInt());
-    }
-    
-    public void stepnext() {
-    	this.register = this.register.next;
+        this.register.add(new Speicher(stelle, SCANNER.nextInt()));
     }
 
-    /**
-     * Prints the data.
-     */
+    @Override
     public String toString() {
-        return "An der Speicherstelle " + this.register.stelle +
-        		" beträgt der Wert " + this.register.wert;
+        LinkedList<Speicher> tmp = this.register.getNext();
+        StringBuilder str = new StringBuilder();
+        while (!tmp.getItem().getStelle().equals("HEAD")) {
+            str.append("An der Speicherstelle ")
+                .append(tmp.getItem().getStelle())
+                .append(" beträgt der Wert ")
+                .append(tmp.getItem().getWert())
+                .append("\n");
+            tmp = tmp.getNext();
+        }
+        return str.toString();
     }
 
     /**
@@ -68,115 +70,50 @@ public final class RAM {
      * @return the data
      */
     public int getData(final String str) {
-    	return this.register.getData(str);
+        LinkedList<Speicher> tmp = this.register.getNext();
+        while (!tmp.getItem().getStelle().equals("HEAD")) {
+            if (tmp.getItem().getStelle().equals(str)) {
+                return tmp.getItem().getWert();
+            }
+            tmp = tmp.getNext();
+        }
+        return 0;
     }
 
     /**
      * Sets the.
      *
-     * @param postfix the postfix
-     * @param i the i
+     * @param str the postfix
+     * @param x the x
      */
-    public void set(final String postfix, final int i) {
-    	this.register.setData(postfix, i);
+    public void set(final String str, final int x) {
+        LinkedList<Speicher> tmp = this.register.getNext();
+        while (!tmp.getItem().getStelle().equals("HEAD")) {
+            if (tmp.getItem().getStelle().equals(str)) {
+                tmp.getItem().setWert(x);
+                break;
+            }
+            tmp = tmp.getNext();
+        }
     }
-    public String getStelle() {
-    	return this.register.stelle;
-    }
-    
-    public Speicher getNext() {
-    	return this.register.next;
-    }
+
     /**
-     * The Class Speicher.
+     * Adds the speicher.
+     *
+     * @param stelle the stelle
+     * @param prefix the prefix
      */
-    static final class Speicher {
-
-        /** The stelle. */
-        private String stelle;
-
-        /** The wert. */
-        private int wert;
-
-		private Speicher next;
-
-        /**
-         * Instantiates a new speicher.
-         */
-        public Speicher() {
-            this.wert = 0;
-            this.stelle = "HEAD";
-            this.next = this;
+    public void addSpeicher(final String stelle, final String prefix) {
+        Scanner sc = new Scanner(prefix);
+        int x;
+        if (sc.hasNextInt()) {
+            x = sc.nextInt();
+        } else {
+        System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
+                + " gespeichert?", stelle);
+        x = SCANNER.nextInt();
         }
-
-        /**
-         * Instantiates a new speicher.
-         *
-         * @param bezeichner the bezeichner
-         * @param data the data
-         */
-        public Speicher(final Speicher head, final String bezeichner, final int data) {
-            this.stelle = bezeichner;
-            this.wert = data;
-            this.next = head;
-        }
-        
-        public String getStelle() {
-        	return this.stelle;
-        }
-        
-        public Speicher getNext() {
-        	return this.next;
-        }
-
-        /**
-         * Sets the data at the given storage adress.
-         *
-         * @param postfix the postfix
-         * @param i the i
-         */
-        public void setData(final String speicheradresse, final int i) {
-            if (this == null) {
-                System.err.println("FEHLER!");
-            }
-            if (this.stelle.equals(speicheradresse)) {
-            	this.wert = i;
-                return;
-            } else {
-                this.next.setData(speicheradresse, i);
-            }
-        }
-
-        /**
-         * Search for the storage adress and return its contents.
-         *
-         * @param arg the arg
-         * @return the int
-         */
-        public int getData(final String arg) {
-            if (this == null) {
-                System.out.println("FEHLER!");
-                return 0;
-            }
-            if (this.stelle.equals(arg)) {
-                return this.wert;
-            } else {
-                return this.next.getData(arg);
-            }
-        }
+        this.register.add(new Speicher(stelle, x));
     }
-
-	public void addSpeicher(String marker, String prefix) {
-		Scanner sc = new Scanner(prefix);
-		int x;
-		if (sc.hasNextInt()) {
-			x = sc.nextInt();
-		} else {
-		System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
-                + " gespeichert?", marker);
-		x = SCANNER.nextInt();
-		}
-          this.register.next = new Speicher(this.register.next, marker, x);		
-	}
 
 }

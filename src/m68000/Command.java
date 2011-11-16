@@ -21,13 +21,41 @@ import java.util.regex.Pattern;
 /**
  * The Class Command.
  */
-public final class Command {
+public final class Command implements Cloneable {
 
     /**
      * The Enum Befehlssatz.
      */
     static enum Befehlssatz {
-        ORG,  BRA,  EQU,  DC,  DS,  CLR,  MOVE,  ADD, END, ZERO, HEAD };
+
+        /** The ORG. */
+        ORG,
+  /** The BRA. */
+  BRA,
+  /** The EQU. */
+  EQU,
+  /** The DC. */
+  DC,
+  /** The DS. */
+  DS,
+  /** The CLR. */
+  CLR,
+  /** The MOVE. */
+  MOVE,
+  /** The ADD. */
+  ADD,
+ /** The END. */
+ END,
+ /** The ZERO. */
+ ZERO,
+ /** The HEAD. */
+ HEAD,
+ /** The SUB. */
+ SUB,
+ /** The MUL. */
+ MUL,
+ /** The DIV. */
+ DIV };
 
     /** The prefix. */
     private Befehlssatz prefix;
@@ -46,7 +74,7 @@ public final class Command {
     public Command(final String str) {
         Pattern p = Pattern.compile("[.]");
         if (str.contains(".")) {
-            String[] parts = new String[2];
+            String[] parts;
             parts = p.split(str);
             this.postfix = parts[1];
             this.prefix = recognizePrefix(parts[0]);
@@ -55,6 +83,20 @@ public final class Command {
             this.prefix = recognizePrefix(str);
             this.twoparts = false;
         }
+    }
+
+    /**
+     * Instantiates a new command.
+     *
+     * @param com the com
+     * @param str the str
+     */
+    public Command(final Befehlssatz com, final String... str) {
+        if (str.length > 1) {
+            this.twoparts = true;
+            this.postfix = str[0];
+        }
+        this.prefix = com;
     }
 
     /**
@@ -94,6 +136,12 @@ public final class Command {
             command = Befehlssatz.END;
         } else if (com.equals("HEAD")) {
             command = Befehlssatz.HEAD;
+        } else if (com.equals("SUB")) {
+            command = Befehlssatz.SUB;
+        } else if (com.equals("MUL")) {
+            command = Befehlssatz.MUL;
+        } else if (com.equals("DIV")) {
+            command = Befehlssatz.DIV;
         }
         return command;
     }
@@ -123,5 +171,17 @@ public final class Command {
         } else {
             return "" + this.prefix;
         }
+    }
+
+
+    @Override
+    public Command clone() {
+        Command klon;
+        if (this.twoparts) {
+            klon = new Command(this.prefix, this.postfix);
+        } else {
+            klon = new Command(this.prefix);
+        }
+        return klon;
     }
 }

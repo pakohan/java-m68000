@@ -34,14 +34,7 @@ public final class Interpreter {
     private Interpreter() { }
 
     /** The prog is the linked list which represents the program. */
-    private static Program prog;
-
-    static {
-        prog = new Program();
-        prog.setNext(prog);
-        prog.setPrev(prog);
-
-    }
+    private static LinkedList<LoC> prog;
 
     /**
      * Reads the source File and stores it in a linked list.
@@ -50,34 +43,52 @@ public final class Interpreter {
      * @return the program
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public static Program readSourceFile(final String sourcefile)
+    public static LinkedList<LoC> readSourceFile(final String sourcefile)
             throws IOException {
-        LineNumberReader source =
-                new LineNumberReader(new FileReader(sourcefile));
-        String[] part = new String[MAXTOKENS];
+        FileReader file = new FileReader(sourcefile);
+        LineNumberReader source = new LineNumberReader(file);
+        String[] part;
         String line;
-
+        prog = new LinkedList<LoC>(new LoC());
+        prog.setNext(prog);
+        prog.setPrev(prog);
 
         while ((line = source.readLine()) != null) {
             part = line.split(";");
             addCommand(recognizeLine(part[0]));
         }
+        source.close();
+        file.close();
 
-        while (prog.getNext().getBefehl().getPrefix() != Befehlssatz.HEAD) {
-            prog = prog.getNext();
-            switch (prog.getBefehl().getPrefix()) {
+        return prog;
+    }
+
+    /**
+     * Linker.
+     *
+     * @param pro the pro
+     * @return the rAM
+     */
+    public static RAM linker(final LinkedList<LoC> pro) {
+        LinkedList<LoC> tmp = pro;
+        RAM ram = new RAM();
+        while (tmp.getNext().getItem().getCommand().getPrefix()
+                != Befehlssatz.HEAD) {
+            tmp = tmp.getNext();
+            switch (tmp.getItem().getCommand().getPrefix()) {
             case ORG:
                 break;
             case BRA:
                 break;
             case EQU :
-                M68000.speicher.addSpeicher(prog.getMarker());
+                ram.addSpeicher(tmp.getItem().getMarker());
                 break;
             case DC :
-                M68000.speicher.addSpeicher(prog.getMarker(), prog.getArgumente().getPrefix());
+                ram.addSpeicher(tmp.getItem().getMarker(),
+                        tmp.getItem().getArgument().getPrefix());
                 break;
             case DS :
-                M68000.speicher.addSpeicher(prog.getMarker(), "0");
+                ram.addSpeicher(tmp.getItem().getMarker(), "0");
                 break;
             case CLR :
                 break;
@@ -88,16 +99,17 @@ public final class Interpreter {
             case HEAD :
                 break;
             case END :
+            case MUL :
+            case SUB :
+            case DIV :
                 break;
             default :
                 System.err.println("Befehl nicht gefunden!"
-            + prog.getBefehl().getPrefix());
+            + tmp.getItem().getCommand().getPrefix());
             }
         }
-        prog = prog.getNext();
-        return prog;
+        return ram;
     }
-
     /**
      * Recognize the line of source code. The comments have to be deleted
      * before!
@@ -129,16 +141,14 @@ public final class Interpreter {
     public static void addCommand(final String[] befehlsfolge) {
         switch (befehlsfolge.length) {
             case 1:
-                prog.setPrev(new Program(prog.getPrev(), prog,
-                        befehlsfolge[0], "", ""));
+                prog.add(new LoC(befehlsfolge[0], "", ""));
                 break;
             case 2:
-                prog.setPrev(new Program(prog.getPrev(), prog,
-                        befehlsfolge[0], befehlsfolge[1], ""));
+                prog.add(new LoC(befehlsfolge[0], befehlsfolge[1], ""));
                 break;
             case MAXTOKENS:
-                prog.setPrev(new Program(prog.getPrev(), prog,
-                        befehlsfolge[1], befehlsfolge[2], befehlsfolge[0]));
+                prog.add(new LoC(befehlsfolge[1], befehlsfolge[2],
+                        befehlsfolge[0]));
                 break;
             default:
         }

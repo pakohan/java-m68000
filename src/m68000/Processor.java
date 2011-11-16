@@ -26,34 +26,42 @@ public class Processor {
     /** The datenregister. */
     private int[] datenregister = new int[REGSIZE];
 
+    /** The size. */
+    private int size;
+
     /** The exe. */
-    private Program exe;
+    private LinkedList<LoC> exe;
 
     /** The finished. */
     private boolean finished = false;
 
+    /** The speicher. */
+    private RAM speicher;
+
     /**
      * Instantiates a new processor.
      *
-     * @param programm the programm
+     * @param prog the prog
+     * @param storage the storage
      */
-    public Processor(final Program programm) {
-        this.exe = programm;
+    public Processor(final LinkedList<LoC> prog, final RAM storage) {
+        this.exe = prog;
+        this.speicher = storage;
+        this.size = this.exe.getSize();
     }
 
     /**
      * The main processing unit. It searches the given program line for known
-     * commands and executes it.
+     * coms and executes it.
      *
      * @param com the com
      */
-    public final void step(final Program com) {
-        Program command = com.clone();
-        switch (command.getBefehl().getPrefix()) {
+    public final void step(final LoC com) {
+        switch (com.getCommand().getPrefix()) {
         case ORG:
             break;
         case BRA:
-            command = command.jump();
+            this.exe = jump(com.getArgument().getPrefix()).getPrev();
             break;
         case EQU :
             break;
@@ -62,13 +70,22 @@ public class Processor {
         case DS :
             break;
         case CLR :
-            clr(command.getArgumente());
+            clr(com.getArgument());
             break;
         case  MOVE :
-            move(command.getArgumente());
+            move(com.getArgument());
             break;
         case ADD :
-            add(command.getArgumente());
+            add(com.getArgument());
+            break;
+        case SUB :
+            sub(com.getArgument());
+            break;
+        case MUL :
+            mul(com.getArgument());
+            break;
+        case DIV :
+            div(com.getArgument());
             break;
         case HEAD :
             break;
@@ -86,7 +103,7 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void move(final Arguments args) {
+    public final void move(final Argument args) {
         int x = getData(args.getPrefix());
         setData(args.getPostfix(), x);
     }
@@ -97,7 +114,7 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void clr(final Arguments args) {
+    public final void clr(final Argument args) {
         setData(args.getPrefix(), 0);
     }
 
@@ -107,9 +124,42 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void add(final Arguments args) {
+    public final void add(final Argument args) {
         int x = getData(args.getPrefix());
-        x = x + getData(args.getPostfix());
+        x = getData(args.getPostfix()) + x;
+        setData(args.getPostfix(), x);
+    }
+
+    /**
+     * Sub.
+     *
+     * @param args the args
+     */
+    public final void sub(final Argument args) {
+        int x = getData(args.getPrefix());
+        x = getData(args.getPostfix()) - x;
+        setData(args.getPostfix(), x);
+    }
+
+    /**
+     * Mul.
+     *
+     * @param args the args
+     */
+    public final void mul(final Argument args) {
+        int x = getData(args.getPrefix());
+        x = getData(args.getPostfix()) * x;
+        setData(args.getPostfix(), x);
+    }
+
+    /**
+     * Div.
+     *
+     * @param args the args
+     */
+    public final void div(final Argument args) {
+        int x = getData(args.getPrefix());
+        x = getData(args.getPostfix()) / x;
         setData(args.getPostfix(), x);
     }
 
@@ -124,7 +174,7 @@ public class Processor {
         if (dataPlace.equals("D1")) {
             datenregister[1] = x;
         } else {
-            M68000.speicher.set(dataPlace, x);
+            this.speicher.set(dataPlace, x);
         }
     }
 
@@ -138,7 +188,7 @@ public class Processor {
         if (dataPlace.equals("D1")) {
             return datenregister[1];
         } else {
-            return M68000.speicher.getData(dataPlace);
+            return this.speicher.getData(dataPlace);
         }
     }
 
@@ -146,9 +196,11 @@ public class Processor {
      * Does a single step. This means that the the Processor will set the
      * execution pointer to the next element and executes it.
      */
-    public final void step() {
-        exe = exe.getNext();
-        step(exe);
+    public final void run() {
+        while (!this.isfinished()) {
+            this.exe = this.exe.getNext();
+            step(this.exe.getItem());
+        }
     }
 
     /**
@@ -158,5 +210,22 @@ public class Processor {
      */
     public final boolean isfinished() {
         return finished;
+    }
+
+    /**
+     * Jump.
+     *
+     * @param str the str
+     * @return the linked list
+     */
+    public final LinkedList<LoC> jump(final String str) {
+        LinkedList<LoC> tmp = this.exe;
+        for (int i = 0; i < this.size; i++) {
+            if (tmp.getItem().getMarker().equals(str)) {
+                return tmp;
+            }
+            tmp = tmp.getNext();
+        }
+        return this.exe;
     }
 }

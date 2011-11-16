@@ -29,7 +29,7 @@ public final class M68000 {
     private M68000() { }
 
     /** The speicher. */
-    public static RAM speicher = new RAM();
+    private static RAM speicher;
 
     /**
      * The main method.
@@ -38,20 +38,18 @@ public final class M68000 {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(final String[] args) throws IOException {
-    	if (args.length < 1) {
-    		System.err.println("Fehler: Assemblerdatei als Argument angeben!");
-    		return;
-    	}
-        Program prog = Interpreter.readSourceFile(args[0]);
-
-        Processor core1 = new Processor(prog);
-
-        while (!core1.isfinished()) {
-            core1.step();
+        if (args.length < 1) {
+            System.err.println("Fehler: Assemblerdatei als Argument angeben!");
+            return;
         }
-        while (!speicher.getNext().getStelle().equals("HEAD")) {
-        	speicher.stepnext();
-        	System.out.println(speicher);
-        }
+        LinkedList<LoC> prog = Interpreter.readSourceFile(args[0]);
+
+        speicher = Interpreter.linker(prog);
+        Processor core1 = new Processor(prog, speicher);
+
+        core1.run();
+
+        System.out.println(speicher);
+
     }
 }

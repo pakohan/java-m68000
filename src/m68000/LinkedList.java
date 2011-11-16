@@ -26,6 +26,8 @@ public class LinkedList<T> {
     /** The item. */
     private T item;
 
+    /** The size. */
+    private int size = 1;
     /** The next. */
     private LinkedList<T> next;
 
@@ -62,10 +64,20 @@ public class LinkedList<T> {
     /**
      * Adds the.
      *
-     * @param item the item
+     * @param element the element
      */
-    public final void add(final T item) {
-        this.prev = new LinkedList<T>(this.prev, this, item);
+    public final void add(final T element) {
+        this.prev = new LinkedList<T>(this.prev, this, element);
+        ++this.size;
+    }
+
+    /**
+     * Gets the size.
+     *
+     * @return the size
+     */
+    public final int getSize() {
+        return this.size;
     }
 
     /**
@@ -74,16 +86,16 @@ public class LinkedList<T> {
      * @return the item
      */
     public final T getItem() {
-        return item;
+        return this.item;
     }
 
     /**
      * Sets the item.
      *
-     * @param item the new item
+     * @param element the new item
      */
-    public final void setItem(final T item) {
-        this.item = item;
+    public final void setItem(final T element) {
+        this.item = element;
     }
 
     /**
@@ -92,16 +104,16 @@ public class LinkedList<T> {
      * @return the next
      */
     public final LinkedList<T> getNext() {
-        return next;
+        return this.next;
     }
 
     /**
      * Sets the next.
      *
-     * @param next the new next
+     * @param nex the new next
      */
-    public final void setNext(final LinkedList<T> next) {
-        this.next = next;
+    public final void setNext(final LinkedList<T> nex) {
+        this.next = nex;
     }
 
     /**
@@ -110,15 +122,26 @@ public class LinkedList<T> {
      * @return the prev
      */
     public final LinkedList<T> getPrev() {
-        return prev;
+        return this.prev;
     }
 
     /**
      * Sets the prev.
      *
-     * @param prev the new prev
+     * @param pre the new prev
      */
-    public final void setPrev(final LinkedList<T> prev) {
-        this.prev = prev;
+    public final void setPrev(final LinkedList<T> pre) {
+        this.prev = pre;
+    }
+
+    @Override
+    public final String toString() {
+        StringBuilder str = new StringBuilder();
+        LinkedList<T> tmp = this;
+        for (int i = 0; i <= this.size; i++) {
+            str.append(this.item.toString()).append("\n");
+            tmp = tmp.getNext();
+        }
+        return str.toString();
     }
 }

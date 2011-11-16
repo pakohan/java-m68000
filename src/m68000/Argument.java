@@ -15,10 +15,11 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package m68000;
+
 /**
  * The Class Arguments.
  */
-public final class Arguments {
+public final class Argument implements Cloneable {
 
     /** The prefix. */
     private String prefix;
@@ -34,15 +35,32 @@ public final class Arguments {
      *
      * @param arg the arg
      */
-    public Arguments(final String arg) {
+    public Argument(final String arg) {
         if (arg.contains(",")) {
-            String[] split = new String[2];
+            String[] split;
             split = arg.split(",");
             this.prefix = split[0];
             this.postfix = split[1];
             this.twoparts = true;
         } else {
             this.prefix = arg;
+            this.postfix = "";
+            this.twoparts = false;
+        }
+    }
+
+    /**
+     * Instantiates a new argument.
+     *
+     * @param arg the arg
+     */
+    public Argument(final String... arg) {
+        if (arg.length > 1) {
+            this.prefix = arg[0];
+            this.postfix = arg[1];
+            this.twoparts = true;
+        } else {
+            this.prefix = arg[0];
             this.postfix = "";
             this.twoparts = false;
         }
@@ -75,6 +93,9 @@ public final class Arguments {
         return this.twoparts;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         if (this.twoparts) {
@@ -82,5 +103,19 @@ public final class Arguments {
         } else {
             return this.prefix;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Argument clone() {
+        Argument klon;
+        if (this.twoparts) {
+            klon = new Argument(this.prefix, this.postfix);
+        } else {
+            klon = new Argument(this.prefix);
+        }
+        return klon;
     }
 }
