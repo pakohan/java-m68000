@@ -18,7 +18,7 @@ public final class Arguments {
     private boolean twoparts;
 
     /**
-     * Instantiates a new arguments.
+     * Instantiates a new argument.
      *
      * @param arg the arg
      */
