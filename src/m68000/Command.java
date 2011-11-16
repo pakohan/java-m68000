@@ -24,52 +24,75 @@ import java.util.regex.Pattern;
 public final class Command implements Cloneable {
 
     /**
-     * The Enum Befehlssatz.
+     * The Enum Befehlssatz defines the commands known by our processor.
      */
     static enum Befehlssatz {
+    		/** 
+    		 * "ORG" defines at a real M68000 where the program will be stored
+    		 * in the main memory.
+    		 */
+    		ORG,
+			/** 
+			 * "BRA" needs an argument. BRA jumps to the line of code in which
+			 * the marker is equal to this argument.
+			 */
+			BRA,
+			/**
+			 * "EQU" needs a marker and an argument, which is an memory adress.
+			 * In real, the assembler-compiler replaces every string in the
+			 * source file, which is equal to the marker with the argument.
+			 * We use it in a different way: Every time EQU appears in the
+			 * source file, a new "Speicher" Object will be created with the
+			 * marker as searching String. The content of this memory area will
+			 * be asked before running the program.
+			 */
+			EQU,
+			/** The DC. */
+			DC,
+			/** The DS. */
+			DS,
+			/** The CLR. */
+			CLR,
+			/** The MOVE. */
+			MOVE,
+			/** The ADD. */
+			ADD,
+			/** The END. */
+			END,
+			/** The ZERO. */
+			ZERO,
+			/** The HEAD. */
+			HEAD,
+			/** The SUB. */
+			SUB,
+			/** The MUL. */
+			MUL,
+			/** The DIV. */
+			DIV };
 
-        /** The ORG. */
-        ORG,
-  /** The BRA. */
-  BRA,
-  /** The EQU. */
-  EQU,
-  /** The DC. */
-  DC,
-  /** The DS. */
-  DS,
-  /** The CLR. */
-  CLR,
-  /** The MOVE. */
-  MOVE,
-  /** The ADD. */
-  ADD,
- /** The END. */
- END,
- /** The ZERO. */
- ZERO,
- /** The HEAD. */
- HEAD,
- /** The SUB. */
- SUB,
- /** The MUL. */
- MUL,
- /** The DIV. */
- DIV };
-
-    /** The prefix. */
+    /** 
+     * The prefix is one of the enum Befehlssatz.
+     */
     private Befehlssatz prefix;
 
-    /** The postfix. */
+    /**
+     * The postfix is the part of the command, which comes after an comma.
+     * It is not used at this time, but already stored, so the it will not be
+     * hard to implement its function in this class.
+     */
     private String postfix;
 
-    /** The twoparts. */
+    /**
+     * Indicates if the Command consists of a prefix and a postfix. It is not
+     * used at this time (same as the postfix).
+     */
     private boolean twoparts;
 
     /**
-     * Instantiates a new command.
+     * Instantiates a new command. Checks if the given String contains a dot,
+     * and splits the String if necessary.
      *
-     * @param str the str
+     * @param str the whole Command (postfix and prefix)
      */
     public Command(final String str) {
         Pattern p = Pattern.compile("[.]");
@@ -86,13 +109,15 @@ public final class Command implements Cloneable {
     }
 
     /**
-     * Instantiates a new command.
+     * Instantiates a new command. Checks if the given String arraylength is
+     * greater than zero, and stores this arrays first element as Command
+     * postfix, if necessary.
      *
-     * @param com the com
-     * @param str the str
+     * @param com the Command
+     * @param str the Postfix
      */
     public Command(final Befehlssatz com, final String... str) {
-        if (str.length > 1) {
+        if (str.length > 0) {
             this.twoparts = true;
             this.postfix = str[0];
         }
@@ -100,19 +125,23 @@ public final class Command implements Cloneable {
     }
 
     /**
-     * Hastwoparts.
+     * Returns, if the Command consists of two parts. Not used at this time.
      *
-     * @return true, if successful
+     * @return true, if the Command consists of two parts
      */
     public boolean hastwoparts() {
         return this.twoparts;
     }
 
     /**
-     * Recognize prefix.
+     * This static function will recognize, which Command is stored in the
+     * Prefix of the given Command. It uses a lot of "if" instructions to
+     * search for the right string, because a "switch-case" which compares
+     * a string to many others will first be supported by Java 7. No need for
+     * it at this time.
      *
-     * @param com the com
-     * @return the befehlssatz
+     * @param com the Command Prefix as String
+     * @return the Command Prefix as one of the enum Befehlssatz
      */
     private static Befehlssatz recognizePrefix(final String com) {
         Befehlssatz command = Befehlssatz.ZERO;
@@ -147,7 +176,7 @@ public final class Command implements Cloneable {
     }
 
     /**
-     * Gets the prefix.
+     * Gets the prefix of the Command.
      *
      * @return the prefix
      */
@@ -156,7 +185,7 @@ public final class Command implements Cloneable {
     }
 
     /**
-     * Gets the postfix.
+     * Gets the postfix of the Command. Not used at this time.
      *
      * @return the postfix
      */
@@ -172,7 +201,6 @@ public final class Command implements Cloneable {
             return "" + this.prefix;
         }
     }
-
 
     @Override
     public Command clone() {
