@@ -19,7 +19,10 @@ package m68000;
 import java.io.IOException;
 
 /**
- * The Class M68000.
+ * The Class M68000 contains the main method. It checks if there is a command
+ * line argument given and initializes a LinkedList with the program
+ * instructions and creates a new Processor. Check the video below if you are
+ * bored with this JavaDoc.
  * <iframe width="560"
  * height="315"
  * src="http://www.youtube.com/embed/b-Cr0EWwaTk"
@@ -29,18 +32,15 @@ import java.io.IOException;
 public final class M68000 {
 
     /**
-     * Instantiates a new m68000.
+     * Constructer has to be private, just run the main method.
      */
     private M68000() { }
-
-    /** The speicher. */
-    private static RAM speicher;
 
     /**
      * The main method.
      *
-     * @param args the arguments
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @param args the assembler source file as first argument.
+     * @throws IOException Signals if the file can't be read.
      */
     public static void main(final String[] args) throws IOException {
         if (args.length < 1) {
@@ -49,7 +49,7 @@ public final class M68000 {
         }
         LinkedList<LoC> prog = Interpreter.readSourceFile(args[0]);
 
-        speicher = Interpreter.linker(prog);
+        RAM speicher = Interpreter.linker(prog);
         Processor core1 = new Processor(prog, speicher);
 
         core1.run();
