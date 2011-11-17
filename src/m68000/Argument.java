@@ -35,18 +35,18 @@ package m68000;
  */
 public final class Argument implements Cloneable {
 
-    /** 
+    /**
      * The prefix is the first part of the Argument. If twoparts is false,
      * the Argument is stored as one String in prefix.
      */
     private String prefix;
 
-    /** 
+    /**
      * The postfix is the second part of the Argument, if twoparts is true.
      */
     private String postfix;
 
-    /** 
+    /**
      * Indicates if the Argument of the LoC consists of two parts.
      * This means that the given Argument has two statements, seperated by a
      * comma.
@@ -77,14 +77,14 @@ public final class Argument implements Cloneable {
 
     /**
      * Instantiates a new argument. It checks if the String.length is > 1.
-     * If it is, the first element will be stored in prefix, the second in 
+     * If it is, the first element will be stored in prefix, the second in
      * postfix.
      *
      * @param arg the Argument
      */
     public Argument(final String... arg) {
 
-    	if (arg.length > 1) {
+        if (arg.length > 1) {
             this.prefix   = arg[0];
             this.postfix  = arg[1];
             this.twoparts = true;
@@ -103,7 +103,7 @@ public final class Argument implements Cloneable {
      */
     public String getPrefix() {
 
-    	return this.prefix;
+        return this.prefix;
 
     }
 
@@ -114,7 +114,7 @@ public final class Argument implements Cloneable {
      */
     public String getPostfix() {
 
-    	return this.postfix;
+        return this.postfix;
 
     }
 
@@ -125,14 +125,14 @@ public final class Argument implements Cloneable {
      */
     public boolean hastwoparts() {
 
-    	return this.twoparts;
+        return this.twoparts;
 
     }
 
     @Override
     public String toString() {
 
-    	if (this.twoparts) {
+        if (this.twoparts) {
             return this.prefix + "," + this.postfix;
         } else {
             return this.prefix;

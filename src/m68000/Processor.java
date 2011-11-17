@@ -42,11 +42,10 @@ public class Processor {
      * Instantiates a new processor.
      *
      * @param prog the prog
-     * @param storage the storage
      */
-    public Processor(final LinkedList<LoC> prog, final RAM storage) {
-        this.exe = prog;
-        this.speicher = storage;
+    public Processor(final Program prog) {
+        this.exe = prog.getProg();
+        this.speicher = prog.getSpeicher();
         this.size = this.exe.getSize();
     }
 

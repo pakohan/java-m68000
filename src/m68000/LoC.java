@@ -89,9 +89,6 @@ public final class LoC implements Cloneable {
         return this.marker;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
@@ -105,9 +102,6 @@ public final class LoC implements Cloneable {
         return str.toString();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
     @Override
     public LoC clone() {
         LoC klon = new LoC(this.befehl.clone(), this.argument.clone(),

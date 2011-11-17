@@ -27,50 +27,50 @@ public final class Command implements Cloneable {
      * The Enum Befehlssatz defines the commands known by our processor.
      */
     static enum Befehlssatz {
-    		/** 
-    		 * "ORG" defines at a real M68000 where the program will be stored
-    		 * in the main memory.
-    		 */
-    		ORG,
-			/** 
-			 * "BRA" needs an argument. BRA jumps to the line of code in which
-			 * the marker is equal to this argument.
-			 */
-			BRA,
-			/**
-			 * "EQU" needs a marker and an argument, which is an memory adress.
-			 * In real, the assembler-compiler replaces every string in the
-			 * source file, which is equal to the marker with the argument.
-			 * We use it in a different way: Every time EQU appears in the
-			 * source file, a new "Speicher" Object will be created with the
-			 * marker as searching String. The content of this memory area will
-			 * be asked before running the program.
-			 */
-			EQU,
-			/** The DC. */
-			DC,
-			/** The DS. */
-			DS,
-			/** The CLR. */
-			CLR,
-			/** The MOVE. */
-			MOVE,
-			/** The ADD. */
-			ADD,
-			/** The END. */
-			END,
-			/** The ZERO. */
-			ZERO,
-			/** The HEAD. */
-			HEAD,
-			/** The SUB. */
-			SUB,
-			/** The MUL. */
-			MUL,
-			/** The DIV. */
-			DIV };
+            /**
+             * "ORG" defines at a real M68000 where the program will be stored
+             * in the main memory.
+             */
+            ORG,
+            /**
+             * "BRA" needs an argument. BRA jumps to the line of code in which
+             * the marker is equal to this argument.
+             */
+            BRA,
+            /**
+             * "EQU" needs a marker and an argument, which is an memory adress.
+             * In real, the assembler-compiler replaces every string in the
+             * source file, which is equal to the marker with the argument.
+             * We use it in a different way: Every time EQU appears in the
+             * source file, a new "Speicher" Object will be created with the
+             * marker as searching String. The content of this memory area will
+             * be asked before running the program.
+             */
+            EQU,
+            /** The DC. */
+            DC,
+            /** The DS. */
+            DS,
+            /** The CLR. */
+            CLR,
+            /** The MOVE. */
+            MOVE,
+            /** The ADD. */
+            ADD,
+            /** The END. */
+            END,
+            /** The ZERO. */
+            ZERO,
+            /** The HEAD. */
+            HEAD,
+            /** The SUB. */
+            SUB,
+            /** The MUL. */
+            MUL,
+            /** The DIV. */
+            DIV };
 
-    /** 
+    /**
      * The prefix is one of the enum Befehlssatz.
      */
     private Befehlssatz prefix;
@@ -96,7 +96,7 @@ public final class Command implements Cloneable {
      */
     public Command(final String str) {
 
-    	Pattern p = Pattern.compile("[.]");
+        Pattern p = Pattern.compile("[.]");
 
         if (str.contains(".")) {
             String[] parts = p.split(str);
@@ -120,12 +120,12 @@ public final class Command implements Cloneable {
      */
     public Command(final Befehlssatz com, final String... str) {
 
-    	if (str.length > 0) {
+        if (str.length > 0) {
             this.twoparts = true;
             this.postfix  = str[0];
         }
 
-    	this.prefix = com;
+        this.prefix = com;
     }
 
     /**
@@ -135,7 +135,7 @@ public final class Command implements Cloneable {
      */
     public boolean hastwoparts() {
 
-    	return this.twoparts;
+        return this.twoparts;
 
     }
 
@@ -151,7 +151,7 @@ public final class Command implements Cloneable {
      */
     private static Befehlssatz recognizePrefix(final String com) {
 
-    	Befehlssatz command = Befehlssatz.ZERO;
+        Befehlssatz command = Befehlssatz.ZERO;
 
         if (com.equals("ORG")) {
             command = Befehlssatz.ORG;
@@ -192,7 +192,7 @@ public final class Command implements Cloneable {
      */
     public Befehlssatz getPrefix() {
 
-    	return this.prefix;
+        return this.prefix;
 
     }
 
@@ -203,14 +203,14 @@ public final class Command implements Cloneable {
      */
     public String getPostfix() {
 
-    	return this.postfix;
+        return this.postfix;
 
     }
 
     @Override
     public String toString() {
 
-    	if (this.twoparts) {
+        if (this.twoparts) {
             return this.prefix + "," + this.postfix;
         } else {
             return this.prefix.toString();
@@ -221,15 +221,15 @@ public final class Command implements Cloneable {
     @Override
     public Command clone() {
 
-    	Command klon;
+        Command klon;
 
-    	if (this.twoparts) {
+        if (this.twoparts) {
             klon = new Command(this.prefix, this.postfix);
         } else {
             klon = new Command(this.prefix);
         }
 
-    	return klon;
+        return klon;
 
     }
 }

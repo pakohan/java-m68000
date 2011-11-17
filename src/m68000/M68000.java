@@ -20,9 +20,10 @@ import java.io.IOException;
 
 /**
  * The Class M68000 contains the main method. It checks if there is a command
- * line argument given and initializes a LinkedList with the program
- * instructions and creates a new Processor. Check the video below if you are
- * bored with this JavaDoc.
+ * line argument given and initializes a Program with the program
+ * instructions and the Ram. Then it creates a new Processor and gives the
+ * Program object to this.
+ * Check the video below if you are bored with this JavaDoc.
  * <iframe width="560"
  * height="315"
  * src="http://www.youtube.com/embed/b-Cr0EWwaTk"
@@ -43,18 +44,19 @@ public final class M68000 {
      * @throws IOException Signals if the file can't be read.
      */
     public static void main(final String[] args) throws IOException {
+
         if (args.length < 1) {
             System.err.println("Fehler: Assemblerdatei als Argument angeben!");
             return;
         }
-        LinkedList<LoC> prog = Interpreter.readSourceFile(args[0]);
 
-        RAM speicher = Interpreter.linker(prog);
-        Processor core1 = new Processor(prog, speicher);
+        Program prog = new Program(args[0]);
+
+        Processor core1 = new Processor(prog);
 
         core1.run();
 
-        System.out.println(speicher);
+        System.out.println(prog.getSpeicher());
 
     }
 }

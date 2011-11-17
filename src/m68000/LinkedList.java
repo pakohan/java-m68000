@@ -17,27 +17,42 @@
 package m68000;
 
 /**
- * The Class LinkedList.
+ * The Class LinkedList cares about a linked list. The pointer previous element
+ * of the first list element points to the last element in the list, so you
+ * can call the add()-method of the head element to add an element at the end
+ * of the list.
  *
- * @param <T> the generic type
+ * @param <T> the type of the element stored in the list. It is recommended to
+ * use an object to store more than one single element in the list.
  */
 public class LinkedList<T> {
 
-    /** The item. */
+    /**
+     * The item stores the data.
+     */
     private T item;
 
-    /** The size. */
+    /**
+     * The number of elements stored in this list. Only in the head the right
+     * number will be stored!!!
+     */
     private int size = 1;
-    /** The next. */
+
+    /**
+     * The pointer to the next element.
+     */
     private LinkedList<T> next;
 
-    /** The prev. */
+    /**
+     * The pointer to the previous element.
+     */
     private LinkedList<T> prev;
 
     /**
-     * Instantiates a new linked list.
+     * Instantiates a new linked list. The given argument is the head of the
+     * list.
      *
-     * @param element the element
+     * @param element the head
      */
     public LinkedList(final T element) {
         this.item = element;
@@ -46,13 +61,15 @@ public class LinkedList<T> {
     }
 
     /**
-     * Instantiates a new linked list.
+     * Instantiates a new linked list. The first given argument points to the
+     * previous element, the second to the next element. The third will store
+     * the data.
      *
      * @param pre the pre
      * @param nex the nex
      * @param element the element
      */
-    public LinkedList(final LinkedList<T> pre,
+    private LinkedList(final LinkedList<T> pre,
                       final LinkedList<T> nex,
                       final T element) {
         this.item = element;
@@ -62,9 +79,9 @@ public class LinkedList<T> {
     }
 
     /**
-     * Adds the.
+     * Adds a new element to the end of the list.
      *
-     * @param element the element
+     * @param element the element that will be added
      */
     public final void add(final T element) {
         this.prev = new LinkedList<T>(this.prev, this, element);
@@ -72,7 +89,8 @@ public class LinkedList<T> {
     }
 
     /**
-     * Gets the size.
+     * Gets the size of the list. Only makes sense if called by the head
+     * element object.
      *
      * @return the size
      */
@@ -81,7 +99,7 @@ public class LinkedList<T> {
     }
 
     /**
-     * Gets the item.
+     * Returns the item stored in the list.
      *
      * @return the item
      */
@@ -90,48 +108,30 @@ public class LinkedList<T> {
     }
 
     /**
-     * Sets the item.
+     * Returns the next element.
      *
-     * @param element the new item
-     */
-    public final void setItem(final T element) {
-        this.item = element;
-    }
-
-    /**
-     * Gets the next.
-     *
-     * @return the next
+     * @return the next element
      */
     public final LinkedList<T> getNext() {
         return this.next;
     }
 
     /**
-     * Sets the next.
+     * Sets the next element.
      *
-     * @param nex the new next
+     * @param nex the next element
      */
-    public final void setNext(final LinkedList<T> nex) {
+    private void setNext(final LinkedList<T> nex) {
         this.next = nex;
     }
 
     /**
-     * Gets the prev.
+     * Returns the previous element.
      *
-     * @return the prev
+     * @return the previous element
      */
     public final LinkedList<T> getPrev() {
         return this.prev;
-    }
-
-    /**
-     * Sets the prev.
-     *
-     * @param pre the new prev
-     */
-    public final void setPrev(final LinkedList<T> pre) {
-        this.prev = pre;
     }
 
     @Override

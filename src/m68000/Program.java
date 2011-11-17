@@ -16,16 +16,21 @@
  */
 package m68000;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.Scanner;
 
 import m68000.Command.Befehlssatz;
 
+
+
 /**
- * The Class Interpreter reads the code source file and initializes a new RAM
- * Object.
+ * The Class Program reads the code source file and initializes a new RAM
+ * Object. The resulting Ram and LinkedList<LoC> will be stored in this Program
+ * object.
  */
-public final class Interpreter {
+public final class Program {
 
     /**
      * The Constant MAXTOKENS is used because of the magic numbers check. It
@@ -35,14 +40,44 @@ public final class Interpreter {
     static final int MAXTOKENS = 3;
 
     /**
-     * Instantiates a new interpreter. private! nobody wants interpreters!
-     */
-    private Interpreter() { }
-
-    /**
      * The prog value is the linked list which represents the program.
      */
-    private static LinkedList<LoC> prog;
+    private LinkedList<LoC> prog;
+
+    /**
+     * The speicher value is the Ram connected to the given assembler source
+     * file.
+     */
+    private RAM speicher;
+
+    /**
+     * Instantiates a new Program.
+     *
+     * @param arg source file
+     * @throws IOException Signals if the file can't be read.
+     */
+    public Program(final String arg) throws IOException {
+        this.prog = readSourceFile(arg);
+        this.speicher = Program.linker(prog);
+    }
+
+    /**
+     * Gets the program list.
+     *
+     * @return the prog
+     */
+    public LinkedList<LoC> getProg() {
+        return prog;
+    }
+
+    /**
+     * Gets the speicher.
+     *
+     * @return the speicher
+     */
+    public RAM getSpeicher() {
+        return speicher;
+    }
 
     /**
      * Reads the source File and stores it in a linked list.
@@ -51,15 +86,13 @@ public final class Interpreter {
      * @return the program stored in a linked list
      * @throws IOException Signals if the file can't be read.
      */
-    public static LinkedList<LoC> readSourceFile(final String sourcefile)
+    private LinkedList<LoC> readSourceFile(final String sourcefile)
             throws IOException {
         FileReader file = new FileReader(sourcefile);
         LineNumberReader source = new LineNumberReader(file);
         String[] part;
         String line;
-        prog = new LinkedList<LoC>(new LoC());
-        prog.setNext(prog);
-        prog.setPrev(prog);
+        this.prog = new LinkedList<LoC>(new LoC());
 
         while ((line = source.readLine()) != null) {
             part = line.split(";");
@@ -141,16 +174,16 @@ public final class Interpreter {
      *
      * @param befehlsfolge the line of code
      */
-    private static void addCommand(final String[] befehlsfolge) {
+    private void addCommand(final String[] befehlsfolge) {
         switch (befehlsfolge.length) {
             case 1:
-                prog.add(new LoC(befehlsfolge[0], "", ""));
+                this.prog.add(new LoC(befehlsfolge[0], "", ""));
                 break;
             case 2:
-                prog.add(new LoC(befehlsfolge[0], befehlsfolge[1], ""));
+                this.prog.add(new LoC(befehlsfolge[0], befehlsfolge[1], ""));
                 break;
             case MAXTOKENS:
-                prog.add(new LoC(befehlsfolge[1], befehlsfolge[2],
+                this.prog.add(new LoC(befehlsfolge[1], befehlsfolge[2],
                         befehlsfolge[0]));
                 break;
             default:
