@@ -17,20 +17,26 @@
 package m68000;
 
 /**
- * The Class LoC.
+ * The Class LoC represents one line of code.
  */
 public final class LoC implements Cloneable {
-    /** The befehl. */
+    /**
+     * The command.
+     */
     private Command befehl;
 
-    /** The marker. */
+    /**
+     * The marker.
+     */
     private String marker;
 
-    /** The argumente. */
+    /**
+     * The argument.
+     */
     private Argument argument;
 
     /**
-     * Instantiates a new lo c.
+     * Instantiates a new line of code.
      */
     public LoC()  {
         this.befehl = new Command("HEAD");
@@ -39,9 +45,9 @@ public final class LoC implements Cloneable {
     }
 
     /**
-     * Instantiates a new lo c.
+     * Instantiates a new line of code.
      *
-     * @param strings the strings
+     * @param strings the line of code
      */
     public LoC(final String... strings) {
         this.befehl = new Command(strings[0]);
@@ -50,11 +56,11 @@ public final class LoC implements Cloneable {
     }
 
     /**
-     * Instantiates a new lo c.
+     * Instantiates a new line of code.
      *
-     * @param com the com
-     * @param arg the arg
-     * @param mark the mark
+     * @param com the command
+     * @param arg the argument
+     * @param mark the marker
      */
     public LoC(final Command com, final Argument arg, final String mark) {
         this.befehl = com;
@@ -63,7 +69,7 @@ public final class LoC implements Cloneable {
     }
 
     /**
-     * Gets the command.
+     * Returns the command.
      *
      * @return the command
      */
@@ -72,7 +78,7 @@ public final class LoC implements Cloneable {
     }
 
     /**
-     * Gets the argument.
+     * Returns the argument.
      *
      * @return the argument
      */
@@ -81,7 +87,7 @@ public final class LoC implements Cloneable {
     }
 
     /**
-     * Gets the marker.
+     * Returns the marker.
      *
      * @return the marker
      */
