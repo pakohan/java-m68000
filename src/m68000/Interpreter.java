@@ -22,26 +22,34 @@ import java.util.Scanner;
 import m68000.Command.Befehlssatz;
 
 /**
- * The Class Interpreter reads the code source file.
+ * The Class Interpreter reads the code source file and initializes a new RAM
+ * Object.
  */
 public final class Interpreter {
 
-    /** The Constant MAXTOKENS. */
+    /**
+     * The Constant MAXTOKENS is used because of the magic numbers check. It
+     * describes of how many different items a assember source line of code can
+     * consist. (marker, command and argument)
+     */
     static final int MAXTOKENS = 3;
+
     /**
      * Instantiates a new interpreter. private! nobody wants interpreters!
      */
     private Interpreter() { }
 
-    /** The prog is the linked list which represents the program. */
+    /**
+     * The prog value is the linked list which represents the program.
+     */
     private static LinkedList<LoC> prog;
 
     /**
      * Reads the source File and stores it in a linked list.
      *
      * @param sourcefile the sourcefile
-     * @return the program
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @return the program stored in a linked list
+     * @throws IOException Signals if the file can't be read.
      */
     public static LinkedList<LoC> readSourceFile(final String sourcefile)
             throws IOException {
@@ -64,10 +72,11 @@ public final class Interpreter {
     }
 
     /**
-     * Linker.
+     * The Linker isn't a real linker. It just initializes the RAM, so every
+     * memory adress used is known to the created RAM Object.
      *
-     * @param pro the pro
-     * @return the rAM
+     * @param pro the program as linked list
+     * @return the finished ram object
      */
     public static RAM linker(final LinkedList<LoC> pro) {
         LinkedList<LoC> tmp = pro;
@@ -76,10 +85,6 @@ public final class Interpreter {
                 != Befehlssatz.HEAD) {
             tmp = tmp.getNext();
             switch (tmp.getItem().getCommand().getPrefix()) {
-            case ORG:
-                break;
-            case BRA:
-                break;
             case EQU :
                 ram.addSpeicher(tmp.getItem().getMarker());
                 break;
@@ -90,14 +95,12 @@ public final class Interpreter {
             case DS :
                 ram.addSpeicher(tmp.getItem().getMarker(), "0");
                 break;
+            case ORG:
+            case BRA:
             case CLR :
-                break;
             case MOVE :
-                break;
             case ADD :
-                break;
             case HEAD :
-                break;
             case END :
             case MUL :
             case SUB :
@@ -117,7 +120,7 @@ public final class Interpreter {
      * @param str the line of source code
      * @return the string[]
      */
-    public static String[] recognizeLine(final String str) {
+    private static String[] recognizeLine(final String str) {
         Scanner scan = new Scanner(str);
         String[] parts;
         String[] parts2 = new String[MAXTOKENS];
@@ -134,11 +137,11 @@ public final class Interpreter {
     }
 
     /**
-     * Adds the command to the "compiled" program.
+     * Adds the commands one for one to the "compiled" program.
      *
-     * @param befehlsfolge the befehlsfolge
+     * @param befehlsfolge the line of code
      */
-    public static void addCommand(final String[] befehlsfolge) {
+    private static void addCommand(final String[] befehlsfolge) {
         switch (befehlsfolge.length) {
             case 1:
                 prog.add(new LoC(befehlsfolge[0], "", ""));
