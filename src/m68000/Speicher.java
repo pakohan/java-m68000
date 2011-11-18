@@ -16,60 +16,39 @@
  */
 package m68000;
 
-/**
- * The Class Speicher.
- */
-public class Speicher {
+public class Memory {
 
-    /** The stelle. */
-    private String stelle;
-
-    /** The wert. */
-    private int wert;
+    private String position;
+    private int value;
 
     /**
      * Instantiates a new speicher.
      */
-    public Speicher() {
-        this.wert = 0;
-        this.stelle = "HEAD";
+    public Memory() {
+        this.value = 0;
+        this.position = "HEAD";
     }
 
     /**
-     * Instantiates a new speicher.
+     * Instantiates a new memory.
      *
      * @param bezeichner the bezeichner
      * @param data the data
      */
-    public Speicher(final String bezeichner, final int data) {
-        this.stelle = bezeichner;
-        this.wert = data;
+    public Memory(final String bezeichner, final int data) {
+        this.position = bezeichner;
+        this.value = data;
     }
 
-    /**
-     * Gets the wert.
-     *
-     * @return the wert
-     */
-    public final int getWert() {
-        return wert;
+    public final int getValue() {
+        return value;
     }
 
-    /**
-     * Sets the wert.
-     *
-     * @param x the new wert
-     */
-    public final void setWert(final int x) {
-        this.wert = x;
+    public final void setValue(final int value) {
+        this.value = value;
     }
 
-    /**
-     * Gets the stelle.
-     *
-     * @return the stelle
-     */
-    public final String getStelle() {
-        return stelle;
+    public final String getPosition() {
+        return position;
     }
 }
