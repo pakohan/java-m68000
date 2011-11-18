@@ -68,7 +68,11 @@ public final class Command implements Cloneable {
             /** The MUL. */
             MUL,
             /** The DIV. */
-            DIV };
+            DIV 
+            /** The CMP. */
+            CMP,
+            /** The BNE. */
+            BNE };
 
     /**
      * The Enum CommandPostfix.
