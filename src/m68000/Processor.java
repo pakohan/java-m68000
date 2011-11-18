@@ -71,8 +71,6 @@ public class Processor {
      * @param com the com
      */
     public final void step(final LoC com) {
-    	System.out.println(com);
-    	System.out.println(this.compare);
         switch (com.getCommand().getPrefix()) {
         case ORG:
             break;
@@ -122,10 +120,7 @@ public class Processor {
         }
     }
 
-    private void cmp(final Argument args) {
-    	System.out.println(getData(args.getPrefix()));
-    	System.out.println(getData(args.getPostfix()));
-    	
+    private void cmp(final Argument args) {    	
     	if (getData(args.getPrefix()) == getData(args.getPostfix())) {
     		this.compare = true;
     	} else {
