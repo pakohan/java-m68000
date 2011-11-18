@@ -56,7 +56,7 @@ public final class M68000 {
 
         core1.run();
 
-        System.out.println(prog.getSpeicher());
+        System.out.println(prog.getRAM());
 
     }
 }
