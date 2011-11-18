@@ -71,9 +71,6 @@ public final class RAM {
         this.speicher[adress] = data;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         StringBuilder tmp = new StringBuilder();

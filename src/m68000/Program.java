@@ -126,8 +126,12 @@ public final class Program {
                 this.data.setByte(tmp_arg.getValue(), scan.nextInt());
                 break;
             case DC :
-                replaceSymbolicConstant(tmp.getItem().getMarker(),
-                		Integer.toString(tmp_arg.getValue()));
+            	int x2 = this.data.addSpeicher(tmp_arg.getValue());
+                StringBuilder tmp_str = new StringBuilder();
+                tmp_str.append("$");
+                tmp_str.append(x2);
+                tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
+                replaceSymbolicConstant(tmp.getItem().getMarker(), "$" + x2);
                 break;
             case DS :
                 int[] x = new int[tmp_arg.getValue()];
