@@ -17,30 +17,20 @@
 package m68000;
 
 /**
- * The Class LoC represents one line of code.
+ * Represents a code line
  */
-public final class LoC implements Cloneable {
-    /**
-     * The command.
-     */
-    private Command befehl;
+public final class CodeLine implements Cloneable {
 
-    /**
-     * The marker.
-     */
-    private String marker;
-
-    /**
-     * The argument.
-     */
+    private Command command;
+    private String label;
     private Argument argument;
 
     /**
      * Instantiates a new line of code.
      */
-    public LoC()  {
-        this.befehl = new Command("HEAD");
-        this.marker = "HEAD";
+    public CodeLine()  {
+        this.command = new Command("HEAD");
+        this.label = "HEAD";
         this.argument = new Argument("HEAD");
     }
 
@@ -49,50 +39,35 @@ public final class LoC implements Cloneable {
      *
      * @param strings the line of code
      */
-    public LoC(final String... strings) {
-        this.befehl = new Command(strings[0]);
+    public CodeLine(final String... strings) {
+        this.command = new Command(strings[0]);
         this.argument = new Argument(strings[1]);
-        this.marker = strings[2];
+        this.label = strings[2];
     }
 
     /**
-     * Instantiates a new line of code.
+     * Instantiates a new code line.
      *
      * @param com the command
      * @param arg the argument
-     * @param mark the marker
+     * @param label the label
      */
-    public LoC(final Command com, final Argument arg, final String mark) {
-        this.befehl = com;
+    public CodeLine(final Command com, final Argument arg, final String label) {
+        this.command = com;
         this.argument = arg;
-        this.marker = mark;
+        this.label = label;
     }
 
-    /**
-     * Returns the command.
-     *
-     * @return the command
-     */
     public Command getCommand() {
-        return this.befehl;
+        return this.command;
     }
 
-    /**
-     * Returns the argument.
-     *
-     * @return the argument
-     */
     public Argument getArgument() {
         return this.argument;
     }
 
-    /**
-     * Returns the marker.
-     *
-     * @return the marker
-     */
-    public String getMarker() {
-        return this.marker;
+    public String getLabel() {
+        return this.label;
     }
 
     /* (non-Javadoc)
@@ -101,11 +76,11 @@ public final class LoC implements Cloneable {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append("Der Marker ist {");
-        str.append(this.marker);
-        str.append("}, der Befehl ist {");
-        str.append(this.befehl);
-        str.append("},das Argument ist {");
+        str.append("The label ist {");
+        str.append(this.label);
+        str.append("}, the command is {");
+        str.append(this.command);
+        str.append("}, the argument is {");
         str.append(this.argument);
         str.append("}");
         return str.toString();
@@ -115,9 +90,9 @@ public final class LoC implements Cloneable {
      * @see java.lang.Object#clone()
      */
     @Override
-    public LoC clone() {
-        LoC klon = new LoC(this.befehl.clone(), this.argument.clone(),
-                this.marker);
-        return klon;
+    public CodeLine clone() {
+        CodeLine clone = new CodeLine(this.command.clone(), this.argument.clone(),
+                this.label);
+        return clone;
     }
 }
