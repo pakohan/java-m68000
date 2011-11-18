@@ -68,7 +68,9 @@ public final class Command implements Cloneable {
             /** The MUL. */
             MUL,
             /** The DIV. */
-            DIV };
+            DIV,
+            CMP,
+            BNE };
 
     /**
      * The Enum CommandPostfix.
@@ -219,6 +221,10 @@ B, /** The W. */
             command = Befehlssatz.MUL;
         } else if (com.equals("DIV")) {
             command = Befehlssatz.DIV;
+        } else if (com.equals("CMP")) {
+        	command = Befehlssatz.CMP;
+        } else if (com.equals("BNE")) {
+        	command = Befehlssatz.BNE;
         }
 
         return command;

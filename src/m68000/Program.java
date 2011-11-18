@@ -144,6 +144,8 @@ public final class Program {
             case MUL :
             case SUB :
             case DIV :
+            case CMP :
+            case BNE:
                 break;
             default :
                 System.out.println("Befehl nicht gefunden!"
