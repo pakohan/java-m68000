@@ -23,36 +23,28 @@ import m68000.Argument.Arg;
  */
 public class Processor {
 
-    /** The Constant REGSIZE defines the size of the registers. */
-    static final int REGSIZE = 8;
-    /** The datenregister. */
-    private int[] datenregister = new int[REGSIZE];
+    /** REG_AMOUNT defines the amount of the registers. */
+    static final int REG_AMOUNT = 8;
 
-    /** The adressregister. */
-    private int[] adressregister = new int[REGSIZE];
+    private int[] dataRegister = new int[REG_AMOUNT];
+    private int[] adressRegister = new int[REG_AMOUNT];
 
-    /**
-     * Gets the datenregister.
-     *
-     * @return the datenregister
-     */
-    public final int[] getDatenregister() {
-        return datenregister;
+
+    public final int[] getDataRegister() {
+        return dataRegister;
     }
 
-    /** The size. */
     private int size;
 
     /** The compare. */
     private boolean compare;
     /** The exe. */
-    private LinkedList<LoC> exe;
+    private LinkedList<CodeLine> execute;
 
     /** The finished. */
     private boolean finished = false;
 
-    /** The speicher. */
-    private RAM speicher;
+    private RAM ram;
 
     /**
      * Instantiates a new processor.
@@ -60,9 +52,9 @@ public class Processor {
      * @param prog the prog
      */
     public Processor(final Program prog) {
-        this.exe = prog.getProg();
-        this.speicher = prog.getSpeicher();
-        this.size = this.exe.getSize();
+        this.execute = prog.getProg();
+        this.ram = prog.getRAM();
+        this.size = this.execute.getSize();
     }
 
     /**
@@ -71,12 +63,12 @@ public class Processor {
      *
      * @param com the com
      */
-    public final void step(final LoC com) {
+    public final void step(final CodeLine com) {
         switch (com.getCommand().getPrefix()) {
         case ORG:
             break;
         case BRA:
-            this.exe = jump(com.getArgument().getPrefix().getOtherArg())
+            this.execute = jump(com.getArgument().getPrefix().getOtherArg())
                                .getPrev();
             break;
         case EQU :
@@ -110,7 +102,7 @@ public class Processor {
             break;
         case BNE :
             if (!this.compare) {
-                this.exe = jump(com.getArgument().getPrefix().getOtherArg())
+                this.execute = jump(com.getArgument().getPrefix().getOtherArg())
                         .getPrev();
             }
             break;
@@ -210,14 +202,14 @@ public class Processor {
      */
     public final void setData(final Arg dataPlace, final int x) {
         switch (dataPlace.getType()) {
-        case AR :
-            this.speicher.setByte(this.adressregister[dataPlace.getValue()], x);
+        case ADDRESS_REGISTER :
+            this.ram.setByteInAddress(this.adressRegister[dataPlace.getValue()], x);
             break;
-        case DR :
-            this.datenregister[dataPlace.getValue()] = x;
+        case DATA_REGISTER :
+            this.dataRegister[dataPlace.getValue()] = x;
             break;
         case MEMORY :
-            this.speicher.setByte(dataPlace.getValue(), x);
+            this.ram.setByteInAddress(dataPlace.getValue(), x);
             break;
         default :
         }
@@ -231,13 +223,13 @@ public class Processor {
      */
     public final int getData(final Arg dataPlace) {
         switch (dataPlace.getType()) {
-        case AR :
-            return this.speicher.getByte(
-                    this.adressregister[dataPlace.getValue()]);
-        case DR :
-            return this.datenregister[dataPlace.getValue()];
+        case ADDRESS_REGISTER :
+            return this.ram.getByteInAddress(
+                    this.adressRegister[dataPlace.getValue()]);
+        case DATA_REGISTER :
+            return this.dataRegister[dataPlace.getValue()];
         case MEMORY :
-            return this.speicher.getByte(dataPlace.getValue());
+            return this.ram.getByteInAddress(dataPlace.getValue());
         case CONST :
             return dataPlace.getValue();
         default :
@@ -250,18 +242,18 @@ public class Processor {
      * execution pointer to the next element and executes it.
      */
     public final void run() {
-        while (!this.isfinished()) {
-            this.exe = this.exe.getNext();
-            step(this.exe.getItem());
+        while (!this.hasfinished()) {
+            this.execute = this.execute.getNext();
+            step(this.execute.getItem());
         }
     }
 
     /**
-     * Checks if the program is finished.
+     * Checks, if the program has finished.
      *
-     * @return true, if it is finished
+     * @return true, if it has finished
      */
-    public final boolean isfinished() {
+    public final boolean hasfinished() {
         return finished;
     }
 
@@ -271,14 +263,14 @@ public class Processor {
      * @param str the str
      * @return the linked list
      */
-    public final LinkedList<LoC> jump(final String str) {
-        LinkedList<LoC> tmp = this.exe;
+    public final LinkedList<CodeLine> jump(final String str) {
+        LinkedList<CodeLine> tmp = this.execute;
         for (int i = 0; i < this.size; i++) {
-            if (tmp.getItem().getMarker().equals(str)) {
+            if (tmp.getItem().getLabel().equals(str)) {
                 return tmp;
             }
             tmp = tmp.getNext();
         }
-        return this.exe;
+        return this.execute;
     }
 }
