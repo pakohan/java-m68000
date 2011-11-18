@@ -16,6 +16,8 @@
  */
 package m68000;
 
+import m68000.Argument.Arg;
+
 /**
  * The Class Processor simulates a m68000 processor.
  */
@@ -25,6 +27,18 @@ public class Processor {
     static final int REGSIZE = 8;
     /** The datenregister. */
     private int[] datenregister = new int[REGSIZE];
+
+    /** The adressregister. */
+    private int[] adressregister = new int[REGSIZE];
+
+    /**
+     * Gets the datenregister.
+     *
+     * @return the datenregister
+     */
+    public final int[] getDatenregister() {
+        return datenregister;
+    }
 
     /** The size. */
     private int size;
@@ -60,7 +74,8 @@ public class Processor {
         case ORG:
             break;
         case BRA:
-            this.exe = jump(com.getArgument().getPrefix()).getPrev();
+            this.exe = jump(com.getArgument().getPrefix().getOtherArg())
+                               .getPrev();
             break;
         case EQU :
             break;
@@ -92,7 +107,7 @@ public class Processor {
             this.finished = true;
             break;
         default :
-            System.err.println("Befehl nicht gefunden!");
+            System.out.println("Befehl nicht gefunden!");
         }
     }
 
@@ -169,11 +184,18 @@ public class Processor {
      * @param dataPlace the data place
      * @param x the x
      */
-    public final void setData(final String dataPlace, final int x) {
-        if (dataPlace.equals("D1")) {
-            datenregister[1] = x;
-        } else {
-            this.speicher.set(dataPlace, x);
+    public final void setData(final Arg dataPlace, final int x) {
+        switch (dataPlace.getType()) {
+        case AR :
+            this.speicher.setByte(this.adressregister[dataPlace.getValue()], x);
+            break;
+        case DR :
+            this.datenregister[dataPlace.getValue()] = x;
+            break;
+        case MEMORY :
+            this.speicher.setByte(dataPlace.getValue(), x);
+            break;
+        default :
         }
     }
 
@@ -183,12 +205,20 @@ public class Processor {
      * @param dataPlace the data place
      * @return the data
      */
-    public final int getData(final String dataPlace) {
-        if (dataPlace.equals("D1")) {
-            return datenregister[1];
-        } else {
-            return this.speicher.getData(dataPlace);
+    public final int getData(final Arg dataPlace) {
+        switch (dataPlace.getType()) {
+        case AR :
+            return this.speicher.getByte(
+                    this.adressregister[dataPlace.getValue()]);
+        case DR :
+            return this.datenregister[dataPlace.getValue()];
+        case MEMORY :
+            return this.speicher.getByte(dataPlace.getValue());
+        case CONST :
+            return dataPlace.getValue();
+        default :
         }
+        return 0;
     }
 
     /**

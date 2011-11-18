@@ -134,6 +134,9 @@ public class LinkedList<T> {
         return this.prev;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public final String toString() {
         StringBuilder str = new StringBuilder();

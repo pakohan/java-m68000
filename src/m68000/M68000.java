@@ -23,7 +23,7 @@ import java.io.IOException;
  * line argument given and initializes a Program with the program
  * instructions and the Ram. Then it creates a new Processor and gives the
  * Program object to this.
- * Check the video below if you are bored with this JavaDoc.
+ * Check the video below if you are bored with this JavaDoc.<br>
  * <iframe width="560"
  * height="315"
  * src="http://www.youtube.com/embed/b-Cr0EWwaTk"
@@ -46,7 +46,7 @@ public final class M68000 {
     public static void main(final String[] args) throws IOException {
 
         if (args.length < 1) {
-            System.err.println("Fehler: Assemblerdatei als Argument angeben!");
+            System.out.println("Fehler: Assemblerdatei als Argument angeben!");
             return;
         }
 
@@ -57,6 +57,12 @@ public final class M68000 {
         core1.run();
 
         System.out.println(prog.getSpeicher());
+
+        RAM x = prog.getSpeicher();
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println(x.getByte(i));
+        }
 
     }
 }

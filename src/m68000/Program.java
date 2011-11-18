@@ -21,9 +21,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.Scanner;
 
-import m68000.Command.Befehlssatz;
-
-
+import m68000.Argument.Arg;
 
 /**
  * The Class Program reads the code source file and initializes a new RAM
@@ -48,7 +46,7 @@ public final class Program {
      * The speicher value is the Ram connected to the given assembler source
      * file.
      */
-    private RAM speicher;
+    private RAM data;
 
     /**
      * Instantiates a new Program.
@@ -58,7 +56,8 @@ public final class Program {
      */
     public Program(final String arg) throws IOException {
         this.prog = readSourceFile(arg);
-        this.speicher = Program.linker(prog);
+        this.data = new RAM();
+        linker();
     }
 
     /**
@@ -76,7 +75,7 @@ public final class Program {
      * @return the speicher
      */
     public RAM getSpeicher() {
-        return speicher;
+        return this.data;
     }
 
     /**
@@ -108,25 +107,32 @@ public final class Program {
      * The Linker isn't a real linker. It just initializes the RAM, so every
      * memory adress used is known to the created RAM Object.
      *
-     * @param pro the program as linked list
      * @return the finished ram object
      */
-    public static RAM linker(final LinkedList<LoC> pro) {
-        LinkedList<LoC> tmp = pro;
+    public RAM linker() {
+        LinkedList<LoC> tmp = this.prog;
         RAM ram = new RAM();
-        while (tmp.getNext().getItem().getCommand().getPrefix()
-                != Befehlssatz.HEAD) {
+        Arg tmp_arg;
+        for (int i = this.prog.getSize(); i > 0; --i) {
             tmp = tmp.getNext();
+            tmp_arg = tmp.getItem().getArgument().getPrefix();
             switch (tmp.getItem().getCommand().getPrefix()) {
             case EQU :
-                ram.addSpeicher(tmp.getItem().getMarker());
+                replaceSymbolicConstant(tmp.getItem().getMarker(),
+                        "$" + tmp_arg.getValue());
+                Scanner scan = new Scanner(System.in);
+                System.out.printf("Was ist an Stelle %d im RAM gespeichert?",
+                        tmp_arg.getValue());
+                this.data.setByte(tmp_arg.getValue(), scan.nextInt());
                 break;
             case DC :
-                ram.addSpeicher(tmp.getItem().getMarker(),
-                        tmp.getItem().getArgument().getPrefix());
+                replaceSymbolicConstant(tmp.getItem().getMarker(),
+                		Integer.toString(tmp_arg.getValue()));
                 break;
             case DS :
-                ram.addSpeicher(tmp.getItem().getMarker(), "0");
+                int[] x = new int[tmp_arg.getValue()];
+                int y = this.data.addSpeicher(x);
+                replaceSymbolicConstant(tmp.getItem().getMarker(), "$" + y);
                 break;
             case ORG:
             case BRA:
@@ -140,11 +146,32 @@ public final class Program {
             case DIV :
                 break;
             default :
-                System.err.println("Befehl nicht gefunden!"
+                System.out.println("Befehl nicht gefunden!"
             + tmp.getItem().getCommand().getPrefix());
             }
         }
         return ram;
+    }
+
+    /**
+     * Replace symbolic constant.
+     *
+     * @param str the str
+     * @param newvalue the newvalue
+     */
+    private void replaceSymbolicConstant(final String str,
+            final String newvalue) {
+        LinkedList<LoC> tmp2 = this.prog;
+        for (int i = this.prog.getSize(); i > 0; --i) {
+            tmp2 = tmp2.getNext();
+            if (tmp2.getItem().getArgument().getPrefix().
+                    getOtherArg().equals(str)) {
+                tmp2.getItem().getArgument().replacePrefix(newvalue);
+            } else if (tmp2.getItem().getArgument().getPostfix().
+                    getOtherArg().equals(str)) {
+                tmp2.getItem().getArgument().replacePostfix(newvalue);
+            }
+        }
     }
     /**
      * Recognize the line of source code. The comments have to be deleted

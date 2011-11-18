@@ -71,6 +71,15 @@ public final class Command implements Cloneable {
             DIV };
 
     /**
+     * The Enum CommandPostfix.
+     */
+    static enum CommandPostfix { /** The B. */
+B, /** The W. */
+ W, /** The L. */
+ L, /** The ZERO. */
+ ZERO }
+
+    /**
      * The prefix is one of the enum Befehlssatz.
      */
     private Befehlssatz prefix;
@@ -80,7 +89,7 @@ public final class Command implements Cloneable {
      * It is not used at this time, but already stored, so the it will not be
      * hard to implement its function in this class.
      */
-    private String postfix;
+    private CommandPostfix postfix;
 
     /**
      * Indicates if the Command consists of a prefix and a postfix. It is not
@@ -100,7 +109,7 @@ public final class Command implements Cloneable {
 
         if (str.contains(".")) {
             String[] parts = p.split(str);
-            this.postfix   = parts[1];
+            this.postfix   = recognizePostfix(parts[1]);
             this.prefix    = recognizePrefix(parts[0]);
             this.twoparts  = true;
         } else {
@@ -108,6 +117,25 @@ public final class Command implements Cloneable {
             this.twoparts  = false;
         }
 
+    }
+
+    /**
+     * Recognize postfix.
+     *
+     * @param str the str
+     * @return the command postfix
+     */
+    private static CommandPostfix recognizePostfix(final String str) {
+        CommandPostfix post = CommandPostfix.ZERO;
+
+        if (str.equals("B")) {
+            post = CommandPostfix.B;
+        } else if (str.equals("W")) {
+            post = CommandPostfix.W;
+        } else if (str.equals("L")) {
+            post = CommandPostfix.L;
+        }
+        return post;
     }
 
     /**
@@ -122,10 +150,22 @@ public final class Command implements Cloneable {
 
         if (str.length > 0) {
             this.twoparts = true;
-            this.postfix  = str[0];
+            this.postfix  = recognizePostfix(str[0]);
         }
 
         this.prefix = com;
+    }
+
+    /**
+     * Instantiates a new command.
+     *
+     * @param pre the pre
+     * @param pos the pos
+     */
+    public Command(final Befehlssatz pre, final CommandPostfix pos) {
+        this.prefix = pre;
+        this.postfix = pos;
+        this.twoparts = true;
     }
 
     /**
@@ -201,12 +241,15 @@ public final class Command implements Cloneable {
      *
      * @return the postfix
      */
-    public String getPostfix() {
+    public CommandPostfix getPostfix() {
 
         return this.postfix;
 
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
 
@@ -218,6 +261,9 @@ public final class Command implements Cloneable {
 
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Command clone() {
 

@@ -16,104 +16,70 @@
  */
 package m68000;
 
-import java.util.Scanner;
-
 /**
- * The Class RAM.
+ * The Class RAMArray.
  */
 public final class RAM {
 
-    /** The SCANNER. */
-    private static final Scanner SCANNER = new Scanner(System.in);
+    /** The speicher. */
+    private int[] speicher;
 
-    /** The register. */
-    private LinkedList<Speicher> register;
+    /** The Constant MAXBYTE. */
+    static final int MAXBYTE = 1024;
 
+    /** The pointer. */
+    private int pointer = 0;
 
     /**
-     * Instantiates a new rAM.
+     * Instantiates a new rAM array.
      */
     public RAM() {
-        this.register = new LinkedList<Speicher>(new Speicher());
+        this.speicher = new int[MAXBYTE];
     }
 
     /**
      * Adds the speicher.
      *
-     * @param stelle the stelle
+     * @param data the data
+     * @return the int
      */
-    public void addSpeicher(final String stelle) {
-        System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
-              + " gespeichert?", stelle);
-        this.register.add(new Speicher(stelle, SCANNER.nextInt()));
+    public int addSpeicher(final int... data) {
+        for (int i = 0; i < data.length; i++) {
+            this.speicher[i + this.pointer] = data[i];
+        }
+        this.pointer = this.pointer + data.length;
+        return this.pointer - data.length;
     }
 
+    /**
+     * Gets the byte.
+     *
+     * @param adress the adress
+     * @return the byte
+     */
+    public int getByte(final int adress) {
+        return this.speicher[adress];
+    }
+
+    /**
+     * Sets the byte.
+     *
+     * @param adress the adress
+     * @param data the data
+     */
+    public void setByte(final int adress, final int data) {
+        this.speicher[adress] = data;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        LinkedList<Speicher> tmp = this.register.getNext();
-        StringBuilder str = new StringBuilder();
-        while (!tmp.getItem().getStelle().equals("HEAD")) {
-            str.append("An der Speicherstelle ")
-                .append(tmp.getItem().getStelle())
-                .append(" beträgt der Wert ")
-                .append(tmp.getItem().getWert())
-                .append("\n");
-            tmp = tmp.getNext();
+        StringBuilder tmp = new StringBuilder();
+        for (int i = 0; i < this.pointer; i++) {
+            tmp.append(this.speicher[i]).append("\n");
         }
-        return str.toString();
+        return tmp.toString();
     }
-
-    /**
-     * Gets the data.
-     *
-     * @param str the str
-     * @return the data
-     */
-    public int getData(final String str) {
-        LinkedList<Speicher> tmp = this.register.getNext();
-        while (!tmp.getItem().getStelle().equals("HEAD")) {
-            if (tmp.getItem().getStelle().equals(str)) {
-                return tmp.getItem().getWert();
-            }
-            tmp = tmp.getNext();
-        }
-        return 0;
-    }
-
-    /**
-     * Sets the.
-     *
-     * @param str the postfix
-     * @param x the x
-     */
-    public void set(final String str, final int x) {
-        LinkedList<Speicher> tmp = this.register.getNext();
-        while (!tmp.getItem().getStelle().equals("HEAD")) {
-            if (tmp.getItem().getStelle().equals(str)) {
-                tmp.getItem().setWert(x);
-                break;
-            }
-            tmp = tmp.getNext();
-        }
-    }
-
-    /**
-     * Adds the speicher.
-     *
-     * @param stelle the stelle
-     * @param prefix the prefix
-     */
-    public void addSpeicher(final String stelle, final String prefix) {
-        Scanner sc = new Scanner(prefix);
-        int x;
-        if (sc.hasNextInt()) {
-            x = sc.nextInt();
-        } else {
-        System.out.printf("Welcher Wert ist an stelle %s im Haupstspeicher"
-                + " gespeichert?", stelle);
-        x = SCANNER.nextInt();
-        }
-        this.register.add(new Speicher(stelle, x));
-    }
-
 }

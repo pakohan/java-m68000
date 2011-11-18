@@ -16,6 +16,8 @@
  */
 package m68000;
 
+import java.util.Scanner;
+
 /**
  * The Class Arguments cares about the Arguments of the source file.
  * <table border="1">
@@ -29,22 +31,32 @@ package m68000;
  *   <td>ADR1</td>
  *   <td>EQU</td>
  *   <td>$2000</td>
- *   <td>;This command links the storage adress $2000 to ADR1</td>
+ *   <td>;This command links the storage value $2000 to ADR1</td>
  * </tr>
  * </table>
  */
 public final class Argument implements Cloneable {
 
     /**
+     * The Enum ArgType.
+     */
+    static enum ArgType { /** The AR. */
+AR, /** The DR. */
+ DR, /** The MEMORY. */
+ MEMORY, /** The STR. */
+ STR, /** The CONST. */
+ CONST }
+
+    /**
      * The prefix is the first part of the Argument. If twoparts is false,
      * the Argument is stored as one String in prefix.
      */
-    private String prefix;
+    private Arg prefix;
 
     /**
      * The postfix is the second part of the Argument, if twoparts is true.
      */
-    private String postfix;
+    private Arg postfix;
 
     /**
      * Indicates if the Argument of the LoC consists of two parts.
@@ -64,12 +76,12 @@ public final class Argument implements Cloneable {
 
         if (arg.contains(",")) {
             String[] split = arg.split(",");
-            this.prefix    = split[0];
-            this.postfix   = split[1];
+            this.prefix    = new Arg(split[0]);
+            this.postfix   = new Arg(split[1]);
             this.twoparts  = true;
         } else {
-            this.prefix    = arg;
-            this.postfix   = "";
+            this.prefix    = new Arg(arg);
+            this.postfix   = new Arg("");
             this.twoparts  = false;
         }
 
@@ -85,15 +97,37 @@ public final class Argument implements Cloneable {
     public Argument(final String... arg) {
 
         if (arg.length > 1) {
-            this.prefix   = arg[0];
-            this.postfix  = arg[1];
+            this.prefix   = new Arg(arg[0]);
+            this.postfix  = new Arg(arg[1]);
             this.twoparts = true;
         } else {
-            this.prefix   = arg[0];
-            this.postfix  = "";
+            this.prefix   = new Arg(arg[0]);
+            this.postfix  = new Arg("");
             this.twoparts = false;
         }
 
+    }
+
+    /**
+     * Instantiates a new argument.
+     *
+     * @param pre the pre
+     * @param pos the pos
+     */
+    public Argument(final Arg pre, final Arg pos) {
+        this.prefix = pre;
+        this.postfix = pos;
+        this.twoparts = true;
+    }
+
+    /**
+     * Instantiates a new argument.
+     *
+     * @param pre the pre
+     */
+    public Argument(final Arg pre) {
+        this.prefix = pre;
+        this.twoparts = false;
     }
 
     /**
@@ -101,10 +135,28 @@ public final class Argument implements Cloneable {
      *
      * @return the Prefix
      */
-    public String getPrefix() {
+    public Arg getPrefix() {
 
         return this.prefix;
 
+    }
+
+    /**
+     * Replace prefix.
+     *
+     * @param x the x
+     */
+    public void replacePrefix(final String x) {
+        this.prefix = new Arg(x);
+    }
+
+    /**
+     * Replace postfix.
+     *
+     * @param x the x
+     */
+    public void replacePostfix(final String x) {
+        this.postfix = new Arg(x);
     }
 
     /**
@@ -112,7 +164,7 @@ public final class Argument implements Cloneable {
      *
      * @return the Postfix
      */
-    public String getPostfix() {
+    public Arg getPostfix() {
 
         return this.postfix;
 
@@ -129,17 +181,23 @@ public final class Argument implements Cloneable {
 
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
 
         if (this.twoparts) {
             return this.prefix + "," + this.postfix;
         } else {
-            return this.prefix;
+            return this.prefix.toString();
         }
 
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Argument clone() {
         Argument klon;
@@ -152,6 +210,116 @@ public final class Argument implements Cloneable {
 
         return klon;
 
+    }
+
+    /**
+     * The Class Arg.
+     */
+    static class Arg {
+
+        /** The type. */
+        private ArgType type;
+
+        /** The value. */
+        private int value;
+
+        /** The is adress. */
+        private boolean isAdress;
+
+        /** The another arg. */
+        private String anotherArg;
+
+        /**
+         * Instantiates a new arg.
+         *
+         * @param argument the argument
+         */
+        public Arg(final String argument) {
+            this.anotherArg = argument;
+            String arg = argument;
+            Scanner tmp = new Scanner(argument);
+            if (tmp.hasNextInt()) {
+                this.value = tmp.nextInt();
+                this.type = ArgType.CONST;
+                this.isAdress = false;
+            } else if (argument.length() > 1 && argument.charAt(0) == '$') {
+                this.value = new Integer(argument.substring(1));
+                this.isAdress = true;
+                this.type = ArgType.MEMORY;
+            } else if (argument.length() == 2) {
+                Scanner tmp2 = new Scanner(arg.substring(1));
+                if (argument.charAt(0) == 'A' && tmp2.hasNextInt()) {
+                    this.value = tmp2.nextInt();
+                    this.isAdress = true;
+                    this.type = ArgType.AR;
+                } else if (argument.charAt(0) == 'D' && tmp2.hasNextInt()) {
+                    this.value = tmp2.nextInt();
+                    this.isAdress = true;
+                    this.type = ArgType.DR;
+                } else {
+                    this.isAdress = false;
+                    this.type = ArgType.STR;
+                }
+            } else {
+                this.isAdress = false;
+                this.type = ArgType.STR;
+            }
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return this.anotherArg;
+        }
+
+        /**
+         * Instantiates a new arg.
+         *
+         * @param x the x
+         */
+        public Arg(final int x) {
+            this.type = ArgType.MEMORY;
+            this.value = x;
+            this.isAdress = true;
+        }
+
+        /**
+         * Checks if is adress.
+         *
+         * @return true, if is adress
+         */
+        public boolean isAdress() {
+            return this.isAdress;
+        }
+
+        /**
+         * Gets the other arg.
+         *
+         * @return the other arg
+         */
+        public String getOtherArg() {
+            return this.anotherArg;
+        }
+
+        /**
+         * Gets the type.
+         *
+         * @return the type
+         */
+        public ArgType getType() {
+            return this.type;
+        }
+
+        /**
+         * Gets the value.
+         *
+         * @return the value
+         */
+        public int getValue() {
+            return this.value;
+        }
     }
 
 }
