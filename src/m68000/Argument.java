@@ -40,30 +40,27 @@ public final class Argument implements Cloneable {
     /**
      * The Enum ArgType.
      */
-    static enum ArgType { /** The AR. */
-AR, /** The DR. */
- DR, /** The MEMORY. Test */
- MEMORY, /** The STR. */
- STR, /** The CONST. */
- CONST }
+    static enum ArgType	{
+    						ADDRESS_REGISTER, 
+							DATA_REGISTER, 
+							MEMORY, 
+							STRING, 
+							CONST
+						}
+
+
+    private Arg firstOperand;
 
     /**
-     * The prefix is the first part of the Argument. If twoparts is false,
-     * the Argument is stored as one String in prefix.
+     * Only set, if twoOperands is true.
      */
-    private Arg prefix;
+    private Arg secondOperand;
 
     /**
-     * The postfix is the second part of the Argument, if twoparts is true.
+     * Indicates, if the argument of the command consists of two operands.
+     * I. e.: MOVE D1,D2
      */
-    private Arg postfix;
-
-    /**
-     * Indicates if the Argument of the LoC consists of two parts.
-     * This means that the given Argument has two statements, seperated by a
-     * comma.
-     */
-    private boolean twoparts;
+    private boolean twoOperands;
 
     /**
      * Instantiates a new argument. It checks if the String contains a comma.
@@ -76,13 +73,13 @@ AR, /** The DR. */
 
         if (arg.contains(",")) {
             String[] split = arg.split(",");
-            this.prefix    = new Arg(split[0]);
-            this.postfix   = new Arg(split[1]);
-            this.twoparts  = true;
+            this.firstOperand    = new Arg(split[0]);
+            this.secondOperand   = new Arg(split[1]);
+            this.twoOperands  = true;
         } else {
-            this.prefix    = new Arg(arg);
-            this.postfix   = new Arg("");
-            this.twoparts  = false;
+            this.firstOperand    = new Arg(arg);
+            this.secondOperand   = new Arg("");
+            this.twoOperands  = false;
         }
 
     }
@@ -97,13 +94,13 @@ AR, /** The DR. */
     public Argument(final String... arg) {
 
         if (arg.length > 1) {
-            this.prefix   = new Arg(arg[0]);
-            this.postfix  = new Arg(arg[1]);
-            this.twoparts = true;
+            this.firstOperand   = new Arg(arg[0]);
+            this.secondOperand  = new Arg(arg[1]);
+            this.twoOperands = true;
         } else {
-            this.prefix   = new Arg(arg[0]);
-            this.postfix  = new Arg("");
-            this.twoparts = false;
+            this.firstOperand   = new Arg(arg[0]);
+            this.secondOperand  = new Arg("");
+            this.twoOperands = false;
         }
 
     }
@@ -115,9 +112,9 @@ AR, /** The DR. */
      * @param pos the pos
      */
     public Argument(final Arg pre, final Arg pos) {
-        this.prefix = pre;
-        this.postfix = pos;
-        this.twoparts = true;
+        this.firstOperand = pre;
+        this.secondOperand = pos;
+        this.twoOperands = true;
     }
 
     /**
@@ -126,58 +123,33 @@ AR, /** The DR. */
      * @param pre the pre
      */
     public Argument(final Arg pre) {
-        this.prefix = pre;
-        this.twoparts = false;
+        this.firstOperand = pre;
+        this.twoOperands = false;
     }
 
-    /**
-     * Returns the Prefix of the Argument.
-     *
-     * @return the Prefix
-     */
     public Arg getPrefix() {
 
-        return this.prefix;
+        return this.firstOperand;
 
     }
 
-    /**
-     * Replace prefix.
-     *
-     * @param x the x
-     */
     public void replacePrefix(final String x) {
-        this.prefix = new Arg(x);
+        this.firstOperand = new Arg(x);
     }
 
-    /**
-     * Replace postfix.
-     *
-     * @param x the x
-     */
     public void replacePostfix(final String x) {
-        this.postfix = new Arg(x);
+        this.secondOperand = new Arg(x);
     }
 
-    /**
-     * Returns the Postfix of the Argument.
-     *
-     * @return the Postfix
-     */
     public Arg getPostfix() {
 
-        return this.postfix;
+        return this.secondOperand;
 
     }
 
-    /**
-     * Returns if the Argument consists of two parts.
-     *
-     * @return true, the Argument has got a Prefix AND a Postfix
-     */
-    public boolean hastwoparts() {
+    public boolean hasTwoOperands() {
 
-        return this.twoparts;
+        return this.twoOperands;
 
     }
 
@@ -187,10 +159,10 @@ AR, /** The DR. */
     @Override
     public String toString() {
 
-        if (this.twoparts) {
-            return this.prefix + "," + this.postfix;
+        if (this.twoOperands) {
+            return this.firstOperand + "," + this.secondOperand;
         } else {
-            return this.prefix.toString();
+            return this.firstOperand.toString();
         }
 
     }
@@ -202,10 +174,10 @@ AR, /** The DR. */
     public Argument clone() {
         Argument klon;
 
-        if (this.twoparts) {
-            klon = new Argument(this.prefix, this.postfix);
+        if (this.twoOperands) {
+            klon = new Argument(this.firstOperand, this.secondOperand);
         } else {
-            klon = new Argument(this.prefix);
+            klon = new Argument(this.firstOperand);
         }
 
         return klon;
@@ -217,16 +189,9 @@ AR, /** The DR. */
      */
     static class Arg {
 
-        /** The type. */
         private ArgType type;
-
-        /** The value. */
         private int value;
-
-        /** The is adress. */
-        private boolean isAdress;
-
-        /** The another arg. */
+        private boolean isAddress;
         private String anotherArg;
 
         /**
@@ -241,31 +206,34 @@ AR, /** The DR. */
             if (tmp.hasNextInt()) {
                 this.value = tmp.nextInt();
                 this.type = ArgType.CONST;
-                this.isAdress = false;
+                this.isAddress = false;
             } else if (argument.length() > 1 && argument.charAt(0) == '$') {
                 this.value = new Integer(argument.substring(1));
-                this.isAdress = true;
+                this.isAddress = true;
                 this.type = ArgType.MEMORY;
             } else if (argument.length() == 2) {
                 Scanner tmp2 = new Scanner(arg.substring(1));
                 if (argument.charAt(0) == 'A' && tmp2.hasNextInt()) {
                     this.value = tmp2.nextInt();
-                    this.isAdress = true;
-                    this.type = ArgType.AR;
+                    this.isAddress = true;
+                    this.type = ArgType.ADDRESS_REGISTER;
                 } else if (argument.charAt(0) == 'D' && tmp2.hasNextInt()) {
                     this.value = tmp2.nextInt();
-                    this.isAdress = true;
-                    this.type = ArgType.DR;
+                    this.isAddress = true;
+                    this.type = ArgType.DATA_REGISTER;
                 } else {
-                    this.isAdress = false;
-                    this.type = ArgType.STR;
+                    this.isAddress = false;
+                    this.type = ArgType.STRING;
                 }
             } else {
-                this.isAdress = false;
-                this.type = ArgType.STR;
+                this.isAddress = false;
+                this.type = ArgType.STRING;
             }
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
         @Override
         public String toString() {
             return this.anotherArg;
@@ -279,41 +247,21 @@ AR, /** The DR. */
         public Arg(final int x) {
             this.type = ArgType.MEMORY;
             this.value = x;
-            this.isAdress = true;
+            this.isAddress = true;
         }
 
-        /**
-         * Checks if is adress.
-         *
-         * @return true, if is adress
-         */
         public boolean isAdress() {
-            return this.isAdress;
+            return this.isAddress;
         }
 
-        /**
-         * Gets the other arg.
-         *
-         * @return the other arg
-         */
         public String getOtherArg() {
             return this.anotherArg;
         }
 
-        /**
-         * Gets the type.
-         *
-         * @return the type
-         */
         public ArgType getType() {
             return this.type;
         }
 
-        /**
-         * Gets the value.
-         *
-         * @return the value
-         */
         public int getValue() {
             return this.value;
         }
