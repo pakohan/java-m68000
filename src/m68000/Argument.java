@@ -42,7 +42,7 @@ public final class Argument implements Cloneable {
      */
     static enum ArgType { /** The AR. */
 AR, /** The DR. */
- DR, /** The MEMORY. */
+ DR, /** The MEMORY. Test */
  MEMORY, /** The STR. */
  STR, /** The CONST. */
  CONST }
