@@ -26,7 +26,7 @@ public final class Command implements Cloneable {
     /**
      * The Enum Befehlssatz defines the commands known by our processor.
      */
-    static enum Befehlssatz {
+    static enum InstructionSet {
             /**
              * "ORG" defines at a real M68000 where the program will be stored
              * in the main memory.
@@ -68,11 +68,7 @@ public final class Command implements Cloneable {
             /** The MUL. */
             MUL,
             /** The DIV. */
-            DIV,
-            /** The CMP. */
-            CMP,
-            /** The BNE. */
-            BNE };
+            DIV };
 
     /**
      * The Enum CommandPostfix.
@@ -86,20 +82,20 @@ B, /** The W. */
     /**
      * The prefix is one of the enum Befehlssatz.
      */
-    private Befehlssatz prefix;
+    private InstructionSet instruction;
 
     /**
      * The postfix is the part of the command, which comes after an comma.
      * It is not used at this time, but already stored, so the it will not be
      * hard to implement its function in this class.
      */
-    private CommandPostfix postfix;
+    private CommandPostfix secondOperand;
 
     /**
      * Indicates if the Command consists of a prefix and a postfix. It is not
      * used at this time (same as the postfix).
      */
-    private boolean twoparts;
+    private boolean twoOperands;
 
     /**
      * Instantiates a new command. Checks if the given String contains a dot,
@@ -113,12 +109,12 @@ B, /** The W. */
 
         if (str.contains(".")) {
             String[] parts = p.split(str);
-            this.postfix   = recognizePostfix(parts[1]);
-            this.prefix    = recognizePrefix(parts[0]);
-            this.twoparts  = true;
+            this.secondOperand   = recognizePostfix(parts[1]);
+            this.instruction    = getInstruction(parts[0]);
+            this.twoOperands  = true;
         } else {
-            this.prefix    = recognizePrefix(str);
-            this.twoparts  = false;
+            this.instruction    = getInstruction(str);
+            this.twoOperands  = false;
         }
 
     }
@@ -150,14 +146,14 @@ B, /** The W. */
      * @param com the Command
      * @param str the Postfix
      */
-    public Command(final Befehlssatz com, final String... str) {
+    public Command(final InstructionSet com, final String... str) {
 
         if (str.length > 0) {
-            this.twoparts = true;
-            this.postfix  = recognizePostfix(str[0]);
+            this.twoOperands = true;
+            this.secondOperand  = recognizePostfix(str[0]);
         }
 
-        this.prefix = com;
+        this.instruction = com;
     }
 
     /**
@@ -166,10 +162,10 @@ B, /** The W. */
      * @param pre the pre
      * @param pos the pos
      */
-    public Command(final Befehlssatz pre, final CommandPostfix pos) {
-        this.prefix = pre;
-        this.postfix = pos;
-        this.twoparts = true;
+    public Command(final InstructionSet pre, final CommandPostfix pos) {
+        this.instruction = pre;
+        this.secondOperand = pos;
+        this.twoOperands = true;
     }
 
     /**
@@ -178,59 +174,23 @@ B, /** The W. */
      * @return true, if the Command consists of two parts
      */
     public boolean hastwoparts() {
-
-        return this.twoparts;
-
+        return this.twoOperands;
     }
 
     /**
-     * This static function will recognize, which Command is stored in the
-     * Prefix of the given Command. It uses a lot of "if" instructions to
-     * search for the right string, because a "switch-case" which compares
-     * a string to many others will first be supported by Java 7. No need for
-     * it at this time.
-     *
      * @param com the Command Prefix as String
-     * @return the Command Prefix as one of the enum Befehlssatz
+     * @return the Command Prefix as one of the enum InstructionSet
      */
-    private static Befehlssatz recognizePrefix(final String com) {
-
-        Befehlssatz command = Befehlssatz.ZERO;
-
-        if (com.equals("ORG")) {
-            command = Befehlssatz.ORG;
-        } else if (com.equals("BRA")) {
-            command = Befehlssatz.BRA;
-        } else if (com.equals("EQU")) {
-            command = Befehlssatz.EQU;
-        } else if (com.equals("DC")) {
-            command = Befehlssatz.DC;
-        } else if (com.equals("DS")) {
-            command = Befehlssatz.DS;
-        } else if (com.equals("CLR")) {
-            command = Befehlssatz.CLR;
-        } else if (com.equals("MOVE")) {
-            command = Befehlssatz.MOVE;
-        } else if (com.equals("ADD")) {
-            command = Befehlssatz.ADD;
-        } else if (com.equals("END")) {
-            command = Befehlssatz.END;
-        } else if (com.equals("HEAD")) {
-            command = Befehlssatz.HEAD;
-        } else if (com.equals("SUB")) {
-            command = Befehlssatz.SUB;
-        } else if (com.equals("MUL")) {
-            command = Befehlssatz.MUL;
-        } else if (com.equals("DIV")) {
-            command = Befehlssatz.DIV;
-        } else if (com.equals("CMP")) {
-            command = Befehlssatz.CMP;
-        } else if (com.equals("BNE")) {
-            command = Befehlssatz.BNE;
+    private static InstructionSet getInstruction(final String com) {
+        InstructionSet command;
+        
+        try {
+        	command = InstructionSet.valueOf(com);
+        } catch (IllegalArgumentException e) {
+        	command = InstructionSet.ZERO;
         }
 
         return command;
-
     }
 
     /**
@@ -238,9 +198,9 @@ B, /** The W. */
      *
      * @return the prefix
      */
-    public Befehlssatz getPrefix() {
+    public InstructionSet getPrefix() {
 
-        return this.prefix;
+        return this.instruction;
 
     }
 
@@ -251,7 +211,7 @@ B, /** The W. */
      */
     public CommandPostfix getPostfix() {
 
-        return this.postfix;
+        return this.secondOperand;
 
     }
 
@@ -261,10 +221,10 @@ B, /** The W. */
     @Override
     public String toString() {
 
-        if (this.twoparts) {
-            return this.prefix + "," + this.postfix;
+        if (this.twoOperands) {
+            return this.instruction + "," + this.secondOperand;
         } else {
-            return this.prefix.toString();
+            return this.instruction.toString();
         }
 
     }
@@ -277,10 +237,10 @@ B, /** The W. */
 
         Command klon;
 
-        if (this.twoparts) {
-            klon = new Command(this.prefix, this.postfix);
+        if (this.twoOperands) {
+            klon = new Command(this.instruction, this.secondOperand);
         } else {
-            klon = new Command(this.prefix);
+            klon = new Command(this.instruction);
         }
 
         return klon;
