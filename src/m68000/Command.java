@@ -69,7 +69,9 @@ public final class Command implements Cloneable {
             MUL,
             /** The DIV. */
             DIV,
+            /** The CMP. */
             CMP,
+            /** The BNE. */
             BNE };
 
     /**
@@ -222,9 +224,9 @@ B, /** The W. */
         } else if (com.equals("DIV")) {
             command = Befehlssatz.DIV;
         } else if (com.equals("CMP")) {
-        	command = Befehlssatz.CMP;
+            command = Befehlssatz.CMP;
         } else if (com.equals("BNE")) {
-        	command = Befehlssatz.BNE;
+            command = Befehlssatz.BNE;
         }
 
         return command;

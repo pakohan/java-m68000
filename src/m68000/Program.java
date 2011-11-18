@@ -126,7 +126,7 @@ public final class Program {
                 this.data.setByte(tmp_arg.getValue(), scan.nextInt());
                 break;
             case DC :
-            	int x2 = this.data.addSpeicher(tmp_arg.getValue());
+                int x2 = this.data.addSpeicher(tmp_arg.getValue());
                 StringBuilder tmp_str = new StringBuilder();
                 tmp_str.append("$");
                 tmp_str.append(x2);

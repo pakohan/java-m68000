@@ -43,6 +43,7 @@ public class Processor {
     /** The size. */
     private int size;
 
+    /** The compare. */
     private boolean compare;
     /** The exe. */
     private LinkedList<LoC> exe;
@@ -103,15 +104,16 @@ public class Processor {
             div(com.getArgument());
             break;
         case CMP :
-        	cmp(com.getArgument());
+            cmp(com.getArgument());
+            break;
         case HEAD :
             break;
         case BNE :
-        	if (!this.compare) {
-        		this.exe = jump(com.getArgument().getPrefix().getOtherArg())
-        				.getPrev();
-        	}
-        	break;
+            if (!this.compare) {
+                this.exe = jump(com.getArgument().getPrefix().getOtherArg())
+                        .getPrev();
+            }
+            break;
         case END :
             this.finished = true;
             break;
@@ -120,15 +122,20 @@ public class Processor {
         }
     }
 
-    private void cmp(final Argument args) {    	
-    	if (getData(args.getPrefix()) == getData(args.getPostfix())) {
-    		this.compare = true;
-    	} else {
-    		this.compare = false;
-    	}
-	}
+    /**
+     * Cmp.
+     *
+     * @param args the args
+     */
+    private void cmp(final Argument args) {
+        if (getData(args.getPrefix()) == getData(args.getPostfix())) {
+            this.compare = true;
+        } else {
+            this.compare = false;
+        }
+    }
 
-	/**
+    /**
      * Overwrites the data stored in argument two with the data stored in
      * argument one.
      *
