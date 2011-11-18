@@ -25,28 +25,23 @@ import m68000.Argument.Arg;
 
 /**
  * The Class Program reads the code source file and initializes a new RAM
- * Object. The resulting Ram and LinkedList<LoC> will be stored in this Program
+ * Object. The resulting RAM and LinkedList<LoC> will be stored in this Program
  * object.
  */
 public final class Program {
 
     /**
-     * The Constant MAXTOKENS is used because of the magic numbers check. It
-     * describes of how many different items a assember source line of code can
-     * consist. (marker, command and argument)
+     * It describes, of how many different items an assembler code line can
+     * consist. (label, command and argument)
      */
-    static final int MAXTOKENS = 3;
+    private final int MAX_TOKENS = 3;
 
     /**
      * The prog value is the linked list which represents the program.
      */
-    private LinkedList<LoC> prog;
+    private LinkedList<CodeLine> prog;
 
-    /**
-     * The speicher value is the Ram connected to the given assembler source
-     * file.
-     */
-    private RAM data;
+    private RAM ram;
 
     /**
      * Instantiates a new Program.
@@ -56,7 +51,7 @@ public final class Program {
      */
     public Program(final String arg) throws IOException {
         this.prog = readSourceFile(arg);
-        this.data = new RAM();
+        this.ram = new RAM();
         linker();
     }
 
@@ -65,17 +60,12 @@ public final class Program {
      *
      * @return the prog
      */
-    public LinkedList<LoC> getProg() {
+    public LinkedList<CodeLine> getProg() {
         return prog;
     }
 
-    /**
-     * Gets the speicher.
-     *
-     * @return the speicher
-     */
-    public RAM getSpeicher() {
-        return this.data;
+    public RAM getRAM() {
+        return this.ram;
     }
 
     /**
@@ -85,17 +75,17 @@ public final class Program {
      * @return the program stored in a linked list
      * @throws IOException Signals if the file can't be read.
      */
-    private LinkedList<LoC> readSourceFile(final String sourcefile)
+    private LinkedList<CodeLine> readSourceFile(final String sourcefile)
             throws IOException {
         FileReader file = new FileReader(sourcefile);
         LineNumberReader source = new LineNumberReader(file);
         String[] part;
         String line;
-        this.prog = new LinkedList<LoC>(new LoC());
+        this.prog = new LinkedList<CodeLine>(new CodeLine());
 
         while ((line = source.readLine()) != null) {
             part = line.split(";");
-            addCommand(recognizeLine(part[0]));
+            addCommand(deleteComments(part[0]));
         }
         source.close();
         file.close();
@@ -110,7 +100,7 @@ public final class Program {
      * @return the finished ram object
      */
     public RAM linker() {
-        LinkedList<LoC> tmp = this.prog;
+        LinkedList<CodeLine> tmp = this.prog;
         RAM ram = new RAM();
         Arg tmp_arg;
         for (int i = this.prog.getSize(); i > 0; --i) {
@@ -118,25 +108,25 @@ public final class Program {
             tmp_arg = tmp.getItem().getArgument().getPrefix();
             switch (tmp.getItem().getCommand().getPrefix()) {
             case EQU :
-                replaceSymbolicConstant(tmp.getItem().getMarker(),
+                replaceSymbolicConstant(tmp.getItem().getLabel(),
                         "$" + tmp_arg.getValue());
                 Scanner scan = new Scanner(System.in);
-                System.out.printf("Was ist an Stelle %d im RAM gespeichert?",
+                System.out.printf("What is stored in the RAM in address '%d' ?",
                         tmp_arg.getValue());
-                this.data.setByte(tmp_arg.getValue(), scan.nextInt());
+                this.ram.setByteInAddress(tmp_arg.getValue(), scan.nextInt());
                 break;
             case DC :
-                int x2 = this.data.addSpeicher(tmp_arg.getValue());
+                int x2 = this.ram.addMemory(tmp_arg.getValue());
                 StringBuilder tmp_str = new StringBuilder();
                 tmp_str.append("$");
                 tmp_str.append(x2);
                 tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
-                replaceSymbolicConstant(tmp.getItem().getMarker(), "$" + x2);
+                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + x2);
                 break;
             case DS :
                 int[] x = new int[tmp_arg.getValue()];
-                int y = this.data.addSpeicher(x);
-                replaceSymbolicConstant(tmp.getItem().getMarker(), "$" + y);
+                int y = this.ram.addMemory(x);
+                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + y);
                 break;
             case ORG:
             case BRA:
@@ -167,7 +157,7 @@ public final class Program {
      */
     private void replaceSymbolicConstant(final String str,
             final String newvalue) {
-        LinkedList<LoC> tmp2 = this.prog;
+        LinkedList<CodeLine> tmp2 = this.prog;
         for (int i = this.prog.getSize(); i > 0; --i) {
             tmp2 = tmp2.getNext();
             if (tmp2.getItem().getArgument().getPrefix().
@@ -180,16 +170,15 @@ public final class Program {
         }
     }
     /**
-     * Recognize the line of source code. The comments have to be deleted
-     * before!
+     * Deletes the comments of the source code and returns the commands only.
      *
-     * @param str the line of source code
+     * @param str code line
      * @return the string[]
      */
-    private static String[] recognizeLine(final String str) {
+    private String[] deleteComments(final String str) {
         Scanner scan = new Scanner(str);
         String[] parts;
-        String[] parts2 = new String[MAXTOKENS];
+        String[] parts2 = new String[MAX_TOKENS];
         int j = 0;
         while (scan.hasNext()) {
             parts2[j] = scan.next();
@@ -210,13 +199,13 @@ public final class Program {
     private void addCommand(final String[] befehlsfolge) {
         switch (befehlsfolge.length) {
             case 1:
-                this.prog.add(new LoC(befehlsfolge[0], "", ""));
+                this.prog.add(new CodeLine(befehlsfolge[0], "", ""));
                 break;
             case 2:
-                this.prog.add(new LoC(befehlsfolge[0], befehlsfolge[1], ""));
+                this.prog.add(new CodeLine(befehlsfolge[0], befehlsfolge[1], ""));
                 break;
-            case MAXTOKENS:
-                this.prog.add(new LoC(befehlsfolge[1], befehlsfolge[2],
+            case MAX_TOKENS:
+                this.prog.add(new CodeLine(befehlsfolge[1], befehlsfolge[2],
                         befehlsfolge[0]));
                 break;
             default:
