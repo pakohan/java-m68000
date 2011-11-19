@@ -96,8 +96,8 @@ B, /** The W. */
     private CommandPostfix postfix;
 
     /**
-     * Indicates if the Command consists of a prefix and a postfix. It is not
-     * used at this time (same as the postfix).
+     * Indicates if the Command consists of a prefix and a postfix, i. e. MOVE.L
+     * It is not used at this time (same as the postfix).
      */
     private boolean twoParts;
 
@@ -108,11 +108,8 @@ B, /** The W. */
      * @param str the whole Command (postfix and prefix)
      */
     public Command(final String str) {
-
-        Pattern p = Pattern.compile("[.]");
-
         if (str.contains(".")) {
-            String[] parts = p.split(str);
+        	String[] parts = str.split("[.]");
             this.postfix   = recognizePostfix(parts[1]);
             this.instruction    = getInstruction(parts[0]);
             this.twoParts  = true;
@@ -120,7 +117,6 @@ B, /** The W. */
             this.instruction    = getInstruction(str);
             this.twoParts  = false;
         }
-
     }
 
     /**
