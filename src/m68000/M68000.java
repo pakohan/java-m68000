@@ -46,7 +46,7 @@ public final class M68000 {
     public static void main(final String[] args) throws IOException {
 
         if (args.length < 1) {
-            System.out.println("Fehler: Assemblerdatei als Argument angeben!");
+            System.out.println("Error: Please pass assembler file per argument!");
             return;
         }
 
