@@ -58,18 +58,27 @@ public final class RAM {
         return this.memory[address];
     }
 
-    public void setByteInAddress(final int adress, final int data) {
-        this.memory[adress] = data;
-        this.memory[adress] = this.memory[adress]<<24;
+    public void setByteInAddress(final int address, int data) {
+    	int tmp = 0;
+    	tmp = ~tmp; //negate 32 zeros to 32 to ones
+    	tmp = tmp >>8; //Higher 8 bits becomes zero.
+    	
+    	//Clear first 8 Bits:
+    	this.memory[address] = this.memory[address] & tmp;
+    	
+    	//Set only the first 8 Bits:
+    	data = data<<24;
+        this.memory[address] = data | this.memory[address];
+        
+        System.out.println("Wert: " + getWordInAddress(address)); //Kommt momentan noch Blödsinn raus.
     }
     
-    public void setWordInAddress(final int adress, final int data) {
-        this.memory[adress] = data;
-        this.memory[adress] = this.memory[adress]<<16;
+    public void setWordInAddress(final int address, final int data) {
+        //ToDO
     }
     
-    public void setLongWordInAddress(final int adress, final int data) {
-        this.memory[adress] = data;
+    public void setLongWordInAddress(final int address, final int data) {
+        this.memory[address] = data;
     }
     
 
