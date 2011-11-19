@@ -46,13 +46,32 @@ public final class RAM {
         return this.pointer - data.length;
     }
 
-    public int getByteInAddress(final int address) {
+    public byte getByteInAddress(final int address) {
+        return (byte) (this.memory[address]>>24);
+    }
+    
+    public int getWordInAddress(final int address) {
+        return (this.memory[address]>>16);
+    }
+    
+    public long getLongWordInAddress(final int address) {
         return this.memory[address];
     }
 
     public void setByteInAddress(final int adress, final int data) {
         this.memory[adress] = data;
+        this.memory[adress] = this.memory[adress]<<24;
     }
+    
+    public void setWordInAddress(final int adress, final int data) {
+        this.memory[adress] = data;
+        this.memory[adress] = this.memory[adress]<<16;
+    }
+    
+    public void setLongWordInAddress(final int adress, final int data) {
+        this.memory[adress] = data;
+    }
+    
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
