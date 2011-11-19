@@ -93,13 +93,13 @@ B, /** The W. */
      * It is not used at this time, but already stored, so the it will not be
      * hard to implement its function in this class.
      */
-    private CommandPostfix secondOperand;
+    private CommandPostfix postfix;
 
     /**
      * Indicates if the Command consists of a prefix and a postfix. It is not
      * used at this time (same as the postfix).
      */
-    private boolean twoOperands;
+    private boolean twoParts;
 
     /**
      * Instantiates a new command. Checks if the given String contains a dot,
@@ -113,12 +113,12 @@ B, /** The W. */
 
         if (str.contains(".")) {
             String[] parts = p.split(str);
-            this.secondOperand   = recognizePostfix(parts[1]);
+            this.postfix   = recognizePostfix(parts[1]);
             this.instruction    = getInstruction(parts[0]);
-            this.twoOperands  = true;
+            this.twoParts  = true;
         } else {
             this.instruction    = getInstruction(str);
-            this.twoOperands  = false;
+            this.twoParts  = false;
         }
 
     }
@@ -153,8 +153,8 @@ B, /** The W. */
     public Command(final InstructionSet com, final String... str) {
 
         if (str.length > 0) {
-            this.twoOperands = true;
-            this.secondOperand  = recognizePostfix(str[0]);
+            this.twoParts = true;
+            this.postfix  = recognizePostfix(str[0]);
         }
 
         this.instruction = com;
@@ -168,8 +168,8 @@ B, /** The W. */
      */
     public Command(final InstructionSet pre, final CommandPostfix pos) {
         this.instruction = pre;
-        this.secondOperand = pos;
-        this.twoOperands = true;
+        this.postfix = pos;
+        this.twoParts = true;
     }
 
     /**
@@ -178,7 +178,7 @@ B, /** The W. */
      * @return true, if the Command consists of two parts
      */
     public boolean hastwoparts() {
-        return this.twoOperands;
+        return this.twoParts;
     }
 
     /**
@@ -191,6 +191,7 @@ B, /** The W. */
         try {
         	command = InstructionSet.valueOf(com);
         } catch (IllegalArgumentException e) {
+        	System.out.printf("%s is not a command!", com);
         	command = InstructionSet.ZERO;
         }
 
@@ -215,7 +216,7 @@ B, /** The W. */
      */
     public CommandPostfix getPostfix() {
 
-        return this.secondOperand;
+        return this.postfix;
 
     }
 
@@ -225,8 +226,8 @@ B, /** The W. */
     @Override
     public String toString() {
 
-        if (this.twoOperands) {
-            return this.instruction + "," + this.secondOperand;
+        if (this.twoParts) {
+            return this.instruction + "," + this.postfix;
         } else {
             return this.instruction.toString();
         }
@@ -241,8 +242,8 @@ B, /** The W. */
 
         Command klon;
 
-        if (this.twoOperands) {
-            klon = new Command(this.instruction, this.secondOperand);
+        if (this.twoParts) {
+            klon = new Command(this.instruction, this.postfix);
         } else {
             klon = new Command(this.instruction);
         }
