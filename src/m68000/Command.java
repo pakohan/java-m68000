@@ -16,15 +16,13 @@
  */
 package m68000;
 
-import java.util.regex.Pattern;
-
 /**
  * The Class Command.
  */
 public final class Command implements Cloneable {
 
     /**
-     * The Enum Befehlssatz defines the commands known by our processor.
+     * The Enum InstructionSet defines the commands known by our processor.
      */
     static enum InstructionSet {
             /**
@@ -38,53 +36,41 @@ public final class Command implements Cloneable {
              */
             BRA,
             /**
-             * "EQU" needs a marker and an argument, which is an memory adress.
+             * "EQU" needs a label and an argument, which is an memory address.
              * In real, the assembler-compiler replaces every string in the
              * source file, which is equal to the marker with the argument.
              * We use it in a different way: Every time EQU appears in the
-             * source file, a new "Speicher" Object will be created with the
-             * marker as searching String. The content of this memory area will
+             * source file, a new "Memory" Object will be created with the
+             * label as searching String. The content of this memory area will
              * be asked before running the program.
              */
             EQU,
-            /** The DC. */
             DC,
-            /** The DS. */
             DS,
-            /** The CLR. */
             CLR,
-            /** The MOVE. */
             MOVE,
-            /** The ADD. */
             ADD,
-            /** The END. */
             END,
-            /** The ZERO. */
             ZERO,
-            /** The HEAD. */
             HEAD,
-            /** The SUB. */
             SUB,
-            /** The MUL. */
             MUL,
-            /** The DIV. */
             DIV,
-            /** The CMP. */
             CMP,
-            /** The BNE. */
             BNE };
 
     /**
      * The Enum CommandPostfix.
      */
-    static enum CommandPostfix { /** The B. */
-B, /** The W. */
- W, /** The L. */
- L, /** The ZERO. */
- ZERO }
+    static enum CommandPostfix	{
+									B,
+									W,
+									L,
+									ZERO
+								}
 
     /**
-     * The prefix is one of the enum Befehlssatz.
+     * The prefix is one of the enum InstructionSet.
      */
     private InstructionSet instruction;
 
@@ -110,7 +96,7 @@ B, /** The W. */
     public Command(final String str) {
         if (str.contains(".")) {
         	String[] parts = str.split("[.]");
-            this.postfix   = recognizePostfix(parts[1]);
+            this.postfix   = getPostfix(parts[1]);
             this.instruction    = getInstruction(parts[0]);
             this.twoParts  = true;
         } else {
@@ -120,21 +106,19 @@ B, /** The W. */
     }
 
     /**
-     * Recognize postfix.
-     *
-     * @param str the str
-     * @return the command postfix
+     * @param instruction instruction with postfix
+     * @return postfix of an instruction.
      */
-    private static CommandPostfix recognizePostfix(final String str) {
-        CommandPostfix post = CommandPostfix.ZERO;
-
-        if (str.equals("B")) {
-            post = CommandPostfix.B;
-        } else if (str.equals("W")) {
-            post = CommandPostfix.W;
-        } else if (str.equals("L")) {
-            post = CommandPostfix.L;
-        }
+    private static CommandPostfix getPostfix(final String instruction) {
+        CommandPostfix post;
+        
+        try {
+        	post = CommandPostfix.valueOf(instruction);
+	    } catch (IllegalArgumentException e) {
+	    	System.out.printf("%s is not a value postfix!", instruction);
+	    	post = CommandPostfix.ZERO;
+	    }
+        
         return post;
     }
 
@@ -150,7 +134,7 @@ B, /** The W. */
 
         if (str.length > 0) {
             this.twoParts = true;
-            this.postfix  = recognizePostfix(str[0]);
+            this.postfix  = getPostfix(str[0]);
         }
 
         this.instruction = com;
@@ -194,15 +178,8 @@ B, /** The W. */
         return command;
     }
 
-    /**
-     * Gets the prefix of the Command.
-     *
-     * @return the prefix
-     */
     public InstructionSet getPrefix() {
-
         return this.instruction;
-
     }
 
     /**
@@ -211,9 +188,7 @@ B, /** The W. */
      * @return the postfix
      */
     public CommandPostfix getPostfix() {
-
         return this.postfix;
-
     }
 
     /* (non-Javadoc)
@@ -221,13 +196,11 @@ B, /** The W. */
      */
     @Override
     public String toString() {
-
         if (this.twoParts) {
             return this.instruction + "," + this.postfix;
         } else {
             return this.instruction.toString();
         }
-
     }
 
     /* (non-Javadoc)
@@ -235,16 +208,14 @@ B, /** The W. */
      */
     @Override
     public Command clone() {
-
-        Command klon;
+        Command clone;
 
         if (this.twoParts) {
-            klon = new Command(this.instruction, this.postfix);
+            clone = new Command(this.instruction, this.postfix);
         } else {
-            klon = new Command(this.instruction);
+            clone = new Command(this.instruction);
         }
 
-        return klon;
-
+        return clone;
     }
 }
