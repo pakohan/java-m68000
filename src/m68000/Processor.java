@@ -110,7 +110,7 @@ public class Processor {
             this.finished = true;
             break;
         default :
-            System.out.println("Befehl nicht gefunden!");
+            System.out.printf("Command '%s' not found!%n", com.getCommand().getPrefix());
         }
     }
 
