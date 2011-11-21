@@ -44,8 +44,8 @@ public class Memory {
         return value;
     }
 
-    public final void setValue(final int value) {
-        this.value = value;
+    public final void setValue(final int givenValue) {
+        this.value = givenValue;
     }
 
     public final String getPosition() {

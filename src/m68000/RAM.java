@@ -22,7 +22,7 @@ package m68000;
 public final class RAM {
 
     private int[] memory;
-    private final int MAX_BYTE = 1024;
+    private static final int MAX_BYTE = 1024;
     private int pointer = 0;
 
     /**
@@ -49,33 +49,29 @@ public final class RAM {
     public int getByteInAddress(final int address) {
         return this.memory[address];
     }
-    
+
     public int getWordInAddress(final int address) {
-    	//ToDO
-    	return 0;
-    }
-    
-    public long getLongWordInAddress(final int address) {
-    	//ToDO
-    	return 0;
+        //TODO
+        return 0;
     }
 
-    public void setByteInAddress(final int address, int data) {
-    	this.memory[address] = data;
+    public long getLongWordInAddress(final int address) {
+        //TODO
+        return 0;
     }
-    
+
+    public void setByteInAddress(final int address, final int data) {
+        this.memory[address] = data;
+    }
+
     public void setWordInAddress(final int address, final int data) {
-        //ToDO
+        //TODO
     }
-    
+
     public void setLongWordInAddress(final int address, final int data) {
         this.memory[address] = data;
     }
-    
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         StringBuilder tmp = new StringBuilder();

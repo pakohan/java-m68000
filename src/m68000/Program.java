@@ -34,14 +34,14 @@ public final class Program {
      * It describes, of how many different items an assembler code line can
      * consist. (label, command and argument)
      */
-    private final int MAX_TOKENS = 3;
+    private static final int MAX_TOKENS = 3;
 
     /**
      * The prog value is the linked list which represents the program.
      */
     private LinkedList<CodeLine> prog;
 
-    private RAM ram;
+    private RAM memory;
 
     /**
      * Instantiates a new Program.
@@ -51,7 +51,7 @@ public final class Program {
      */
     public Program(final String arg) throws IOException {
         this.prog = readSourceFile(arg);
-        this.ram = new RAM();
+        this.memory = new RAM();
         linker();
     }
 
@@ -65,7 +65,7 @@ public final class Program {
     }
 
     public RAM getRAM() {
-        return this.ram;
+        return this.memory;
     }
 
     /**
@@ -113,10 +113,11 @@ public final class Program {
                 Scanner scan = new Scanner(System.in);
                 System.out.printf("What is stored in the RAM in address '%d' ?",
                         tmp_arg.getValue());
-                this.ram.setByteInAddress(tmp_arg.getValue(), scan.nextInt());
+                this.memory.setByteInAddress(tmp_arg.getValue(),
+                                             scan.nextInt());
                 break;
             case DC :
-                int x2 = this.ram.addDataInMemory(tmp_arg.getValue());
+                int x2 = this.memory.addDataInMemory(tmp_arg.getValue());
                 StringBuilder tmp_str = new StringBuilder();
                 tmp_str.append("$");
                 tmp_str.append(x2);
@@ -125,7 +126,7 @@ public final class Program {
                 break;
             case DS :
                 int[] x = new int[tmp_arg.getValue()];
-                int y = this.ram.addDataInMemory(x);
+                int y = this.memory.addDataInMemory(x);
                 replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + y);
                 break;
             case ORG:
@@ -199,14 +200,19 @@ public final class Program {
     private void addCommand(final String[] befehlsfolge) {
         switch (befehlsfolge.length) {
             case 1:
-                this.prog.add(new CodeLine(befehlsfolge[0], "", ""));
+                this.prog.add(new CodeLine(befehlsfolge[0],
+                                           "",
+                                           ""));
                 break;
             case 2:
-                this.prog.add(new CodeLine(befehlsfolge[0], befehlsfolge[1], ""));
+                this.prog.add(new CodeLine(befehlsfolge[0],
+                                           befehlsfolge[1],
+                                           ""));
                 break;
             case MAX_TOKENS:
-                this.prog.add(new CodeLine(befehlsfolge[1], befehlsfolge[2],
-                        befehlsfolge[0]));
+                this.prog.add(new CodeLine(befehlsfolge[1],
+                                           befehlsfolge[2],
+                                           befehlsfolge[0]));
                 break;
             default:
         }

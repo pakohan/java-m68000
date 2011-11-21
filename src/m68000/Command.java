@@ -62,12 +62,12 @@ public final class Command implements Cloneable {
     /**
      * The Enum CommandPostfix.
      */
-    static enum CommandPostfix	{
-									B,
-									W,
-									L,
-									ZERO
-								}
+    static enum CommandPostfix    {
+                                    B,
+                                    W,
+                                    L,
+                                    ZERO
+                                }
 
     /**
      * The prefix is one of the enum InstructionSet.
@@ -95,7 +95,7 @@ public final class Command implements Cloneable {
      */
     public Command(final String str) {
         if (str.contains(".")) {
-        	String[] parts = str.split("[.]");
+            String[] parts = str.split("[.]");
             this.postfix   = getPostfix(parts[1]);
             this.instruction    = getInstruction(parts[0]);
             this.twoParts  = true;
@@ -111,14 +111,14 @@ public final class Command implements Cloneable {
      */
     private static CommandPostfix getPostfix(final String instruction) {
         CommandPostfix post;
-        
+
         try {
-        	post = CommandPostfix.valueOf(instruction);
-	    } catch (IllegalArgumentException e) {
-	    	System.out.printf("%s is not a value postfix!", instruction);
-	    	post = CommandPostfix.ZERO;
-	    }
-        
+            post = CommandPostfix.valueOf(instruction);
+        } catch (IllegalArgumentException e) {
+            System.out.printf("%s is not a value postfix!", instruction);
+            post = CommandPostfix.ZERO;
+        }
+
         return post;
     }
 
@@ -167,12 +167,12 @@ public final class Command implements Cloneable {
      */
     private static InstructionSet getInstruction(final String com) {
         InstructionSet command;
-        
+
         try {
-        	command = InstructionSet.valueOf(com);
+            command = InstructionSet.valueOf(com);
         } catch (IllegalArgumentException e) {
-        	System.out.printf("%s is not a command!", com);
-        	command = InstructionSet.ZERO;
+            System.out.printf("%s is not a command!", com);
+            command = InstructionSet.ZERO;
         }
 
         return command;
@@ -191,9 +191,6 @@ public final class Command implements Cloneable {
         return this.postfix;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         if (this.twoParts) {
@@ -203,9 +200,6 @@ public final class Command implements Cloneable {
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
     @Override
     public Command clone() {
         Command clone;

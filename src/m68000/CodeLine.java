@@ -17,7 +17,7 @@
 package m68000;
 
 /**
- * Represents a code line
+ * Represents a code line.
  */
 public final class CodeLine implements Cloneable {
 
@@ -52,10 +52,12 @@ public final class CodeLine implements Cloneable {
      * @param arg the argument
      * @param label the label
      */
-    public CodeLine(final Command com, final Argument arg, final String label) {
+    public CodeLine(final Command com,
+                    final Argument arg,
+                    final String marker) {
         this.command = com;
         this.argument = arg;
-        this.label = label;
+        this.label = marker;
     }
 
     public Command getCommand() {
@@ -70,9 +72,6 @@ public final class CodeLine implements Cloneable {
         return this.label;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
@@ -86,13 +85,11 @@ public final class CodeLine implements Cloneable {
         return str.toString();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
     @Override
     public CodeLine clone() {
-        CodeLine clone = new CodeLine(this.command.clone(), this.argument.clone(),
-                this.label);
+        CodeLine clone = new CodeLine(this.command.clone(),
+                                      this.argument.clone(),
+                                      this.label);
         return clone;
     }
 }

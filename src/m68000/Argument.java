@@ -40,13 +40,13 @@ public final class Argument implements Cloneable {
     /**
      * The Enum ArgType.
      */
-    static enum ArgType	{
-    						ADDRESS_REGISTER, 
-							DATA_REGISTER, 
-							MEMORY, 
-							STRING, 
-							CONST
-						}
+    static enum ArgType    {
+                            ADDRESS_REGISTER,
+                            DATA_REGISTER,
+                            MEMORY,
+                            STRING,
+                            CONST
+                        }
 
 
     private Arg firstOperand;

@@ -110,7 +110,8 @@ public class Processor {
             this.finished = true;
             break;
         default :
-            System.out.printf("Command '%s' not found!%n", com.getCommand().getPrefix());
+            System.out.printf("Command '%s' not found!%n",
+                              com.getCommand().getPrefix());
         }
     }
 
@@ -203,7 +204,8 @@ public class Processor {
     public final void setData(final Arg dataPlace, final int x) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER :
-            this.ram.setByteInAddress(this.adressRegister[dataPlace.getValue()], x);
+            this.ram.setByteInAddress(this.adressRegister[dataPlace.getValue()],
+                                      x);
             break;
         case DATA_REGISTER :
             this.dataRegister[dataPlace.getValue()] = x;
