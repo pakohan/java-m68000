@@ -60,13 +60,22 @@ public final class UI {
         run.setSensitive(issensitive);
         step.setSensitive(issensitive);
     }
+    
     public static void main(final String[] args) {
-        Gtk.init(args);
-
-        createMainWindow();
-        window.showAll();
-
-        Gtk.main();
+        //try {
+        	Gtk.init(args);
+        	createMainWindow();
+        	window.showAll();
+        	Gtk.main();
+        /*} catch (Exception x) {
+            Writer result = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(result);
+            x.printStackTrace(printWriter);
+            ErrorMessageDialog error = new ErrorMessageDialog(window, "Fehler", result.toString());
+            error.run();
+            error.hide();
+            Gtk.main();
+        }*/
     }
 
     public static void setCore1(final Processor proc) {
