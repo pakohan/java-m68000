@@ -6,6 +6,7 @@ import static org.gnome.gtk.WrapMode.NONE;
 import org.gnome.gdk.Event;
 import org.gnome.gtk.AboutDialog;
 import org.gnome.gtk.Button;
+import org.gnome.gtk.DataColumnString;
 import org.gnome.gtk.ErrorMessageDialog;
 import org.gnome.gtk.FileChooserButton;
 import org.gnome.gtk.FileChooserDialog;
@@ -16,7 +17,10 @@ import org.gnome.gtk.MenuBar;
 import org.gnome.gtk.ScrolledWindow;
 import org.gnome.gtk.TextBuffer;
 import org.gnome.gtk.TextIter;
+import org.gnome.gtk.TextTag;
 import org.gnome.gtk.TextView;
+import org.gnome.gtk.TreeIter;
+import org.gnome.gtk.TreeView;
 import org.gnome.gtk.VBox;
 import org.gnome.gtk.Widget;
 import org.gnome.gtk.Window;
@@ -44,7 +48,10 @@ public final class UI {
 	static Button step;
 	static MenuBar menuBar;
 	static TextIter end;
-	static ListStore dataRegister;
+	static TreeIter datatableiter;
+	static TreeView dataRegister;
+	static DataColumnString dataregistermemory;
+	static ListStore liststore;
 
 	static Program prog;
 	static Processor core1;
@@ -62,6 +69,14 @@ public final class UI {
 		window.showAll();
 		
 		Gtk.main();
+	}
+	
+	public static void setdatatable(final int n, final int x) {
+		datatableiter = liststore.getIterFirst();
+		for (int i = 0; i < n; i++) {
+			datatableiter.iterNext();
+		}
+		liststore.setValue(datatableiter, dataregistermemory, new Integer(x).toString());
 	}
 	
 	private static void createMainWindow() {
@@ -95,6 +110,8 @@ public final class UI {
 		hbox1 = new HBox(false, 2);
 		createFileScrolledWindow();
 		hbox1.packStart(scrolledFileWindow, true, true, 0);
+		dataRegister = DataTable.createTreeView();
+		hbox1.packStart(dataRegister, false, false, 0);
 	}
 	
 	private static void createHBox2() {
@@ -120,6 +137,19 @@ public final class UI {
 		msgtextview.setWrapMode(WORD);
 		scrolledWindow = new ScrolledWindow();
 		scrolledWindow.add(msgtextview);
+	}
+	
+	public static void markLine(final int i) {
+		TextTag black = new TextTag();
+		black.setForeground("black");
+		filebuffer.applyTag(black, filebuffer.getIterStart(), filebuffer.getIterEnd());
+		TextIter pointerend = filebuffer.getIterStart();
+	    pointerend.forwardLines(i);
+	    TextIter pointerbegin = pointerend.copy();
+	    pointerend.forwardLine();
+	    TextTag tag = new TextTag();
+	    tag.setForeground("red");
+		filebuffer.applyTag(tag, pointerbegin, pointerend);
 	}
 	
 	public static void printMessage(final String str) {

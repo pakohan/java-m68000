@@ -29,7 +29,6 @@ public class Processor {
     private int[] dataRegister = new int[REG_AMOUNT];
     private int[] adressRegister = new int[REG_AMOUNT];
 
-
     public final int[] getDataRegister() {
         return dataRegister;
     }
@@ -60,6 +59,7 @@ public class Processor {
     public final void step() {
         this.execute = this.execute.getNext();
         step(this.execute.getItem());
+        ui.UI.markLine(this.execute.getItem().getLineindex() + 1);
     }
 
     /**
@@ -115,8 +115,8 @@ public class Processor {
             this.finished = true;
             break;
         default :
-            System.err.printf("Command '%s' not found!%n",
-                              com.getCommand().getPrefix());
+        	ui.UI.printMessage("Command '" +
+        			com.getCommand().getPrefix() + "' not found!%n");
         }
     }
 
@@ -214,6 +214,7 @@ public class Processor {
             break;
         case DATA_REGISTER :
             this.dataRegister[dataPlace.getValue()] = x;
+            ui.UI.setdatatable(dataPlace.getValue(), x);
             break;
         case MEMORY :
             this.ram.setByteInAddress(dataPlace.getValue(), x);

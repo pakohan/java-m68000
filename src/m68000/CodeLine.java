@@ -24,6 +24,7 @@ public final class CodeLine implements Cloneable {
     private Command command;
     private String label;
     private Argument argument;
+	private int lineindex;
 
     /**
      * Instantiates a new line of code.
@@ -39,10 +40,11 @@ public final class CodeLine implements Cloneable {
      *
      * @param strings the line of code
      */
-    public CodeLine(final String... strings) {
+    public CodeLine( final int n, final String... strings) {
         this.command = new Command(strings[0]);
         this.argument = new Argument(strings[1]);
         this.label = strings[2];
+        this.lineindex = n;
     }
 
     /**
@@ -52,12 +54,14 @@ public final class CodeLine implements Cloneable {
      * @param arg the argument
      * @param label the label
      */
-    public CodeLine(final Command com,
+    public CodeLine(final int n,
+    				final Command com,
                     final Argument arg,
                     final String marker) {
         this.command = com;
         this.argument = arg;
         this.label = marker;
+        this.lineindex = n;
     }
 
     public Command getCommand() {
@@ -87,9 +91,14 @@ public final class CodeLine implements Cloneable {
 
     @Override
     public CodeLine clone() {
-        CodeLine clone = new CodeLine(this.command.clone(),
+        CodeLine clone = new CodeLine(this.lineindex,
+        							  this.command.clone(),
                                       this.argument.clone(),
                                       this.label);
         return clone;
     }
+
+	public final int getLineindex() {
+		return lineindex;
+	}
 }

@@ -115,7 +115,7 @@ public final class Command implements Cloneable {
         try {
             post = CommandPostfix.valueOf(instruction);
         } catch (IllegalArgumentException e) {
-            System.out.printf("%s is not a value postfix!", instruction);
+            ui.UI.printMessage(instruction + " is not a value postfix!");
             post = CommandPostfix.ZERO;
         }
 
@@ -171,7 +171,7 @@ public final class Command implements Cloneable {
         try {
             command = InstructionSet.valueOf(com);
         } catch (IllegalArgumentException e) {
-            System.out.printf("%s is not a command!", com);
+        	ui.UI.printMessage(com + " is not a command!");
             command = InstructionSet.ZERO;
         }
 

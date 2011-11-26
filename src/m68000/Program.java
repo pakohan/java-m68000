@@ -82,10 +82,12 @@ public final class Program {
         String[] part;
         String line;
         this.prog = new LinkedList<CodeLine>(new CodeLine());
-
+        
+        int n = 0;
         while ((line = source.readLine()) != null) {
             part = line.split(";");
-            addCommand(deleteComments(part[0]));
+            addCommand(deleteComments(part[0]), n);
+            n++;
         }
         source.close();
         file.close();
@@ -111,8 +113,8 @@ public final class Program {
                 replaceSymbolicConstant(tmp.getItem().getLabel(),
                         "$" + tmp_arg.getValue());
                 Scanner scan = new Scanner(System.in);
-                System.out.printf("What is stored in the RAM in address '%d' ?",
-                        tmp_arg.getValue());
+                ui.UI.printMessage("What is stored in the RAM in address '"
+                		+ tmp_arg.getValue() + "' ?");
                 this.memory.setByteInAddress(tmp_arg.getValue(),
                                              scan.nextInt());
                 break;
@@ -143,7 +145,7 @@ public final class Program {
             case BNE:
                 break;
             default :
-                System.out.println("Befehl nicht gefunden!"
+            	ui.UI.printMessage("Befehl nicht gefunden!"
             + tmp.getItem().getCommand().getPrefix());
             }
         }
@@ -197,20 +199,23 @@ public final class Program {
      *
      * @param befehlsfolge the line of code
      */
-    private void addCommand(final String[] befehlsfolge) {
+    private void addCommand(final String[] befehlsfolge, final int n) {
         switch (befehlsfolge.length) {
             case 1:
-                this.prog.add(new CodeLine(befehlsfolge[0],
+                this.prog.add(new CodeLine(n,
+                		                   befehlsfolge[0],
                                            "",
                                            ""));
                 break;
             case 2:
-                this.prog.add(new CodeLine(befehlsfolge[0],
+                this.prog.add(new CodeLine(n,
+                		                   befehlsfolge[0],
                                            befehlsfolge[1],
                                            ""));
                 break;
             case MAX_TOKENS:
-                this.prog.add(new CodeLine(befehlsfolge[1],
+                this.prog.add(new CodeLine(n,
+                		                   befehlsfolge[1],
                                            befehlsfolge[2],
                                            befehlsfolge[0]));
                 break;
