@@ -16,8 +16,6 @@ import org.gnome.gtk.MenuBar;
 import org.gnome.gtk.MenuItem;
 import org.gnome.gtk.TextIter;
 import org.gnome.gtk.TextTag;
-import org.gnome.gtk.TextTagTable;
-import org.gnome.pango.FontDescription;
 
 public final class TopMenuBar {
     private TopMenuBar() { }
@@ -38,15 +36,15 @@ public final class TopMenuBar {
                 if (str != null) {
                     UI.clearFileBuffer();
                     try {
-                    	String line;
+                        String line;
                         TextIter end;
                         Scanner scan = new Scanner(new File(str));
                         while (scan.hasNextLine()) {
                             end = UI.getFilebuffer().getIterEnd();
                             line = scan.nextLine();
                             if (!line.isEmpty()) {
-                            	UI.getFilebuffer().insert(end, line);
-                            	UI.getFilebuffer().insert(end, "\n");
+                                UI.getFilebuffer().insert(end, line);
+                                UI.getFilebuffer().insert(end, "\n");
                             }
                         }
                         prog = new Program(str);
@@ -54,8 +52,8 @@ public final class TopMenuBar {
                     TextTag font = new TextTag();
                     font.setFont("Monospace");
                     UI.getFilebuffer().applyTag(font,
-                    		UI.getFilebuffer().getIterStart(),
-                    		UI.getFilebuffer().getIterEnd());
+                            UI.getFilebuffer().getIterStart(),
+                            UI.getFilebuffer().getIterEnd());
                     UI.printMessage("Datei \"" + str + "\" geladen");
                     UI.setCore1(new Processor(prog));
                     UI.setSensitive(true);

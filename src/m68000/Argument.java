@@ -45,7 +45,8 @@ public final class Argument implements Cloneable {
                             DATA_REGISTER,
                             MEMORY,
                             STRING,
-                            CONST
+                            CONST,
+                            VALUEARRAY
                         }
 
 
@@ -153,9 +154,6 @@ public final class Argument implements Cloneable {
 
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
 
@@ -167,9 +165,6 @@ public final class Argument implements Cloneable {
 
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
     @Override
     public Argument clone() {
         Argument klon;
@@ -193,6 +188,7 @@ public final class Argument implements Cloneable {
         private int value;
         private boolean isAddress;
         private String anotherArg;
+        private int[] valuearray;
 
         /**
          * Instantiates a new arg.
@@ -207,6 +203,14 @@ public final class Argument implements Cloneable {
                 this.value = tmp.nextInt();
                 this.type = ArgType.CONST;
                 this.isAddress = false;
+            } else if (argument.length() > 1
+            		&& argument.charAt(0) == '#'
+            		&& new Scanner(argument.substring(1)).hasNextInt()) {
+            	Scanner tmp2 = new Scanner(argument.substring(1));
+                this.value = tmp2.nextInt();
+                this.type = ArgType.CONST;
+                this.isAddress = false;
+                System.out.println(this.value);
             } else if (argument.length() > 1 && argument.charAt(0) == '$') {
                 this.value = new Integer(argument.substring(1));
                 this.isAddress = true;
@@ -225,16 +229,25 @@ public final class Argument implements Cloneable {
                     this.isAddress = false;
                     this.type = ArgType.STRING;
                 }
+            } else if (argument.contains("'")) {
+            	String[] tmpstr = argument.split("'");
+            	valuearray = new int[tmpstr[1].length() + 1];
+            	for (int i = 0; i < tmpstr[1].length(); i++) {
+            		valuearray[i] = Character.valueOf(tmpstr[1].charAt(i));
+            	}
+            	valuearray[valuearray.length - 1] = 0;
+            	this.type = ArgType.VALUEARRAY;
             } else {
                 this.isAddress = false;
                 this.type = ArgType.STRING;
             }
         }
 
-        /* (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-        @Override
+        public final int[] getValuearray() {
+			return valuearray;
+		}
+
+		@Override
         public String toString() {
             return this.anotherArg;
         }

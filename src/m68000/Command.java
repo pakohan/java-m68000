@@ -58,7 +58,8 @@ public final class Command implements Cloneable {
             DIV,
             CMP,
             BNE,
-            BEQ};
+            BEQ,
+            DIVU };
 
     /**
      * The Enum CommandPostfix.

@@ -22,6 +22,7 @@ import java.io.LineNumberReader;
 import java.util.Scanner;
 
 import m68000.Argument.Arg;
+import m68000.Argument.ArgType;
 
 /**
  * The Class Program reads the code source file and initializes a new RAM
@@ -40,7 +41,7 @@ public final class Program {
      * The prog value is the linked list which represents the program.
      */
     private LinkedList<CodeLine> prog;
-    
+
     private int counter = 0;
 
     private RAM memory;
@@ -119,8 +120,14 @@ public final class Program {
                                              scan.nextInt());
                 break;
             case DC :
-                int x2 = this.memory.addDataInMemory(tmp_arg.getValue());
-                StringBuilder tmp_str = new StringBuilder();
+                int x2;
+                StringBuilder tmp_str;
+                if (tmp_arg.getType() == ArgType.CONST) {
+                    x2 = this.memory.addDataInMemory(tmp_arg.getValue());
+                } else {
+                	x2 = this.memory.addDataInMemory(tmp_arg.getValuearray());
+                }
+                tmp_str = new StringBuilder();
                 tmp_str.append("$");
                 tmp_str.append(x2);
                 tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
@@ -144,6 +151,7 @@ public final class Program {
             case CMP :
             case BNE :
             case BEQ :
+            case DIVU :
                 break;
             default :
                 ui.UI.printMessage("Command not found! "
@@ -207,21 +215,21 @@ public final class Program {
                                            befehlsfolge[0],
                                            "",
                                            ""));
-            	counter++;
+                counter++;
                 break;
             case 2:
                 this.prog.add(new CodeLine(counter,
                                            befehlsfolge[0],
                                            befehlsfolge[1],
                                            ""));
-            	counter++;
+                counter++;
                 break;
             case MAX_TOKENS:
                 this.prog.add(new CodeLine(counter,
                                            befehlsfolge[1],
                                            befehlsfolge[2],
                                            befehlsfolge[0]));
-            	counter++;
+                counter++;
                 break;
             default:
         }

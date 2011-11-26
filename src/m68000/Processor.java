@@ -101,6 +101,7 @@ public class Processor {
         case MUL :
             mul(com.getArgument());
             break;
+        case DIVU :
         case DIV :
             div(com.getArgument());
             break;
@@ -206,8 +207,8 @@ public class Processor {
     public final void div(final Argument args) {
         int x = getData(args.getPrefix());
         if (x != 0) {
-        	x = getData(args.getPostfix()) / x;
-        	setData(args.getPostfix(), x);
+            x = getData(args.getPostfix()) / x;
+            setData(args.getPostfix(), x);
         }
     }
 
@@ -223,6 +224,7 @@ public class Processor {
         case ADDRESS_REGISTER :
             this.ram.setByteInAddress(this.adressRegister[dataPlace.getValue()],
                                       x);
+            ui.UI.setadresstable(dataPlace.getValue(), x);
             break;
         case DATA_REGISTER :
             this.dataRegister[dataPlace.getValue()] = x;

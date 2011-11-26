@@ -14,14 +14,12 @@ import org.gnome.gtk.ScrolledWindow;
 import org.gnome.gtk.TextBuffer;
 import org.gnome.gtk.TextIter;
 import org.gnome.gtk.TextTag;
-import org.gnome.gtk.TextTagTable;
 import org.gnome.gtk.TextView;
 import org.gnome.gtk.TreeIter;
 import org.gnome.gtk.TreeView;
 import org.gnome.gtk.VBox;
 import org.gnome.gtk.Widget;
 import org.gnome.gtk.Window;
-import org.gnome.pango.FontDescription;
 
 import m68000.Processor;
 
@@ -39,6 +37,7 @@ public final class UI {
     private static MenuBar menuBar;
     private static TextIter end;
     private static TreeIter datatableiter;
+    private static TreeIter adresstableiter;
     private static TreeView dataRegister;
     private static TreeView adressRegister;
     public static DataColumnString dataregistermemory;
@@ -83,11 +82,21 @@ public final class UI {
                 dataregistermemory,
                 Integer.valueOf(x).toString());
     }
+    
+    public static void setadresstable(final int n, final int x) {
+        adresstableiter = adressregisterliststore.getIterFirst();
+        for (int i = 0; i < n; i++) {
+            adresstableiter.iterNext();
+        }
+        adressregisterliststore.setValue(adresstableiter,
+                dataregistermemory,
+                Integer.valueOf(x).toString());
+    }
 
     private static void createMainWindow() {
         window = new Window();
         window.setTitle("M68000");
-        window.setDefaultSize(600, 800);
+        window.setDefaultSize(800, 700);
         window.connect(new Window.DeleteEvent() {
             public boolean onDeleteEvent(final Widget source,
                     final Event event) {

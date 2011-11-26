@@ -8,7 +8,7 @@ import org.gnome.gtk.TreeIter;
 import org.gnome.gtk.TreeView;
 import org.gnome.gtk.TreeViewColumn;
 
-public class AdressTable {
+public final class AdressTable {
     private AdressTable() { }
 
     public static TreeView createTreeView() {
@@ -26,7 +26,9 @@ public class AdressTable {
             UI.adressregisterliststore.setValue(row,
                     adressregisterindex,
                     Integer.valueOf(i).toString());
-            UI.adressregisterliststore.setValue(row, UI.adressregistermemory, "0");
+            UI.adressregisterliststore.setValue(row,
+                    UI.adressregistermemory,
+                    "0");
         }
 
         TreeView dataRegister = new TreeView(UI.adressregisterliststore);
