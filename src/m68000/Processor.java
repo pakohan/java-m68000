@@ -56,6 +56,11 @@ public class Processor {
         this.ram = prog.getRAM();
         this.size = this.execute.getSize();
     }
+    
+    public final void step() {
+        this.execute = this.execute.getNext();
+        step(this.execute.getItem());
+    }
 
     /**
      * The main processing unit. It searches the given program line for known
@@ -110,7 +115,7 @@ public class Processor {
             this.finished = true;
             break;
         default :
-            System.out.printf("Command '%s' not found!%n",
+            System.err.printf("Command '%s' not found!%n",
                               com.getCommand().getPrefix());
         }
     }
