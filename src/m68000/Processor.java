@@ -24,13 +24,17 @@ import m68000.Argument.Arg;
 public class Processor {
 
     /** REG_AMOUNT defines the amount of the registers. */
-    static final int REG_AMOUNT = 8;
+    public static final int REG_AMOUNT = 8;
 
     private int[] dataRegister = new int[REG_AMOUNT];
     private int[] adressRegister = new int[REG_AMOUNT];
 
     public final int[] getDataRegister() {
         return dataRegister;
+    }
+
+    public final int[] getAdressRegister() {
+        return adressRegister;
     }
 
     private int size;
@@ -55,7 +59,7 @@ public class Processor {
         this.ram = prog.getRAM();
         this.size = this.execute.getSize();
     }
-    
+
     public final void step() {
         this.execute = this.execute.getNext();
         step(this.execute.getItem());
@@ -105,6 +109,12 @@ public class Processor {
             break;
         case HEAD :
             break;
+        case BEQ :
+            if (this.compare) {
+                this.execute = jump(com.getArgument().getPrefix().getOtherArg())
+                        .getPrev();
+            }
+            break;
         case BNE :
             if (!this.compare) {
                 this.execute = jump(com.getArgument().getPrefix().getOtherArg())
@@ -115,8 +125,8 @@ public class Processor {
             this.finished = true;
             break;
         default :
-        	ui.UI.printMessage("Command '" +
-        			com.getCommand().getPrefix() + "' not found!%n");
+            ui.UI.printMessage("Command '"
+                    + com.getCommand().getPrefix() + "' not found!");
         }
     }
 
@@ -195,8 +205,10 @@ public class Processor {
      */
     public final void div(final Argument args) {
         int x = getData(args.getPrefix());
-        x = getData(args.getPostfix()) / x;
-        setData(args.getPostfix(), x);
+        if (x != 0) {
+        	x = getData(args.getPostfix()) / x;
+        	setData(args.getPostfix(), x);
+        }
     }
 
     /**

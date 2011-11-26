@@ -57,7 +57,8 @@ public final class Command implements Cloneable {
             MUL,
             DIV,
             CMP,
-            BNE };
+            BNE,
+            BEQ};
 
     /**
      * The Enum CommandPostfix.
@@ -66,6 +67,7 @@ public final class Command implements Cloneable {
                                     B,
                                     W,
                                     L,
+                                    U,
                                     ZERO
                                 }
 
@@ -167,14 +169,12 @@ public final class Command implements Cloneable {
      */
     private static InstructionSet getInstruction(final String com) {
         InstructionSet command;
-
         try {
             command = InstructionSet.valueOf(com);
         } catch (IllegalArgumentException e) {
-        	ui.UI.printMessage(com + " is not a command!");
+            ui.UI.printMessage(com + " is not a command!");
             command = InstructionSet.ZERO;
         }
-
         return command;
     }
 

@@ -8,40 +8,40 @@ import org.gnome.gtk.TreeIter;
 import org.gnome.gtk.TreeView;
 import org.gnome.gtk.TreeViewColumn;
 
-public final class DataTable {
-    private DataTable() { }
+public class AdressTable {
+    private AdressTable() { }
 
     public static TreeView createTreeView() {
-        DataColumnString dataregisterindex = new DataColumnString();
-        UI.dataregistermemory = new DataColumnString();
+        DataColumnString adressregisterindex = new DataColumnString();
+        UI.adressregistermemory = new DataColumnString();
         DataColumn[] table = new DataColumn[] {
-                dataregisterindex,
-                UI.dataregistermemory
+                adressregisterindex,
+                UI.adressregistermemory
         };
 
-        UI.dataregisterliststore = new ListStore(table);
+        UI.adressregisterliststore = new ListStore(table);
         TreeIter row;
         for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
-            row = UI.dataregisterliststore.appendRow();
-            UI.dataregisterliststore.setValue(row,
-                    dataregisterindex,
+            row = UI.adressregisterliststore.appendRow();
+            UI.adressregisterliststore.setValue(row,
+                    adressregisterindex,
                     Integer.valueOf(i).toString());
-            UI.dataregisterliststore.setValue(row, UI.dataregistermemory, "0");
+            UI.adressregisterliststore.setValue(row, UI.adressregistermemory, "0");
         }
 
-        TreeView dataRegister = new TreeView(UI.dataregisterliststore);
+        TreeView dataRegister = new TreeView(UI.adressregisterliststore);
         TreeViewColumn vertical;
         CellRendererText renderer;
 
         vertical = dataRegister.appendColumn();
-        vertical.setTitle("Datenregister");
+        vertical.setTitle("Adressregister");
         renderer = new CellRendererText(vertical);
-        renderer.setMarkup(dataregisterindex);
+        renderer.setMarkup(adressregisterindex);
 
         vertical = dataRegister.appendColumn();
         vertical.setTitle("Datenwert");
         renderer = new CellRendererText(vertical);
-        renderer.setMarkup(UI.dataregistermemory);
+        renderer.setMarkup(UI.adressregistermemory);
 
         return dataRegister;
     }
