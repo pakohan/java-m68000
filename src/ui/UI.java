@@ -49,6 +49,7 @@ public final class UI {
     private static ScrolledWindow scrolledWindow;
     private static HBox hbox2;
     private static ScrolledWindow scrolledFileWindow;
+    public static RamDisplay ramdisplay;
 
     private UI() { }
 
@@ -60,18 +61,21 @@ public final class UI {
         run.setSensitive(issensitive);
         step.setSensitive(issensitive);
     }
-    
+
     public static void main(final String[] args) {
         //try {
-        	Gtk.init(args);
-        	createMainWindow();
-        	window.showAll();
-        	Gtk.main();
+            Gtk.init(args);
+            createMainWindow();
+            ramdisplay = new RamDisplay();
+            window.showAll();
+            Gtk.main();
         /*} catch (Exception x) {
             Writer result = new StringWriter();
             PrintWriter printWriter = new PrintWriter(result);
             x.printStackTrace(printWriter);
-            ErrorMessageDialog error = new ErrorMessageDialog(window, "Fehler", result.toString());
+            ErrorMessageDialog error = new ErrorMessageDialog(window,
+            "Fehler",
+            result.toString());
             error.run();
             error.hide();
             Gtk.main();
@@ -91,7 +95,7 @@ public final class UI {
                 dataregistermemory,
                 Integer.valueOf(x).toString());
     }
-    
+
     public static void setadresstable(final int n, final int x) {
         adresstableiter = adressregisterliststore.getIterFirst();
         for (int i = 0; i < n; i++) {

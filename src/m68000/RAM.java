@@ -22,23 +22,13 @@ package m68000;
 public final class RAM {
 
     private int[] memory;
-    private static final int MAX_BYTE = 1024;
+    public static final int MAX_BYTE = 1024;
 
     /**
      * Instantiates a new RAM array.
      */
     public RAM() {
         this.memory = new int[MAX_BYTE];
-    }
-
-    /**
-     * Adds memory.
-     *
-     * @param data the data
-     * @return the int
-     */
-    public void addDataInMemory(final int data, final int index) {
-            this.memory[index] = data;
     }
 
     public int getByteInAddress(final int address) {
@@ -57,6 +47,7 @@ public final class RAM {
 
     public void setByteInAddress(final int address, final int data) {
         this.memory[address] = data;
+        ui.UI.ramdisplay.setRamValue(address, data);
     }
 
     public void setWordInAddress(final int address, final int data) {

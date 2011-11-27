@@ -21,6 +21,8 @@ public final class TopMenuBar {
     private TopMenuBar() { }
     private static Program prog;
 
+    private static MenuItem ram;
+
     public static MenuBar createMenuBar() {
         MenuBar menuBar = new MenuBar();
         Menu menu_file = new Menu();
@@ -47,6 +49,7 @@ public final class TopMenuBar {
                                 UI.getFilebuffer().insert(end, "\n");
                             }
                         }
+                        UI.ramdisplay.rebuildTable();
                         prog = new Program(str);
                     } catch (IOException e) { }
                     TextTag font = new TextTag();
@@ -63,6 +66,15 @@ public final class TopMenuBar {
 
         menu_file.append(open);
 
+        ram = new MenuItem("Display RAM");
+        ram.connect(new MenuItem.Activate() {
+            @Override
+            public void onActivate(final MenuItem source) {
+                UI.ramdisplay.window.showAll();
+            }
+        });
+        menu_file.append(ram);
+
         MenuItem exit = new MenuItem("Exit");
         exit.connect(new MenuItem.Activate() {
 
@@ -71,8 +83,8 @@ public final class TopMenuBar {
                 Gtk.mainQuit();
             }
         });
-
         menu_file.append(exit);
+
         MenuItem menu1 = new MenuItem("File");
         menu1.setSubmenu(menu_file);
         menuBar.append(menu1);

@@ -32,30 +32,30 @@ public class Processor {
     public final int[] getDataRegister() {
         return dataRegister;
     }
-    
-    private final int getAdressRegister(final Arg adr) {
-    	int x;
-    	switch (adr.getInk()) {
-    	case POSTINKREMENT :
-    		x = adressRegister[adr.getValue()];
-    		adressRegister[adr.getValue()]++;
-    		break;
-    	case PREINKREMENT :
-    		adressRegister[adr.getValue()]++;
-    		x = adressRegister[adr.getValue()];
-    		break;
-    	case POSTDEKREMENT :
-    		x = adressRegister[adr.getValue()];
-    		adressRegister[adr.getValue()]--;
-    		break;
-    	case PREDEKREMENT :
-    		adressRegister[adr.getValue()]--;
-    		x = adressRegister[adr.getValue()];
-    		break;
-		default :
-    			x = adressRegister[adr.getValue()];
-    	}
-    	return x;
+
+    private int getAdressRegister(final Arg adr) {
+        int x;
+        switch (adr.getInk()) {
+        case POSTINKREMENT :
+            x = adressRegister[adr.getValue()];
+            adressRegister[adr.getValue()]++;
+            break;
+        case PREINKREMENT :
+            adressRegister[adr.getValue()]++;
+            x = adressRegister[adr.getValue()];
+            break;
+        case POSTDEKREMENT :
+            x = adressRegister[adr.getValue()];
+            adressRegister[adr.getValue()]--;
+            break;
+        case PREDEKREMENT :
+            adressRegister[adr.getValue()]--;
+            x = adressRegister[adr.getValue()];
+            break;
+        default :
+                x = adressRegister[adr.getValue()];
+        }
+        return x;
     }
 
     private int size;
@@ -274,7 +274,7 @@ public class Processor {
         case CONST :
             return dataPlace.getValue();
         case ADRESSOFMARKER :
-        	return dataPlace.getValue();
+            return dataPlace.getValue();
         default :
             return 0;
         }

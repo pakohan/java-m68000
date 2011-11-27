@@ -125,21 +125,24 @@ public final class Program {
                 tmp_str.append("$");
                 tmp_str.append(rampointer);
                 tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
-                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + rampointer);
+                replaceSymbolicConstant(tmp.getItem().getLabel(),
+                        "$" + rampointer);
                 if (tmp_arg.getType() == ArgType.CONST) {
-                    this.memory.addDataInMemory(tmp_arg.getValue(), rampointer);
+                    this.memory.setByteInAddress(rampointer,
+                            tmp_arg.getValue());
                     rampointer++;
                 } else if (tmp_arg.getType() == ArgType.VALUEARRAY) {
-                	int[] x = tmp_arg.getValuearray();
-                	for (int j = 0; j < x.length; j++) {
-                		this.memory.addDataInMemory(x[j], rampointer);
-                		rampointer++;
-                	}
+                    int[] x = tmp_arg.getValuearray();
+                    for (int j = 0; j < x.length; j++) {
+                        this.memory.setByteInAddress(rampointer, x[j]);
+                        rampointer++;
+                    }
                 }
                 break;
             case DS :
                 int[] x = new int[tmp_arg.getValue()];
-                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + rampointer);
+                replaceSymbolicConstant(tmp.getItem().getLabel(),
+                        "$" + rampointer);
                 rampointer = rampointer + x.length;
                 break;
             case ORG:
@@ -174,12 +177,12 @@ public final class Program {
             final String newvalue) {
         LinkedList<CodeLine> tmp2 = this.prog;
         for (int i = this.prog.getSize(); i > 0; --i) {
-        	Argument tmparg = tmp2.getItem().getArgument();
+            Argument tmparg = tmp2.getItem().getArgument();
             tmp2 = tmp2.getNext();
             if (tmparg.getPrefix().getOtherArg().equals(str)) {
-            	tmparg.replacePrefix(newvalue);
+                tmparg.replacePrefix(newvalue);
             } else if (tmparg.getPostfix().getOtherArg().equals(str)) {
-            	tmparg.replacePostfix(newvalue);
+                tmparg.replacePostfix(newvalue);
             }
         }
     }

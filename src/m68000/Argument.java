@@ -47,16 +47,15 @@ public final class Argument implements Cloneable {
                             STRING,
                             CONST,
                             VALUEARRAY,
-                            
                             ADRESSOFMARKER
                         }
-    
+
     static enum Inkrement {
-    	POSTINKREMENT,
-    	PREINKREMENT,
-    	POSTDEKREMENT,
-    	PREDEKREMENT,
-    	NOINKREMENT
+        POSTINKREMENT,
+        PREINKREMENT,
+        POSTDEKREMENT,
+        PREDEKREMENT,
+        NOINKREMENT
     }
 
 
@@ -145,21 +144,22 @@ public final class Argument implements Cloneable {
     }
 
     public void replacePrefix(final String x) {
-    	if (this.firstOperand.type != ArgType.ADRESSOFMARKER) {
-    		this.firstOperand = new Arg(x);
-    	} else {
-    		this.firstOperand = new Arg(x);
-    		this.firstOperand.setType(ArgType.ADRESSOFMARKER);
-    	}
+        if (this.firstOperand.type != ArgType.ADRESSOFMARKER) {
+            this.firstOperand = new Arg(x);
+        } else {
+            this.firstOperand = new Arg(x);
+            this.firstOperand.setType(ArgType.ADRESSOFMARKER);
+        }
     }
-    
+
     public void replacePostfix(final String x) {
-    	if (this.secondOperand.type != ArgType.ADRESSOFMARKER) {
-    		this.secondOperand = new Arg(x);
-    	} else {
-    		this.secondOperand = new Arg(x);
-    		this.secondOperand.setType(ArgType.ADRESSOFMARKER);
-    	}    }
+        if (this.secondOperand.type != ArgType.ADRESSOFMARKER) {
+            this.secondOperand = new Arg(x);
+        } else {
+            this.secondOperand = new Arg(x);
+            this.secondOperand.setType(ArgType.ADRESSOFMARKER);
+        }
+    }
 
     public Arg getPostfix() {
 
@@ -215,99 +215,99 @@ public final class Argument implements Cloneable {
          * @param argument the argument
          */
         public Arg(final String argument) {
-			this.anotherArg = argument;
-        	if (argument.length() == 0) {
-        		return;
-        	}
-        	this.ink = Inkrement.NOINKREMENT;
-        	switch (argument.charAt(0)) {
-        	case '#':
-        		Scanner scan = new Scanner(argument.substring(1));
-        		if (scan.hasNextInt()) {
-        			this.type = ArgType.CONST;
-        			this.value = scan.nextInt();
-        		} else {
-        			this.type = ArgType.ADRESSOFMARKER;
-        			this.anotherArg = scan.next();
-        		}
-        		break;
-        	case '(':
-        		if (argument.charAt(4) == '+') {
-        			this.ink = Inkrement.POSTINKREMENT;
-        		} else {
-        			this.ink = Inkrement.POSTDEKREMENT;
-        		}
-        		
-        		if (argument.charAt(1) == 'A') {
-        			this.type = ArgType.ADDRESS_REGISTER;
-        		} else {
-        			this.type = ArgType.DATA_REGISTER;
-        		}
-        		this.value = new Scanner("" + argument.charAt(2)).nextInt();
-        		break;
-        	case '+':
-        		this.ink = Inkrement.PREINKREMENT;
-        		if (argument.charAt(2) == 'A') {
-        			this.type = ArgType.ADDRESS_REGISTER;
-        		} else {
-        			this.type = ArgType.DATA_REGISTER;
-        		}
-        		this.value = new Scanner("" + argument.charAt(3)).nextInt();
-        		break;
-        	case '-':
-        		this.ink = Inkrement.PREDEKREMENT;
-        		if (argument.charAt(2) == 'A') {
-        			this.type = ArgType.ADDRESS_REGISTER;
-        		} else {
-        			this.type = ArgType.DATA_REGISTER;
-        		}
-        		this.value = new Scanner("" + argument.charAt(3)).nextInt();
-        		break;
-        	case '\'':
-        		this.type = ArgType.VALUEARRAY;
-        		String[] str = argument.split("'");
-        		this.valuearray = new int[str[1].length() + 1];
-        		for (int i = 0; i < str[1].length(); i++) {
-        			this.valuearray[i] = Character.valueOf(str[1].charAt(i));
-        		}
-        		this.valuearray[this.valuearray.length - 1] = 0;
-        		break;
-        	case '$':
-        		Scanner scan2 = new Scanner(argument.substring(1));
-        		this.type = ArgType.MEMORY;
-        		this.value = scan2.nextInt();
-        		break;
-    		default :
-    			Scanner scan3 = new Scanner(argument);
-    			if (scan3.hasNextInt()) {
-    				this.type = ArgType.CONST;
-    				this.value = scan3.nextInt();
-    			} else if (argument.length() == 2
-    					&& new Scanner("" + argument.charAt(1)).hasNextInt()) {
-    				Scanner scan4 = new Scanner(argument.substring(1));
-    				if (argument.charAt(0) == 'A') {
-    					this.type = ArgType.ADDRESS_REGISTER;
-    				}
-    				
-    				if (argument.charAt(0) == 'D') {
-    					this.type = ArgType.DATA_REGISTER;
-    				}
-    				this.value = scan4.nextInt();
-    			} else {
-    				this.type = ArgType.STRING;
-    			}
-        	}
+            this.anotherArg = argument;
+            if (argument.length() == 0) {
+                return;
+            }
+            this.ink = Inkrement.NOINKREMENT;
+            switch (argument.charAt(0)) {
+            case '#':
+                Scanner scan = new Scanner(argument.substring(1));
+                if (scan.hasNextInt()) {
+                    this.type = ArgType.CONST;
+                    this.value = scan.nextInt();
+                } else {
+                    this.type = ArgType.ADRESSOFMARKER;
+                    this.anotherArg = scan.next();
+                }
+                break;
+            case '(':
+                if (argument.charAt(4) == '+') {
+                    this.ink = Inkrement.POSTINKREMENT;
+                } else {
+                    this.ink = Inkrement.POSTDEKREMENT;
+                }
+
+                if (argument.charAt(1) == 'A') {
+                    this.type = ArgType.ADDRESS_REGISTER;
+                } else {
+                    this.type = ArgType.DATA_REGISTER;
+                }
+                this.value = new Scanner("" + argument.charAt(2)).nextInt();
+                break;
+            case '+':
+                this.ink = Inkrement.PREINKREMENT;
+                if (argument.charAt(2) == 'A') {
+                    this.type = ArgType.ADDRESS_REGISTER;
+                } else {
+                    this.type = ArgType.DATA_REGISTER;
+                }
+                this.value = new Scanner("" + argument.charAt(3)).nextInt();
+                break;
+            case '-':
+                this.ink = Inkrement.PREDEKREMENT;
+                if (argument.charAt(2) == 'A') {
+                    this.type = ArgType.ADDRESS_REGISTER;
+                } else {
+                    this.type = ArgType.DATA_REGISTER;
+                }
+                this.value = new Scanner("" + argument.charAt(3)).nextInt();
+                break;
+            case '\'':
+                this.type = ArgType.VALUEARRAY;
+                String[] str = argument.split("'");
+                this.valuearray = new int[str[1].length() + 1];
+                for (int i = 0; i < str[1].length(); i++) {
+                    this.valuearray[i] = Character.valueOf(str[1].charAt(i));
+                }
+                this.valuearray[this.valuearray.length - 1] = 0;
+                break;
+            case '$':
+                Scanner scan2 = new Scanner(argument.substring(1));
+                this.type = ArgType.MEMORY;
+                this.value = scan2.nextInt();
+                break;
+            default :
+                Scanner scan3 = new Scanner(argument);
+                if (scan3.hasNextInt()) {
+                    this.type = ArgType.CONST;
+                    this.value = scan3.nextInt();
+                } else if (argument.length() == 2
+                        && new Scanner("" + argument.charAt(1)).hasNextInt()) {
+                    Scanner scan4 = new Scanner(argument.substring(1));
+                    if (argument.charAt(0) == 'A') {
+                        this.type = ArgType.ADDRESS_REGISTER;
+                    }
+
+                    if (argument.charAt(0) == 'D') {
+                        this.type = ArgType.DATA_REGISTER;
+                    }
+                    this.value = scan4.nextInt();
+                } else {
+                    this.type = ArgType.STRING;
+                }
+            }
         }
 
         public final Inkrement getInk() {
-			return ink;
-		}
+            return ink;
+        }
 
-		public final int[] getValuearray() {
-			return valuearray;
-		}
+        public final int[] getValuearray() {
+            return valuearray;
+        }
 
-		@Override
+        @Override
         public String toString() {
             return this.anotherArg + "(" + this.type + ")";
         }
@@ -329,9 +329,9 @@ public final class Argument implements Cloneable {
             return this.value;
         }
 
-		public final void setType(ArgType type) {
-			this.type = type;
-		}
+        public final void setType(final ArgType argtype) {
+            this.type = argtype;
+        }
     }
 
 }
