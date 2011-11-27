@@ -23,7 +23,6 @@ public final class RAM {
 
     private int[] memory;
     private static final int MAX_BYTE = 1024;
-    private int pointer = 0;
 
     /**
      * Instantiates a new RAM array.
@@ -38,12 +37,8 @@ public final class RAM {
      * @param data the data
      * @return the int
      */
-    public int addDataInMemory(final int... data) {
-        for (int i = 0; i < data.length; i++) {
-            this.memory[i + this.pointer] = data[i];
-        }
-        this.pointer = this.pointer + data.length;
-        return this.pointer - data.length;
+    public void addDataInMemory(final int data, final int index) {
+            this.memory[index] = data;
     }
 
     public int getByteInAddress(final int address) {
@@ -72,6 +67,7 @@ public final class RAM {
         this.memory[address] = data;
     }
 
+    /*
     @Override
     public String toString() {
         StringBuilder tmp = new StringBuilder();
@@ -79,5 +75,5 @@ public final class RAM {
             tmp.append(this.memory[i]).append("\n");
         }
         return tmp.toString();
-    }
+    }*/
 }

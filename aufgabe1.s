@@ -17,6 +17,7 @@ LOOP    MOVE.B  (A1)+,D0                            ;Zahlenwerte der Buchstaben 
         ADD.B   #1,D1                               ;addiere 1 auf Datenregister Stelle D1 als Schleifenzähler
         BRA     LOOP                                ;Springe wieder an Anfang der Schleife
 LOOP2   MOVE.L  SUMME,D0                            ;Summe der Werte des Strings (b52) in D0 schreiben
+        MOVE.L  SUMME,D7
         DIVU    D1,D0                               ;teile D0 durch schleifenzähler D1, schreibe Ergebnis nach D0
         MOVE.L  D0,MITTEL                           ;Schreibe D0 in Mittel
         END

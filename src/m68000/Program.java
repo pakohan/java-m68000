@@ -102,10 +102,10 @@ public final class Program {
      *
      * @return the finished ram object
      */
-    public RAM linker() {
+    private void linker() {
         LinkedList<CodeLine> tmp = this.prog;
-        RAM ram = new RAM();
         Arg tmp_arg;
+        int rampointer = 0;
         for (int i = this.prog.getSize(); i > 0; --i) {
             tmp = tmp.getNext();
             tmp_arg = tmp.getItem().getArgument().getPrefix();
@@ -120,23 +120,27 @@ public final class Program {
                                              scan.nextInt());
                 break;
             case DC :
-                int x2;
                 StringBuilder tmp_str;
-                if (tmp_arg.getType() == ArgType.CONST) {
-                    x2 = this.memory.addDataInMemory(tmp_arg.getValue());
-                } else {
-                	x2 = this.memory.addDataInMemory(tmp_arg.getValuearray());
-                }
                 tmp_str = new StringBuilder();
                 tmp_str.append("$");
-                tmp_str.append(x2);
+                tmp_str.append(rampointer);
                 tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
-                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + x2);
+                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + rampointer);
+                if (tmp_arg.getType() == ArgType.CONST) {
+                    this.memory.addDataInMemory(tmp_arg.getValue(), rampointer);
+                    rampointer++;
+                } else if (tmp_arg.getType() == ArgType.VALUEARRAY) {
+                	int[] x = tmp_arg.getValuearray();
+                	for (int j = 0; j < x.length; j++) {
+                		this.memory.addDataInMemory(x[j], rampointer);
+                		rampointer++;
+                	}
+                }
                 break;
             case DS :
                 int[] x = new int[tmp_arg.getValue()];
-                int y = this.memory.addDataInMemory(x);
-                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + y);
+                replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + rampointer);
+                rampointer = rampointer + x.length;
                 break;
             case ORG:
             case BRA:
@@ -158,7 +162,6 @@ public final class Program {
             + tmp.getItem().getCommand().getPrefix());
             }
         }
-        return ram;
     }
 
     /**
@@ -171,13 +174,12 @@ public final class Program {
             final String newvalue) {
         LinkedList<CodeLine> tmp2 = this.prog;
         for (int i = this.prog.getSize(); i > 0; --i) {
+        	Argument tmparg = tmp2.getItem().getArgument();
             tmp2 = tmp2.getNext();
-            if (tmp2.getItem().getArgument().getPrefix().
-                    getOtherArg().equals(str)) {
-                tmp2.getItem().getArgument().replacePrefix(newvalue);
-            } else if (tmp2.getItem().getArgument().getPostfix().
-                    getOtherArg().equals(str)) {
-                tmp2.getItem().getArgument().replacePostfix(newvalue);
+            if (tmparg.getPrefix().getOtherArg().equals(str)) {
+            	tmparg.replacePrefix(newvalue);
+            } else if (tmparg.getPostfix().getOtherArg().equals(str)) {
+            	tmparg.replacePostfix(newvalue);
             }
         }
     }

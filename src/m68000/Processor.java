@@ -32,9 +32,30 @@ public class Processor {
     public final int[] getDataRegister() {
         return dataRegister;
     }
-
-    public final int[] getAdressRegister() {
-        return adressRegister;
+    
+    private final int getAdressRegister(final Arg adr) {
+    	int x;
+    	switch (adr.getInk()) {
+    	case POSTINKREMENT :
+    		x = adressRegister[adr.getValue()];
+    		adressRegister[adr.getValue()]++;
+    		break;
+    	case PREINKREMENT :
+    		adressRegister[adr.getValue()]++;
+    		x = adressRegister[adr.getValue()];
+    		break;
+    	case POSTDEKREMENT :
+    		x = adressRegister[adr.getValue()];
+    		adressRegister[adr.getValue()]--;
+    		break;
+    	case PREDEKREMENT :
+    		adressRegister[adr.getValue()]--;
+    		x = adressRegister[adr.getValue()];
+    		break;
+		default :
+    			x = adressRegister[adr.getValue()];
+    	}
+    	return x;
     }
 
     private int size;
@@ -222,8 +243,7 @@ public class Processor {
     public final void setData(final Arg dataPlace, final int x) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER :
-            this.ram.setByteInAddress(this.adressRegister[dataPlace.getValue()],
-                                      x);
+            this.adressRegister[dataPlace.getValue()] = x;
             ui.UI.setadresstable(dataPlace.getValue(), x);
             break;
         case DATA_REGISTER :
@@ -246,17 +266,18 @@ public class Processor {
     public final int getData(final Arg dataPlace) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER :
-            return this.ram.getByteInAddress(
-                    this.adressRegister[dataPlace.getValue()]);
+            return this.ram.getByteInAddress(getAdressRegister(dataPlace));
         case DATA_REGISTER :
             return this.dataRegister[dataPlace.getValue()];
         case MEMORY :
             return this.ram.getByteInAddress(dataPlace.getValue());
         case CONST :
             return dataPlace.getValue();
+        case ADRESSOFMARKER :
+        	return dataPlace.getValue();
         default :
+            return 0;
         }
-        return 0;
     }
 
     /**

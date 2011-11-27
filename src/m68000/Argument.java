@@ -145,12 +145,21 @@ public final class Argument implements Cloneable {
     }
 
     public void replacePrefix(final String x) {
-        this.firstOperand = new Arg(x);
+    	if (this.firstOperand.type != ArgType.ADRESSOFMARKER) {
+    		this.firstOperand = new Arg(x);
+    	} else {
+    		this.firstOperand = new Arg(x);
+    		this.firstOperand.setType(ArgType.ADRESSOFMARKER);
+    	}
     }
-
+    
     public void replacePostfix(final String x) {
-        this.secondOperand = new Arg(x);
-    }
+    	if (this.secondOperand.type != ArgType.ADRESSOFMARKER) {
+    		this.secondOperand = new Arg(x);
+    	} else {
+    		this.secondOperand = new Arg(x);
+    		this.secondOperand.setType(ArgType.ADRESSOFMARKER);
+    	}    }
 
     public Arg getPostfix() {
 
@@ -234,7 +243,7 @@ public final class Argument implements Cloneable {
         		} else {
         			this.type = ArgType.DATA_REGISTER;
         		}
-        		this.value = argument.charAt(2);
+        		this.value = new Scanner("" + argument.charAt(2)).nextInt();
         		break;
         	case '+':
         		this.ink = Inkrement.PREINKREMENT;
@@ -243,7 +252,7 @@ public final class Argument implements Cloneable {
         		} else {
         			this.type = ArgType.DATA_REGISTER;
         		}
-        		this.value = argument.charAt(3);
+        		this.value = new Scanner("" + argument.charAt(3)).nextInt();
         		break;
         	case '-':
         		this.ink = Inkrement.PREDEKREMENT;
@@ -252,15 +261,16 @@ public final class Argument implements Cloneable {
         		} else {
         			this.type = ArgType.DATA_REGISTER;
         		}
-        		this.value = argument.charAt(3);
+        		this.value = new Scanner("" + argument.charAt(3)).nextInt();
         		break;
         	case '\'':
-        		this.type = ArgType.STRING;
+        		this.type = ArgType.VALUEARRAY;
         		String[] str = argument.split("'");
-        		this.valuearray = new int[str[1].length()];
+        		this.valuearray = new int[str[1].length() + 1];
         		for (int i = 0; i < str[1].length(); i++) {
         			this.valuearray[i] = Character.valueOf(str[1].charAt(i));
         		}
+        		this.valuearray[this.valuearray.length - 1] = 0;
         		break;
         	case '$':
         		Scanner scan2 = new Scanner(argument.substring(1));
@@ -299,7 +309,7 @@ public final class Argument implements Cloneable {
 
 		@Override
         public String toString() {
-            return this.anotherArg;
+            return this.anotherArg + "(" + this.type + ")";
         }
 
         public Arg(final int x) {
@@ -318,6 +328,10 @@ public final class Argument implements Cloneable {
         public int getValue() {
             return this.value;
         }
+
+		public final void setType(ArgType type) {
+			this.type = type;
+		}
     }
 
 }
