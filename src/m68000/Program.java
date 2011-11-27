@@ -113,11 +113,6 @@ public final class Program {
             case EQU :
                 replaceSymbolicConstant(tmp.getItem().getLabel(),
                         "$" + tmp_arg.getValue());
-                Scanner scan = new Scanner(System.in);
-                ui.UI.printMessage("What is stored in the RAM in address '"
-                        + tmp_arg.getValue() + "' ?");
-                this.memory.setByteInAddress(tmp_arg.getValue(),
-                                             scan.nextInt());
                 break;
             case DC :
                 StringBuilder tmp_str;

@@ -55,7 +55,8 @@ public final class Argument implements Cloneable {
         PREINKREMENT,
         POSTDEKREMENT,
         PREDEKREMENT,
-        NOINKREMENT
+        NOINKREMENT,
+        NONE
     }
 
 
@@ -219,7 +220,7 @@ public final class Argument implements Cloneable {
             if (argument.length() == 0) {
                 return;
             }
-            this.ink = Inkrement.NOINKREMENT;
+            this.ink = Inkrement.NONE;
             switch (argument.charAt(0)) {
             case '#':
                 Scanner scan = new Scanner(argument.substring(1));
@@ -232,11 +233,15 @@ public final class Argument implements Cloneable {
                 }
                 break;
             case '(':
-                if (argument.charAt(4) == '+') {
-                    this.ink = Inkrement.POSTINKREMENT;
-                } else {
-                    this.ink = Inkrement.POSTDEKREMENT;
-                }
+            	if (argument.length() == 5) {
+            		if (argument.charAt(4) == '+') {
+	                    this.ink = Inkrement.POSTINKREMENT;
+	                } else {
+	                    this.ink = Inkrement.POSTDEKREMENT;
+	                }
+            	} else {
+            		this.ink = Inkrement.NOINKREMENT;
+            	}
 
                 if (argument.charAt(1) == 'A') {
                     this.type = ArgType.ADDRESS_REGISTER;
@@ -309,7 +314,7 @@ public final class Argument implements Cloneable {
 
         @Override
         public String toString() {
-            return this.anotherArg + "(" + this.type + ")";
+            return this.anotherArg + "(" + this.type + "_" + this.ink + ")";
         }
 
         public Arg(final int x) {

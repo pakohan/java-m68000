@@ -22,7 +22,7 @@ package m68000;
 public final class RAM {
 
     private int[] memory;
-    public static final int MAX_BYTE = 1024;
+    public static final int MAX_BYTE = 4096;
 
     /**
      * Instantiates a new RAM array.
