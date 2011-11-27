@@ -49,46 +49,47 @@ public class Processor {
             this.adressRegister[adr.getValue()]--;
             break;
         case PREDEKREMENT :
-        	this.adressRegister[adr.getValue()]--;
+            this.adressRegister[adr.getValue()]--;
             x = this.adressRegister[adr.getValue()];
             break;
         case NOINKREMENT :
-        	x = this.ram.getByteInAddress(this.adressRegister[adr.getValue()]);
-        	break;
+            x = this.ram.getByteInAddress(this.adressRegister[adr.getValue()]);
+            break;
         case NONE :
-        	x = this.adressRegister[adr.getValue()];
-        default :
             x = this.adressRegister[adr.getValue()];
+        default :
         }
         return x;
     }
-    
+
     private void setAdressRegister(final Arg adr, final int x) {
-    	switch (adr.getInk()) {
-    	case NOINKREMENT :
-    		this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
-    	case NONE :
-    		this.adressRegister[adr.getValue()] = x;
-    		break;
+        switch (adr.getInk()) {
+        case NOINKREMENT :
+            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            break;
+        case NONE :
+            this.adressRegister[adr.getValue()] = x;
+            break;
         case POSTINKREMENT :
-    		this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
             this.adressRegister[adr.getValue()]++;
             break;
         case PREINKREMENT :
             this.adressRegister[adr.getValue()]++;
-    		this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
             break;
         case POSTDEKREMENT :
-    		this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
-    		this.adressRegister[adr.getValue()]--;
+            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.adressRegister[adr.getValue()]--;
             break;
         case PREDEKREMENT :
-        	this.adressRegister[adr.getValue()]--;
-    		this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.adressRegister[adr.getValue()]--;
+            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
             break;
         default :
         }
-    	ui.UI.setadresstable(adr.getValue(), this.adressRegister[adr.getValue()]);
+        ui.UI.setadresstable(adr.getValue(),
+                this.adressRegister[adr.getValue()]);
     }
 
     private int size;
@@ -127,7 +128,6 @@ public class Processor {
      * @param com the com
      */
     public final void step(final CodeLine com) {
-    	System.out.println(com);
         switch (com.getCommand().getPrefix()) {
         case ORG:
             break;
@@ -277,7 +277,7 @@ public class Processor {
     public final void setData(final Arg dataPlace, final int x) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER :
-        	setAdressRegister(dataPlace, x);
+            setAdressRegister(dataPlace, x);
             break;
         case DATA_REGISTER :
             this.dataRegister[dataPlace.getValue()] = x;

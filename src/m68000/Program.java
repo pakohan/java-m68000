@@ -125,22 +125,23 @@ public final class Program {
                 if (tmp_arg.getType() == ArgType.CONST) {
                     this.memory.setByteInAddress(rampointer,
                             tmp_arg.getValue());
-                    rampointer++;
                 } else if (tmp_arg.getType() == ArgType.VALUEARRAY) {
                     int[] x = tmp_arg.getValuearray();
                     for (int j = 0; j < x.length; j++) {
                         this.memory.setByteInAddress(rampointer, x[j]);
-                        rampointer++;
                     }
                 }
+                rampointer += tmp.getItem().getCommand().getPostfix().ordinal();
                 break;
             case DS :
-                int[] x = new int[tmp_arg.getValue()];
                 replaceSymbolicConstant(tmp.getItem().getLabel(),
                         "$" + rampointer);
-                rampointer = rampointer + x.length;
+                rampointer += (tmp_arg.getValue()
+                		* tmp.getItem().getCommand().getPostfix().ordinal());
                 break;
             case ORG:
+            	rampointer = tmp_arg.getValue();
+            	break;
             case BRA:
             case CLR :
             case MOVE :

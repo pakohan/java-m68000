@@ -35,36 +35,12 @@ public final class RAM {
         return this.memory[address];
     }
 
-    public int getWordInAddress(final int address) {
-        //TODO
-        return 0;
-    }
-
-    public long getLongWordInAddress(final int address) {
-        //TODO
-        return 0;
-    }
-
     public void setByteInAddress(final int address, final int data) {
         this.memory[address] = data;
         ui.UI.ramdisplay.setRamValue(address, data);
     }
 
-    public void setWordInAddress(final int address, final int data) {
-        //TODO
-    }
-
     public void setLongWordInAddress(final int address, final int data) {
         this.memory[address] = data;
     }
-
-    /*
-    @Override
-    public String toString() {
-        StringBuilder tmp = new StringBuilder();
-        for (int i = 0; i < this.pointer; i++) {
-            tmp.append(this.memory[i]).append("\n");
-        }
-        return tmp.toString();
-    }*/
 }

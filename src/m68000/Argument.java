@@ -233,15 +233,15 @@ public final class Argument implements Cloneable {
                 }
                 break;
             case '(':
-            	if (argument.length() == 5) {
-            		if (argument.charAt(4) == '+') {
-	                    this.ink = Inkrement.POSTINKREMENT;
-	                } else {
-	                    this.ink = Inkrement.POSTDEKREMENT;
-	                }
-            	} else {
-            		this.ink = Inkrement.NOINKREMENT;
-            	}
+                if (argument.length() == 5) {
+                    if (argument.charAt(4) == '+') {
+                        this.ink = Inkrement.POSTINKREMENT;
+                    } else {
+                        this.ink = Inkrement.POSTDEKREMENT;
+                    }
+                } else {
+                    this.ink = Inkrement.NOINKREMENT;
+                }
 
                 if (argument.charAt(1) == 'A') {
                     this.type = ArgType.ADDRESS_REGISTER;

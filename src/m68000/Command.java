@@ -65,11 +65,11 @@ public final class Command implements Cloneable {
      * The Enum CommandPostfix.
      */
     static enum CommandPostfix    {
+    								ZERO,
                                     B,
                                     W,
+                                    B3,
                                     L,
-                                    U,
-                                    ZERO
                                 }
 
     /**

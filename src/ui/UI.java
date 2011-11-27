@@ -3,7 +3,10 @@ package ui;
 import static org.gnome.gtk.WrapMode.WORD;
 import static org.gnome.gtk.WrapMode.NONE;
 
+import java.io.FileNotFoundException;
+
 import org.gnome.gdk.Event;
+import org.gnome.gdk.Pixbuf;
 import org.gnome.gtk.Button;
 import org.gnome.gtk.DataColumnString;
 import org.gnome.gtk.Gtk;
@@ -110,6 +113,9 @@ public final class UI {
         window = new Window();
         window.setTitle("M68000");
         window.setDefaultSize(800, 700);
+        try {
+			window.setIcon(new Pixbuf("/usr/share/pixmaps/gnome-ccperiph.png"));
+		} catch (FileNotFoundException e) { }
         window.connect(new Window.DeleteEvent() {
             public boolean onDeleteEvent(final Widget source,
                     final Event event) {
