@@ -7,7 +7,7 @@ import org.gnome.gtk.AboutDialog;
 
 public final class About {
     private About() { }
-    private static String[] authors = {"Patrick Kohan", "Stefano DiMartino"};
+    private static String[] authors = {"Patrick Kohan", "Stefano DiMartino", "Tobias Keh"};
     private static String[] commenters = {"Patrick Kohan"};
 
     public static AboutDialog createAboutDialog() {
