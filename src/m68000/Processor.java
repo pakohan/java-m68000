@@ -65,26 +65,26 @@ public class Processor {
     private void setAdressRegister(final Arg adr, final int x) {
         switch (adr.getInk()) {
         case NOINKREMENT :
-            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
             break;
         case NONE :
             this.adressRegister[adr.getValue()] = x;
             break;
         case POSTINKREMENT :
-            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
             this.adressRegister[adr.getValue()]++;
             break;
         case PREINKREMENT :
             this.adressRegister[adr.getValue()]++;
-            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
             break;
         case POSTDEKREMENT :
-            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
             this.adressRegister[adr.getValue()]--;
             break;
         case PREDEKREMENT :
             this.adressRegister[adr.getValue()]--;
-            this.ram.setByteInAddress(this.adressRegister[adr.getValue()], x);
+            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
             break;
         default :
         }
@@ -284,7 +284,7 @@ public class Processor {
             ui.UI.setdatatable(dataPlace.getValue(), x);
             break;
         case MEMORY :
-            this.ram.setByteInAddress(dataPlace.getValue(), x);
+            this.ram.setLongWordInAddress(dataPlace.getValue(), x);
             break;
         default :
         }

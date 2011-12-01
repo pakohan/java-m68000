@@ -73,15 +73,24 @@ public final class UI {
             window.showAll();
             Gtk.main();
         /*} catch (Exception x) {
+        	System.out.println(Gtk.eventsPending());
             Writer result = new StringWriter();
             PrintWriter printWriter = new PrintWriter(result);
             x.printStackTrace(printWriter);
             ErrorMessageDialog error = new ErrorMessageDialog(window,
-            "Fehler",
-            result.toString());
+            		"Fehler",
+            		result.toString());
+            error.connect(new Dialog.Response() {
+				
+				@Override
+				public void onResponse(Dialog source, ResponseType response) {
+					Gtk.mainQuit();
+				}
+			});
             error.run();
             error.hide();
             Gtk.main();
+            Gtk.mainQuit();
         }*/
     }
 

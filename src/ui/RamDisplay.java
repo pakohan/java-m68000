@@ -72,6 +72,6 @@ public class RamDisplay {
         }
         ramlist.setValue(iter,
                 this.ramvalue,
-                Integer.valueOf(x).toString());
+                Integer.toBinaryString(x & 0xFF));
     }
 }

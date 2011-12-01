@@ -1,6 +1,6 @@
-      ORG    $1000          ;this is a command
+      ORG    $0          ;this is a command
       BRA    START
-KONST DC.L   50
+KONST DC.L   2000000000
 COUNT DC.L   10
 ONE   DC.L   1
 START MOVE.W KONST,D1

@@ -123,12 +123,12 @@ public final class Program {
                 replaceSymbolicConstant(tmp.getItem().getLabel(),
                         "$" + rampointer);
                 if (tmp_arg.getType() == ArgType.CONST) {
-                    this.memory.setByteInAddress(rampointer,
+                    this.memory.setLongWordInAddress(rampointer,
                             tmp_arg.getValue());
                 } else if (tmp_arg.getType() == ArgType.VALUEARRAY) {
                     int[] x = tmp_arg.getValuearray();
                     for (int j = 0; j < x.length; j++) {
-                        this.memory.setByteInAddress(rampointer, x[j]);
+                        this.memory.setLongWordInAddress(rampointer, x[j]);
                     }
                 }
                 rampointer += tmp.getItem().getCommand().getPostfix().ordinal();
