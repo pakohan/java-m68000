@@ -17,6 +17,7 @@
 package m68000;
 
 import m68000.Argument.Arg;
+import m68000.Command.CommandPostfix;
 
 /**
  * The Class Processor simulates a m68000 processor.
@@ -127,7 +128,7 @@ public class Processor {
      *
      * @param com the com
      */
-    public final void step(final CodeLine com) {
+    private final void step(final CodeLine com) {
         switch (com.getCommand().getPrefix()) {
         case ORG:
             break;
@@ -145,16 +146,16 @@ public class Processor {
             clr(com.getArgument());
             break;
         case  MOVE :
-            move(com.getArgument());
+            move(com.getArgument(), com.getCommand().getPostfix());
             break;
         case ADD :
-            add(com.getArgument());
+            add(com.getArgument(), com.getCommand().getPostfix());
             break;
         case SUB :
-            sub(com.getArgument());
+            sub(com.getArgument(), com.getCommand().getPostfix());
             break;
         case MUL :
-            mul(com.getArgument());
+            mul(com.getArgument(), com.getCommand().getPostfix());
             break;
         case DIVU :
         case DIV :
@@ -204,10 +205,31 @@ public class Processor {
      * argument one.
      *
      * @param args the args
+     * @param commandPostfix 
      */
-    public final void move(final Argument args) {
+    private final void move(final Argument args, final CommandPostfix cpf) {
         int x = getData(args.getPrefix());
+        x = recognizeCommandPostfix(x, cpf);
         setData(args.getPostfix(), x);
+    }
+    
+    private final int recognizeCommandPostfix(final int x, final CommandPostfix cpf) {
+    	int z;
+        switch (cpf) {
+        case B:
+        	z = ((byte) x) & 0xFF;
+        	break;
+        case W:
+        	z = ((short) x) & 0xFFFF;
+        	break;
+        case L:
+        	z = x;
+        	break;
+        default:
+        	ui.UI.printMessage("Fehler: falsche Kommandoendung!");
+        		return 0;
+        }
+    	return z;
     }
 
     /**
@@ -216,7 +238,7 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void clr(final Argument args) {
+    private final void clr(final Argument args) {
         setData(args.getPrefix(), 0);
     }
 
@@ -226,8 +248,9 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void add(final Argument args) {
+    private final void add(final Argument args, final CommandPostfix cpf) {
         int x = getData(args.getPrefix());
+        x = recognizeCommandPostfix(x, cpf);
         x = getData(args.getPostfix()) + x;
         setData(args.getPostfix(), x);
     }
@@ -237,8 +260,9 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void sub(final Argument args) {
+    private final void sub(final Argument args, final CommandPostfix cpf) {
         int x = getData(args.getPrefix());
+        x = recognizeCommandPostfix(x, cpf);
         x = getData(args.getPostfix()) - x;
         setData(args.getPostfix(), x);
     }
@@ -248,8 +272,9 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void mul(final Argument args) {
+    private final void mul(final Argument args, final CommandPostfix cpf) {
         int x = getData(args.getPrefix());
+        x = recognizeCommandPostfix(x, cpf);
         x = getData(args.getPostfix()) * x;
         setData(args.getPostfix(), x);
     }
@@ -259,7 +284,7 @@ public class Processor {
      *
      * @param args the args
      */
-    public final void div(final Argument args) {
+    private final void div(final Argument args) {
         int x = getData(args.getPrefix());
         if (x != 0) {
             x = getData(args.getPostfix()) / x;
@@ -274,7 +299,7 @@ public class Processor {
      * @param dataPlace the data place
      * @param x the x
      */
-    public final void setData(final Arg dataPlace, final int x) {
+    private final void setData(final Arg dataPlace, final int x) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER :
             setAdressRegister(dataPlace, x);
@@ -296,7 +321,7 @@ public class Processor {
      * @param dataPlace the data place
      * @return the data
      */
-    public final int getData(final Arg dataPlace) {
+    private final int getData(final Arg dataPlace) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER :
             return this.ram.getLongWordInAddress(getAdressRegister(dataPlace));
