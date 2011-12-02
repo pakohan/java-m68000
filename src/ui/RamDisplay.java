@@ -17,7 +17,7 @@ public class RamDisplay {
     private ListStore ramlist;
     private DataColumnString ramindex;
     private DataColumnString ramvalue1;
-    //private DataColumnString ramvalue2;
+    private DataColumnString ramvalue2;
 
     public RamDisplay() {
         this.window = new Window();
@@ -27,16 +27,16 @@ public class RamDisplay {
         ScrolledWindow scrolled = new ScrolledWindow();
         ramindex = new DataColumnString();
         ramvalue1 = new DataColumnString();
-        //ramvalue2 = new DataColumnString();
+        ramvalue2 = new DataColumnString();
         DataColumn[] ramDataColumn = new DataColumn[] {
                 ramindex,
-                ramvalue1//,
-                //ramvalue2
+                ramvalue1,
+                ramvalue2
         };
         this.ramlist = new ListStore(ramDataColumn);
         TreeView ramtable = new TreeView(ramlist);
         TreeIter row;
-        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i++) {
+        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i +=2) {
             row = ramlist.appendRow();
             ramlist.setValue(row, ramindex, Integer.toString(i));
         }
@@ -56,10 +56,10 @@ public class RamDisplay {
         renderer.setMarkup(ramvalue1);
 
 
-        /*vertical = ramtable.appendColumn();
+        vertical = ramtable.appendColumn();
         vertical.setTitle("Wert unger");
         renderer = new CellRendererText(vertical);
-        renderer.setMarkup(ramvalue2);*/
+        renderer.setMarkup(ramvalue2);
 
         scrolled.add(ramtable);
         hbox.packStart(scrolled, true, true, 0);
@@ -68,26 +68,30 @@ public class RamDisplay {
 
     public final void rebuildTable() {
         TreeIter iter = ramlist.getIterFirst();
-        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i++) {
+        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i += 2) {
             ramlist.setValue(iter, this.ramvalue1, "0");
-            //ramlist.setValue(iter, this.ramvalue2, "0");
+            ramlist.setValue(iter, this.ramvalue2, "0");
             iter.iterNext();
         }
     }
 
     public final void setRamValue(final int n, final int x) {
         TreeIter iter = ramlist.getIterFirst();
-        for (int i = 0; i < n; i++) {
-            iter.iterNext();
-        }
-        //if (n % 2 == 0) {
-            ramlist.setValue(iter,
-                    this.ramvalue1,
-                    Integer.toBinaryString(x));
-        /*} else {
-            ramlist.setValue(iter,
-                    this.ramvalue2,
-                    Integer.toBinaryString(x));
-        }*/
+	    int m = 0;
+	    if ((n % 2) == 1) {
+	    	m++;
+	    }
+	    for (int i = m; i < n; i += 2) {
+	        iter.iterNext();
+	    }
+	    if ((n % 2) == 0) {
+	        ramlist.setValue(iter,
+	                this.ramvalue1,
+	                Integer.toBinaryString(x));
+	    } else {
+	        ramlist.setValue(iter,
+	                this.ramvalue2,
+	                Integer.toBinaryString(x));
+	    }
     }
 }

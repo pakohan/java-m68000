@@ -26,11 +26,9 @@ public final class AdressTable {
             UI.adressregisterliststore.setValue(row,
                     adressregisterindex,
                     Integer.valueOf(i).toString());
-            UI.adressregisterliststore.setValue(row,
-                    UI.adressregistermemory,
-                    "0");
         }
-
+        rebuildAddressTable();
+        
         TreeView dataRegister = new TreeView(UI.adressregisterliststore);
         TreeViewColumn vertical;
         CellRendererText renderer;
@@ -46,5 +44,13 @@ public final class AdressTable {
         renderer.setMarkup(UI.adressregistermemory);
 
         return dataRegister;
+    }
+    
+    public static void rebuildAddressTable() {
+        TreeIter iter = UI.adressregisterliststore.getIterFirst();
+        for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
+        	UI.adressregisterliststore.setValue(iter, UI.adressregistermemory, "0");
+            iter.iterNext();
+        }
     }
 }

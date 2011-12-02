@@ -26,9 +26,9 @@ public final class DataTable {
             UI.dataregisterliststore.setValue(row,
                     dataregisterindex,
                     Integer.valueOf(i).toString());
-            UI.dataregisterliststore.setValue(row, UI.dataregistermemory, "0");
         }
-
+        rebuildDataTable();
+        
         TreeView dataRegister = new TreeView(UI.dataregisterliststore);
         TreeViewColumn vertical;
         CellRendererText renderer;
@@ -44,5 +44,13 @@ public final class DataTable {
         renderer.setMarkup(UI.dataregistermemory);
 
         return dataRegister;
+    }
+    
+    public static void rebuildDataTable() {
+        TreeIter iter = UI.dataregisterliststore.getIterFirst();
+        for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
+        	UI.dataregisterliststore.setValue(iter, UI.dataregistermemory, "0");
+            iter.iterNext();
+        }
     }
 }

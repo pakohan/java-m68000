@@ -50,6 +50,8 @@ public final class TopMenuBar {
                             }
                         }
                         UI.ramdisplay.rebuildTable();
+                        DataTable.rebuildDataTable();
+                        AdressTable.rebuildAddressTable();
                         prog = new Program(str);
                     } catch (IOException e) { }
                     TextTag font = new TextTag();
