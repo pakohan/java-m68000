@@ -12,7 +12,6 @@ import org.gnome.gtk.DataColumnString;
 import org.gnome.gtk.Gtk;
 import org.gnome.gtk.HBox;
 import org.gnome.gtk.ListStore;
-import org.gnome.gtk.MenuBar;
 import org.gnome.gtk.ScrolledWindow;
 import org.gnome.gtk.TextBuffer;
 import org.gnome.gtk.TextIter;
@@ -29,30 +28,20 @@ import m68000.Processor;
 public final class UI {
 
     private static Window window;
-    private static VBox vbox;
     private static TextBuffer msgbuffer;
     private static TextBuffer filebuffer;
     private static TextView msgtextview;
-    private static TextView filetextview;
     private static Button run;
     private static Button close;
     private static Button step;
-    private static MenuBar menuBar;
-    private static TextIter end;
-    private static TreeIter datatableiter;
-    private static TreeIter adresstableiter;
-    private static TreeView dataRegister;
-    private static TreeView adressRegister;
+    private static Button reload;
     public static DataColumnString dataregistermemory;
     public static DataColumnString adressregistermemory;
     public static ListStore dataregisterliststore;
     public static ListStore adressregisterliststore;
     private static Processor core1;
-    private static HBox hbox1;
-    private static ScrolledWindow scrolledWindow;
-    private static HBox hbox2;
-    private static ScrolledWindow scrolledFileWindow;
     public static RamDisplay ramdisplay;
+    public static Pixbuf icon;
 
     private UI() { }
 
@@ -63,11 +52,15 @@ public final class UI {
     public static void setSensitive(final boolean issensitive) {
         run.setSensitive(issensitive);
         step.setSensitive(issensitive);
+        reload.setSensitive(true);
     }
 
     public static void main(final String[] args) {
         //try {
         Gtk.init(args);
+		try {
+			icon = new Pixbuf("/home/mogli/Dokumente/Programmierung/M68000/res/gnome-ccperiph.png");
+		} catch (FileNotFoundException e) { }
         createMainWindow();
         ramdisplay = new RamDisplay();
         window.showAll();
@@ -99,7 +92,7 @@ public final class UI {
     }
 
     public static void setdatatable(final int n, final int x) {
-        datatableiter = dataregisterliststore.getIterFirst();
+        TreeIter datatableiter = dataregisterliststore.getIterFirst();
         for (int i = 0; i < n; i++) {
             datatableiter.iterNext();
         }
@@ -109,7 +102,7 @@ public final class UI {
     }
 
     public static void setadresstable(final int n, final int x) {
-        adresstableiter = adressregisterliststore.getIterFirst();
+        TreeIter adresstableiter = adressregisterliststore.getIterFirst();
         for (int i = 0; i < n; i++) {
             adresstableiter.iterNext();
         }
@@ -122,9 +115,7 @@ public final class UI {
         window = new Window();
         window.setTitle("M68000");
         window.setDefaultSize(800, 700);
-        try {
-            window.setIcon(new Pixbuf("/usr/share/pixmaps/gnome-ccperiph.png"));
-        } catch (FileNotFoundException e) { }
+        window.setIcon(icon);
         window.connect(new Window.DeleteEvent() {
             public boolean onDeleteEvent(final Widget source,
             final Event event) {
@@ -132,59 +123,61 @@ public final class UI {
                 return false;
             }
         });
-        createVBox();
-        window.add(vbox);
+        window.add(createVBox());
     }
 
     public static Window getWindow() {
         return window;
     }
 
-    private static void createVBox() {
-        vbox = new VBox(false, 2);
-        createMenuBar();
-        createHBox1();
-        createMsgScrolledWindow();
+    private static VBox createVBox() {
+        VBox vbox = new VBox(false, 2);
         createHBox2();
-        vbox.packStart(menuBar,        false, true, 0);
-        vbox.packStart(hbox1,          true , true, 0);
-        vbox.packStart(scrolledWindow, true , true, 0);
-        vbox.packStart(hbox2,          false, true, 0);
+        vbox.packStart(TopMenuBar.createMenuBar(),        false, true, 0);
+        vbox.packStart(createHBox1(),          true , true, 0);
+        vbox.packStart(createMsgScrolledWindow(), true , true, 0);
+        vbox.packStart(createHBox2(),          false, true, 0);
+        return vbox;
     }
 
-    private static void createHBox1() {
-        hbox1 = new HBox(false, 2);
+    private static HBox createHBox1() {
+        HBox hbox1 = new HBox(false, 2);
         createFileScrolledWindow();
-        hbox1.packStart(scrolledFileWindow, true, true, 0);
-        dataRegister = DataTable.createTreeView();
+        hbox1.packStart(createFileScrolledWindow(), true, true, 0);
+        TreeView dataRegister = DataTable.createTreeView();
         hbox1.packStart(dataRegister, false, false, 0);
-        adressRegister = AdressTable.createTreeView();
+        TreeView adressRegister = AdressTable.createTreeView();
         hbox1.packStart(adressRegister, false, false, 0);
+        return hbox1;
     }
 
-    private static void createHBox2() {
-        hbox2 = new HBox(false, 2);
+    private static HBox createHBox2() {
+        HBox hbox2 = new HBox(false, 2);
         createButtons();
         hbox2.add(run);
         hbox2.add(step);
+        hbox2.add(reload);
         hbox2.add(close);
+        return hbox2;
     }
 
-    private static void createFileScrolledWindow() {
+    private static ScrolledWindow createFileScrolledWindow() {
         filebuffer = new TextBuffer();
-        filetextview = new TextView(filebuffer);
+        TextView filetextview = new TextView(filebuffer);
         filetextview.setWrapMode(NONE);
         filetextview.setEditable(false);
-        scrolledFileWindow = new ScrolledWindow();
+        ScrolledWindow scrolledFileWindow = new ScrolledWindow();
         scrolledFileWindow.add(filetextview);
+        return scrolledFileWindow;
     }
 
-    private static void createMsgScrolledWindow() {
+    private static ScrolledWindow createMsgScrolledWindow() {
         msgbuffer = new TextBuffer();
         msgtextview = new TextView(msgbuffer);
         msgtextview.setWrapMode(WORD);
-        scrolledWindow = new ScrolledWindow();
+        ScrolledWindow scrolledWindow = new ScrolledWindow();
         scrolledWindow.add(msgtextview);
+        return scrolledWindow;
     }
 
     public static void markLine(final int i) {
@@ -203,7 +196,7 @@ public final class UI {
     }
 
     public static void printMessage(final String msg) {
-        end = msgbuffer.getIterEnd();
+        TextIter end = msgbuffer.getIterEnd();
         msgbuffer.insert(end, msg);
         msgbuffer.insert(end, "\n");
         msgtextview.scrollTo(end);
@@ -218,6 +211,11 @@ public final class UI {
             @Override
             public void onClicked(final Button source) {
                 while (!core1.hasfinished()) {
+                	TextTag black = new TextTag();
+                    black.setForeground("black");
+                    filebuffer.applyTag(black,
+                                        filebuffer.getIterStart(),
+                                        filebuffer.getIterEnd());
                     core1.run();
                 }
                 printMessage("Program beendet!");
@@ -226,6 +224,16 @@ public final class UI {
             }
         });
 
+        reload = new Button("RELOAD");
+        reload.setSensitive(false);
+        reload.connect(new Button.Clicked() {
+			
+			@Override
+			public void onClicked(Button source) {
+				TopMenuBar.loadsource();
+			}
+		});
+        
         //step button is for running the program line for line
         step = new Button("STEP");
         step.setSensitive(false);
@@ -243,7 +251,6 @@ public final class UI {
             }
         });
 
-        //close button is for closing the program
         close = new Button("CLOSE");
         close.connect(new Button.Clicked() {
 
@@ -252,10 +259,6 @@ public final class UI {
                 Gtk.mainQuit();
             }
         });
-    }
-
-    private static void createMenuBar() {
-        menuBar = TopMenuBar.createMenuBar();
     }
 
     public static TextBuffer getFilebuffer() {

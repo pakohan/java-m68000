@@ -60,6 +60,8 @@ public class Processor {
             x = this.adressRegister[adr.getValue()];
         default :
         }
+        ui.UI.setadresstable(adr.getValue(),
+                this.adressRegister[adr.getValue()]);
         return x;
     }
 
@@ -73,24 +75,24 @@ public class Processor {
             break;
         case POSTINKREMENT :
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
-            this.adressRegister[adr.getValue()]++;
+            ++this.adressRegister[adr.getValue()];
             break;
         case PREINKREMENT :
-            this.adressRegister[adr.getValue()]++;
+            ++this.adressRegister[adr.getValue()];
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
             break;
         case POSTDEKREMENT :
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
-            this.adressRegister[adr.getValue()]--;
+            --this.adressRegister[adr.getValue()];
             break;
         case PREDEKREMENT :
-            this.adressRegister[adr.getValue()]--;
+            --this.adressRegister[adr.getValue()];
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()], x);
             break;
         default :
         }
         ui.UI.setadresstable(adr.getValue(),
-                             this.adressRegister[adr.getValue()]);
+                this.adressRegister[adr.getValue()]);
     }
 
     private int size;
@@ -131,16 +133,14 @@ public class Processor {
     private final void step(final CodeLine com) {
         switch (com.getCommand().getPrefix()) {
         case ORG:
+        case EQU :
+        case DC :
+        case DS :
+        case HEAD :
             break;
         case BRA:
             this.execute = jump(com.getArgument().getPrefix().getOtherArg())
                            .getPrev();
-            break;
-        case EQU :
-            break;
-        case DC :
-            break;
-        case DS :
             break;
         case CLR :
             clr(com.getArgument());
@@ -163,8 +163,6 @@ public class Processor {
             break;
         case CMP :
             cmp(com.getArgument());
-            break;
-        case HEAD :
             break;
         case BEQ :
             if (this.compare) {

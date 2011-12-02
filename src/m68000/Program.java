@@ -45,6 +45,8 @@ public final class Program {
     private int counter = 0;
 
     private RAM memory;
+    
+    private int rampointer;
 
     /**
      * Instantiates a new Program.
@@ -105,7 +107,7 @@ public final class Program {
     private void linker() {
         LinkedList<CodeLine> tmp = this.prog;
         Arg tmp_arg;
-        int rampointer = 0;
+        rampointer = 0;
         for (int i = this.prog.getSize(); i > 0; --i) {
             tmp = tmp.getNext();
             tmp_arg = tmp.getItem().getArgument().getPrefix();
@@ -115,23 +117,7 @@ public final class Program {
                                         "$" + tmp_arg.getValue());
                 break;
             case DC :
-                StringBuilder tmp_str;
-                tmp_str = new StringBuilder();
-                tmp_str.append("$");
-                tmp_str.append(rampointer);
-                tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
-                replaceSymbolicConstant(tmp.getItem().getLabel(),
-                                        "$" + rampointer);
-                if (tmp_arg.getType() == ArgType.CONST) {
-                    this.memory.setLongWordInAddress(rampointer,
-                                                     tmp_arg.getValue());
-                } else if (tmp_arg.getType() == ArgType.VALUEARRAY) {
-                    int[] x = tmp_arg.getValuearray();
-                    for (int j = 0; j < x.length; j++) {
-                        this.memory.setLongWordInAddress(rampointer, x[j]);
-                    }
-                }
-                rampointer += tmp.getItem().getCommand().getPostfix().ordinal();
+            	dc(tmp);
                 break;
             case DS :
                 replaceSymbolicConstant(tmp.getItem().getLabel(),
@@ -155,6 +141,7 @@ public final class Program {
             case BNE :
             case BEQ :
             case DIVU :
+            case SWAP :
                 break;
             default :
                 ui.UI.printMessage("Command not found! "
@@ -163,6 +150,41 @@ public final class Program {
         }
     }
 
+    private void dc(LinkedList<CodeLine> tmp) {
+        StringBuilder tmp_str = new StringBuilder();
+        tmp_str.append("$");
+        tmp_str.append(rampointer);
+        replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + rampointer);
+
+        if (tmp.getItem().getArgument().getPrefix().getType() == ArgType.CONST) {
+        	int x = tmp.getItem().getArgument().getPrefix().getValue();
+            switch (tmp.getItem().getCommand().getPostfix()) {
+            case B:
+                this.memory.setByteInAddress(rampointer, (byte) x);
+                rampointer += 1;
+                break;
+            case W:
+            	this.memory.setWordInAddress(rampointer, (short) x);
+                rampointer += 2;
+            	break;
+            case L:
+            	this.memory.setLongWordInAddress(rampointer, x);
+                rampointer += 4;
+                break;
+            default:
+                ui.UI.printMessage("Fehler: falsche Kommandoendung!");
+                return;
+            }
+        } else if (tmp.getItem().getArgument().getPrefix().getType()
+        		== ArgType.VALUEARRAY) {
+            byte[] x = tmp.getItem().getArgument().getPrefix().getValuearray();
+            for (int i = 0; i < x.length; i++) {
+                this.memory.setByteInAddress(rampointer, x[i]);
+                rampointer++;
+            }
+        }
+        tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
+    }
     /**
      * Replace symbolic constant.
      *

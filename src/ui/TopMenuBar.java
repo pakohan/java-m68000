@@ -20,7 +20,7 @@ import org.gnome.gtk.TextTag;
 public final class TopMenuBar {
     private TopMenuBar() { }
     private static Program prog;
-
+    private static String str;
     private static MenuItem ram;
 
     public static MenuBar createMenuBar() {
@@ -34,34 +34,9 @@ public final class TopMenuBar {
                 FileChooserDialog dialog = FileC.createFileChooserDialog();
                 dialog.run();
                 dialog.hide();
-                String str = dialog.getFilename();
+                str = dialog.getFilename();
                 if (str != null) {
-                    UI.clearFileBuffer();
-                    try {
-                        String line;
-                        TextIter end;
-                        Scanner scan = new Scanner(new File(str));
-                        while (scan.hasNextLine()) {
-                            end = UI.getFilebuffer().getIterEnd();
-                            line = scan.nextLine();
-                            if (!line.isEmpty()) {
-                                UI.getFilebuffer().insert(end, line);
-                                UI.getFilebuffer().insert(end, "\n");
-                            }
-                        }
-                        UI.ramdisplay.rebuildTable();
-                        DataTable.rebuildDataTable();
-                        AdressTable.rebuildAddressTable();
-                        prog = new Program(str);
-                    } catch (IOException e) { }
-                    TextTag font = new TextTag();
-                    font.setFont("Monospace");
-                    UI.getFilebuffer().applyTag(font,
-                                                UI.getFilebuffer().getIterStart(),
-                                                UI.getFilebuffer().getIterEnd());
-                    UI.printMessage("Datei \"" + str + "\" geladen");
-                    UI.setCore1(new Processor(prog));
-                    UI.setSensitive(true);
+                	loadsource();
                 }
             }
         });
@@ -106,5 +81,37 @@ public final class TopMenuBar {
         menu2.setSubmenu(menu_help);
         menuBar.append(menu2);
         return menuBar;
+    }
+    
+    public static void loadsource() {
+    	Scanner scan;
+    	try {
+			scan = new Scanner(new File(str));
+            UI.printMessage("Datei \"" + str + "\" geladen");
+            UI.clearFileBuffer();
+            String line;
+            TextIter end;
+            while (scan.hasNextLine()) {
+                end = UI.getFilebuffer().getIterEnd();
+                line = scan.nextLine();
+                if (!line.isEmpty()) {
+                    UI.getFilebuffer().insert(end, line);
+                    UI.getFilebuffer().insert(end, "\n");
+                }
+            }
+		} catch (Exception e) { }
+        UI.ramdisplay.rebuildTable();
+        DataTable.rebuildDataTable();
+        AdressTable.rebuildAddressTable();
+        try {
+			prog = new Program(str);
+		} catch (IOException e) { }
+        TextTag font = new TextTag();
+        font.setFont("Monospace");
+        UI.getFilebuffer().applyTag(font,
+                                    UI.getFilebuffer().getIterStart(),
+                                    UI.getFilebuffer().getIterEnd());
+        UI.setCore1(new Processor(prog));
+        UI.setSensitive(true);
     }
 }

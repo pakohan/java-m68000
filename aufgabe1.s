@@ -1,5 +1,6 @@
-        ORG     $3000                               ;Gruppe 3 - Patrick Kohan (286085
+        ORG     $10                               ;Gruppe 3 - Patrick Kohan (286085
         BRA     START                               ;Prozessor springt zu 'START'
+AUTO    DS.L    1
 STRING  DC.B    'Praktikum-Rechnerarchitektur',0    ;erzeuge String
 SUMME   DS.L    1                                   ;reserviere Speicher für die Summe
 MITTEL  DS.L    1                                   ;reserviere Speicher für den Mittelwert

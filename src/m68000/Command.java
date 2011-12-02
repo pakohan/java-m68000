@@ -59,7 +59,8 @@ public final class Command implements Cloneable {
         CMP,
         BNE,
         BEQ,
-        DIVU
+        DIVU,
+        SWAP
     };
 
     /**

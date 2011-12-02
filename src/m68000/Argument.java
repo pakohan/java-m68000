@@ -207,7 +207,7 @@ public final class Argument implements Cloneable {
         private ArgType type;
         private int value;
         private String anotherArg;
-        private int[] valuearray;
+        private byte[] valuearray;
         private Inkrement ink;
 
         /**
@@ -271,9 +271,9 @@ public final class Argument implements Cloneable {
             case '\'':
                 this.type = ArgType.VALUEARRAY;
                 String[] str = argument.split("'");
-                this.valuearray = new int[str[1].length() + 1];
+                this.valuearray = new byte[str[1].length() + 1];
                 for (int i = 0; i < str[1].length(); i++) {
-                    this.valuearray[i] = Character.valueOf(str[1].charAt(i));
+                    this.valuearray[i] = (byte) Character.getNumericValue(str[1].charAt(i));
                 }
                 this.valuearray[this.valuearray.length - 1] = 0;
                 break;
@@ -308,7 +308,7 @@ public final class Argument implements Cloneable {
             return ink;
         }
 
-        public final int[] getValuearray() {
+        public final byte[] getValuearray() {
             return valuearray;
         }
 
