@@ -62,7 +62,8 @@ public final class Command implements Cloneable {
             DIVU };
 
     /**
-     * The Enum CommandPostfix.
+     * The Enum CommandPostfix. BE CAREFUL! IF YOU CHANGE THE ORDER,
+     * THE PROGRAM WILL NOT WORK ANY MORE!
      */
     static enum CommandPostfix    {
     								ZERO,
