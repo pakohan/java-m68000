@@ -15,8 +15,8 @@ public final class DataTable {
         DataColumnString dataregisterindex = new DataColumnString();
         UI.dataregistermemory = new DataColumnString();
         DataColumn[] table = new DataColumn[] {
-                dataregisterindex,
-                UI.dataregistermemory
+            dataregisterindex,
+            UI.dataregistermemory
         };
 
         UI.dataregisterliststore = new ListStore(table);
@@ -24,11 +24,11 @@ public final class DataTable {
         for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
             row = UI.dataregisterliststore.appendRow();
             UI.dataregisterliststore.setValue(row,
-                    dataregisterindex,
-                    Integer.valueOf(i).toString());
+                                              dataregisterindex,
+                                              Integer.valueOf(i).toString());
         }
         rebuildDataTable();
-        
+
         TreeView dataRegister = new TreeView(UI.dataregisterliststore);
         TreeViewColumn vertical;
         CellRendererText renderer;
@@ -45,11 +45,11 @@ public final class DataTable {
 
         return dataRegister;
     }
-    
+
     public static void rebuildDataTable() {
         TreeIter iter = UI.dataregisterliststore.getIterFirst();
         for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
-        	UI.dataregisterliststore.setValue(iter, UI.dataregistermemory, "0");
+            UI.dataregisterliststore.setValue(iter, UI.dataregistermemory, "0");
             iter.iterNext();
         }
     }

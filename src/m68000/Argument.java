@@ -41,14 +41,14 @@ public final class Argument implements Cloneable {
      * The Enum ArgType.
      */
     static enum ArgType    {
-                            ADDRESS_REGISTER,
-                            DATA_REGISTER,
-                            MEMORY,
-                            STRING,
-                            CONST,
-                            VALUEARRAY,
-                            ADRESSOFMARKER
-                        }
+        ADDRESS_REGISTER,
+        DATA_REGISTER,
+        MEMORY,
+        STRING,
+        CONST,
+        VALUEARRAY,
+        ADRESSOFMARKER
+    }
 
     static enum Inkrement {
         POSTINKREMENT,
@@ -288,7 +288,7 @@ public final class Argument implements Cloneable {
                     this.type = ArgType.CONST;
                     this.value = scan3.nextInt();
                 } else if (argument.length() == 2
-                        && new Scanner("" + argument.charAt(1)).hasNextInt()) {
+                           && new Scanner("" + argument.charAt(1)).hasNextInt()) { //WTF?! Scanner(true or false)
                     Scanner scan4 = new Scanner(argument.substring(1));
                     if (argument.charAt(0) == 'A') {
                         this.type = ArgType.ADDRESS_REGISTER;

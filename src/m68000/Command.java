@@ -25,53 +25,54 @@ public final class Command implements Cloneable {
      * The Enum InstructionSet defines the commands known by our processor.
      */
     static enum InstructionSet {
-            /**
-             * "ORG" defines at a real M68000 where the program will be stored
-             * in the main memory.
-             */
-            ORG,
-            /**
-             * "BRA" needs an argument. BRA jumps to the line of code in which
-             * the marker is equal to this argument.
-             */
-            BRA,
-            /**
-             * "EQU" needs a label and an argument, which is an memory address.
-             * In real, the assembler-compiler replaces every string in the
-             * source file, which is equal to the marker with the argument.
-             * We use it in a different way: Every time EQU appears in the
-             * source file, a new "Memory" Object will be created with the
-             * label as searching String. The content of this memory area will
-             * be asked before running the program.
-             */
-            EQU,
-            DC,
-            DS,
-            CLR,
-            MOVE,
-            ADD,
-            END,
-            ZERO,
-            HEAD,
-            SUB,
-            MUL,
-            DIV,
-            CMP,
-            BNE,
-            BEQ,
-            DIVU };
+        /**
+         * "ORG" defines at a real M68000 where the program will be stored
+         * in the main memory.
+         */
+        ORG,
+        /**
+         * "BRA" needs an argument. BRA jumps to the line of code in which
+         * the marker is equal to this argument.
+         */
+        BRA,
+        /**
+         * "EQU" needs a label and an argument, which is an memory address.
+         * In real, the assembler-compiler replaces every string in the
+         * source file, which is equal to the marker with the argument.
+         * We use it in a different way: Every time EQU appears in the
+         * source file, a new "Memory" Object will be created with the
+         * label as searching String. The content of this memory area will
+         * be asked before running the program.
+         */
+        EQU,
+        DC,
+        DS,
+        CLR,
+        MOVE,
+        ADD,
+        END,
+        ZERO,
+        HEAD,
+        SUB,
+        MUL,
+        DIV,
+        CMP,
+        BNE,
+        BEQ,
+        DIVU
+    };
 
     /**
      * The Enum CommandPostfix. BE CAREFUL! IF YOU CHANGE THE ORDER,
      * THE PROGRAM WILL NOT WORK ANY MORE!
      */
     static enum CommandPostfix    {
-    								ZERO,
-                                    B,
-                                    W,
-                                    B3,
-                                    L,
-                                }
+        ZERO,
+        B,
+        W,
+        B3,
+        L,
+    }
 
     /**
      * The prefix is one of the enum InstructionSet.

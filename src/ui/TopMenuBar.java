@@ -57,8 +57,8 @@ public final class TopMenuBar {
                     TextTag font = new TextTag();
                     font.setFont("Monospace");
                     UI.getFilebuffer().applyTag(font,
-                            UI.getFilebuffer().getIterStart(),
-                            UI.getFilebuffer().getIterEnd());
+                                                UI.getFilebuffer().getIterStart(),
+                                                UI.getFilebuffer().getIterEnd());
                     UI.printMessage("Datei \"" + str + "\" geladen");
                     UI.setCore1(new Processor(prog));
                     UI.setSensitive(true);

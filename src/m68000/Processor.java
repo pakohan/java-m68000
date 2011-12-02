@@ -90,7 +90,7 @@ public class Processor {
         default :
         }
         ui.UI.setadresstable(adr.getValue(),
-                this.adressRegister[adr.getValue()]);
+                             this.adressRegister[adr.getValue()]);
     }
 
     private int size;
@@ -134,7 +134,7 @@ public class Processor {
             break;
         case BRA:
             this.execute = jump(com.getArgument().getPrefix().getOtherArg())
-                               .getPrev();
+                           .getPrev();
             break;
         case EQU :
             break;
@@ -169,13 +169,13 @@ public class Processor {
         case BEQ :
             if (this.compare) {
                 this.execute = jump(com.getArgument().getPrefix().getOtherArg())
-                        .getPrev();
+                               .getPrev();
             }
             break;
         case BNE :
             if (!this.compare) {
                 this.execute = jump(com.getArgument().getPrefix().getOtherArg())
-                        .getPrev();
+                               .getPrev();
             }
             break;
         case END :
@@ -183,7 +183,7 @@ public class Processor {
             break;
         default :
             ui.UI.printMessage("Command '"
-                    + com.getCommand().getPrefix() + "' not found!");
+                               + com.getCommand().getPrefix() + "' not found!");
         }
     }
 
@@ -205,31 +205,31 @@ public class Processor {
      * argument one.
      *
      * @param args the args
-     * @param commandPostfix 
+     * @param commandPostfix
      */
     private final void move(final Argument args, final CommandPostfix cpf) {
         int x = getData(args.getPrefix());
         x = recognizeCommandPostfix(x, cpf);
         setData(args.getPostfix(), x);
     }
-    
+
     private final int recognizeCommandPostfix(final int x, final CommandPostfix cpf) {
-    	int z;
+        int z;
         switch (cpf) {
         case B:
-        	z = ((byte) x) & 0xFF;
-        	break;
+            z = ((byte) x) & 0xFF;
+            break;
         case W:
-        	z = ((short) x) & 0xFFFF;
-        	break;
+            z = ((short) x) & 0xFFFF;
+            break;
         case L:
-        	z = x;
-        	break;
+            z = x;
+            break;
         default:
-        	ui.UI.printMessage("Fehler: falsche Kommandoendung!");
-        		return 0;
+            ui.UI.printMessage("Fehler: falsche Kommandoendung!");
+            return 0;
         }
-    	return z;
+        return z;
     }
 
     /**

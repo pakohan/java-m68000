@@ -31,8 +31,8 @@ public final class RAM {
         this.memory = new byte[MAX_BYTE];
     }
 
-    
-    
+
+
     public int getByteInAddress(final int address) {
         return this.memory[address];
     }
@@ -42,35 +42,35 @@ public final class RAM {
         ui.UI.ramdisplay.setRamValue(address, data & 0xFF);
     }
 
-    
-    
+
+
     public short getWordInAddress(final int address) {
-    	short x;
-    	x = (short) ((getByteInAddress(address) << 8) & 0xFF00);
-    	x = (short) (x + (getByteInAddress(address + 1) & 0x00FF));
+        short x;
+        x = (short) ((getByteInAddress(address) << 8) & 0xFF00);
+        x = (short) (x + (getByteInAddress(address + 1) & 0x00FF));
         return x;
     }
 
     public void setWordInAddress(final int address, final short data) {
-    	short x = data;
-    	setByteInAddress(address + 1, (byte) x);
-    	x = (short) (x >>> 8);
-    	setByteInAddress(address, (byte) x);
+        short x = data;
+        setByteInAddress(address + 1, (byte) x);
+        x = (short) (x >>> 8);
+        setByteInAddress(address, (byte) x);
     }
-    
-    
-    
+
+
+
     public int getLongWordInAddress(final int address) {
-    	int x;
-    	x = ((getWordInAddress(address) << 16) & 0xFFFF0000);
-    	x = x + ((getWordInAddress(address + 2)) & 0x0000FFFF);
-    	return x;
+        int x;
+        x = ((getWordInAddress(address) << 16) & 0xFFFF0000);
+        x = x + ((getWordInAddress(address + 2)) & 0x0000FFFF);
+        return x;
     }
 
     public void setLongWordInAddress(final int address, final int data) {
-    	int x = data;
-    	setWordInAddress(address + 2, (short) x);
-    	x = x >>> 16;
-    	setWordInAddress(address, (short) x);
+        int x = data;
+        setWordInAddress(address + 2, (short) x);
+        x = x >>> 16;
+        setWordInAddress(address, (short) x);
     }
 }

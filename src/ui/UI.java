@@ -67,11 +67,11 @@ public final class UI {
 
     public static void main(final String[] args) {
         //try {
-            Gtk.init(args);
-            createMainWindow();
-            ramdisplay = new RamDisplay();
-            window.showAll();
-            Gtk.main();
+        Gtk.init(args);
+        createMainWindow();
+        ramdisplay = new RamDisplay();
+        window.showAll();
+        Gtk.main();
         /*} catch (Exception x) {
         	System.out.println(Gtk.eventsPending());
             Writer result = new StringWriter();
@@ -81,12 +81,12 @@ public final class UI {
             		"Fehler",
             		result.toString());
             error.connect(new Dialog.Response() {
-				
-				@Override
-				public void onResponse(Dialog source, ResponseType response) {
-					Gtk.mainQuit();
-				}
-			});
+
+        		@Override
+        		public void onResponse(Dialog source, ResponseType response) {
+        			Gtk.mainQuit();
+        		}
+        	});
             error.run();
             error.hide();
             Gtk.main();
@@ -104,8 +104,8 @@ public final class UI {
             datatableiter.iterNext();
         }
         dataregisterliststore.setValue(datatableiter,
-                dataregistermemory,
-                Integer.valueOf(x).toString());
+                                       dataregistermemory,
+                                       Integer.valueOf(x).toString());
     }
 
     public static void setadresstable(final int n, final int x) {
@@ -114,8 +114,8 @@ public final class UI {
             adresstableiter.iterNext();
         }
         adressregisterliststore.setValue(adresstableiter,
-                dataregistermemory,
-                Integer.valueOf(x).toString());
+                                         dataregistermemory,
+                                         Integer.valueOf(x).toString());
     }
 
     private static void createMainWindow() {
@@ -123,11 +123,11 @@ public final class UI {
         window.setTitle("M68000");
         window.setDefaultSize(800, 700);
         try {
-			window.setIcon(new Pixbuf("/usr/share/pixmaps/gnome-ccperiph.png"));
-		} catch (FileNotFoundException e) { }
+            window.setIcon(new Pixbuf("/usr/share/pixmaps/gnome-ccperiph.png"));
+        } catch (FileNotFoundException e) { }
         window.connect(new Window.DeleteEvent() {
             public boolean onDeleteEvent(final Widget source,
-                    final Event event) {
+            final Event event) {
                 Gtk.mainQuit();
                 return false;
             }
@@ -191,8 +191,8 @@ public final class UI {
         TextTag black = new TextTag();
         black.setForeground("black");
         filebuffer.applyTag(black,
-                filebuffer.getIterStart(),
-                filebuffer.getIterEnd());
+                            filebuffer.getIterStart(),
+                            filebuffer.getIterEnd());
         TextIter pointerend = filebuffer.getIterStart();
         pointerend.forwardLines(i);
         TextIter pointerbegin = pointerend.copy();

@@ -29,9 +29,9 @@ public class RamDisplay {
         ramvalue1 = new DataColumnString();
         ramvalue2 = new DataColumnString();
         DataColumn[] ramDataColumn = new DataColumn[] {
-                ramindex,
-                ramvalue1,
-                ramvalue2
+            ramindex,
+            ramvalue1,
+            ramvalue2
         };
         this.ramlist = new ListStore(ramDataColumn);
         TreeView ramtable = new TreeView(ramlist);
@@ -77,21 +77,21 @@ public class RamDisplay {
 
     public final void setRamValue(final int n, final int x) {
         TreeIter iter = ramlist.getIterFirst();
-	    int m = 0;
-	    if ((n % 2) == 1) {
-	    	m++;
-	    }
-	    for (int i = m; i < n; i += 2) {
-	        iter.iterNext();
-	    }
-	    if ((n % 2) == 0) {
-	        ramlist.setValue(iter,
-	                this.ramvalue1,
-	                Integer.toBinaryString(x));
-	    } else {
-	        ramlist.setValue(iter,
-	                this.ramvalue2,
-	                Integer.toBinaryString(x));
-	    }
+        int m = 0;
+        if ((n % 2) != 0) {
+            m++;
+        }
+        for (int i = m; i < n; i += 2) {
+            iter.iterNext();
+        }
+        if ((n % 2) == 0) {
+            ramlist.setValue(iter,
+                             this.ramvalue1,
+                             Integer.toBinaryString(x));
+        } else {
+            ramlist.setValue(iter,
+                             this.ramvalue2,
+                             Integer.toBinaryString(x));
+        }
     }
 }

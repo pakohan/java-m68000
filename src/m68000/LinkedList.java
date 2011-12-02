@@ -70,8 +70,8 @@ public class LinkedList<T> {
      * @param element the element
      */
     private LinkedList(final LinkedList<T> pre,
-                      final LinkedList<T> nex,
-                      final T element) {
+                       final LinkedList<T> nex,
+                       final T element) {
         this.item = element;
         this.next = nex;
         this.prev = pre;
