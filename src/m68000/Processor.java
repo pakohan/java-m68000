@@ -53,7 +53,7 @@ public class Processor {
             x = this.adressRegister[adr.getValue()];
             break;
         case NOINKREMENT :
-            x = this.ram.getByteInAddress(this.adressRegister[adr.getValue()]);
+            x = this.ram.getLongWordInAddress(this.adressRegister[adr.getValue()]);
             break;
         case NONE :
             x = this.adressRegister[adr.getValue()];
@@ -299,11 +299,11 @@ public class Processor {
     public final int getData(final Arg dataPlace) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER :
-            return this.ram.getByteInAddress(getAdressRegister(dataPlace));
+            return this.ram.getLongWordInAddress(getAdressRegister(dataPlace));
         case DATA_REGISTER :
             return this.dataRegister[dataPlace.getValue()];
         case MEMORY :
-            return this.ram.getByteInAddress(dataPlace.getValue());
+            return this.ram.getLongWordInAddress(dataPlace.getValue());
         case CONST :
             return dataPlace.getValue();
         case ADRESSOFMARKER :

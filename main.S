@@ -5,8 +5,8 @@ COUNT DC.L   10
 ONE   DC.L   1
 START MOVE.W KONST,D1
       MOVE.W KONST,A1
-LOOP  ADD.L  1,D1
-      SUB.L  1,COUNT
+LOOP  ADD.L  #1,D1
+      SUB.L  #1,COUNT
       CMP    COUNT,0
       BNE    LOOP
       MOVE.W D1,COUNT

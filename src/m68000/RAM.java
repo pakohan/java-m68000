@@ -39,7 +39,7 @@ public final class RAM {
 
     public void setByteInAddress(final int address, final byte data) {
         this.memory[address] = data;
-        ui.UI.ramdisplay.setRamValue(address, data);
+        ui.UI.ramdisplay.setRamValue(address, data & 0xFF);
     }
 
     
@@ -54,7 +54,7 @@ public final class RAM {
     public void setWordInAddress(final int address, final short data) {
     	short x = data;
     	setByteInAddress(address + 1, (byte) x);
-    	x = (short) (x / 256);
+    	x = (short) (x >>> 8);
     	setByteInAddress(address, (byte) x);
     }
     
@@ -70,7 +70,7 @@ public final class RAM {
     public void setLongWordInAddress(final int address, final int data) {
     	int x = data;
     	setWordInAddress(address + 2, (short) x);
-    	x = x / 65535;
-    	setByteInAddress(address, (byte) x);
+    	x = x >>> 16;
+    	setWordInAddress(address, (short) x);
     }
 }
