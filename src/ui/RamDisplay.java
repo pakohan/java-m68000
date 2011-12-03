@@ -54,9 +54,9 @@ public class RamDisplay {
         this.ramlist = new ListStore(ramDataColumn);
         TreeView ramtable = new TreeView(ramlist);
         TreeIter row;
-        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i += 2) {
+        for (int i = 0; i < m68000.RAM.MAX_BYTE; i += 2) {
             row = ramlist.appendRow();
-            ramlist.setValue(row, ramindex, Integer.toString(i));
+            ramlist.setValue(row, ramindex, Integer.toHexString(i));
         }
         rebuildTable();
         CellRendererText renderer;
@@ -85,7 +85,7 @@ public class RamDisplay {
 
     public final void rebuildTable() {
         TreeIter iter = ramlist.getIterFirst();
-        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i += 2) {
+        for (int i = 0; i < m68000.RAM.MAX_BYTE; i += 2) {
             ramlist.setValue(iter, this.ramvalue1, "0");
             ramlist.setValue(iter, this.ramvalue2, "0");
             iter.iterNext();
