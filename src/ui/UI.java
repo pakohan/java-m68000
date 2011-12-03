@@ -50,6 +50,7 @@ public final class UI {
     private static Button reload;
     private static Processor core1;
     private static MemoryDisplay md;
+    private static StringBuilder buf = new StringBuilder();
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 700;
@@ -157,6 +158,10 @@ public final class UI {
         msgtextview.setWrapMode(WORD);
         ScrolledWindow scrolledWindow = new ScrolledWindow();
         scrolledWindow.add(msgtextview);
+
+        TextIter end = msgbuffer.getIterEnd();
+        msgbuffer.insert(end, buf.toString());
+        msgtextview.scrollTo(end);
         return scrolledWindow;
     }
 
@@ -239,6 +244,10 @@ public final class UI {
                 Gtk.mainQuit();
             }
         });
+    }
+
+    public static void addErrorMessage(final String message) {
+        buf.append(message).append("\n");
     }
 
     public static String getNumberAppeareance(final int x) {
