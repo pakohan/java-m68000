@@ -26,6 +26,7 @@ import org.gnome.gtk.Window;
 import m68000.Processor;
 
 public final class UI {
+    static enum MemoryDisplay {BIN, OKT, DEZ, HEX }
 
     private static Window window;
     private static TextBuffer msgbuffer;
@@ -42,6 +43,10 @@ public final class UI {
     private static Processor core1;
     public static RamDisplay ramdisplay;
     public static Pixbuf icon;
+	public static Object settingswindow;
+	public static MemoryDisplay md = MemoryDisplay.BIN;
+	public static SettingsWindow sw;
+    
 
     private UI() { }
 
@@ -63,6 +68,7 @@ public final class UI {
 		} catch (FileNotFoundException e) { }
         createMainWindow();
         ramdisplay = new RamDisplay();
+        sw = new SettingsWindow();
         window.showAll();
         Gtk.main();
         /*} catch (Exception x) {
@@ -96,9 +102,10 @@ public final class UI {
         for (int i = 0; i < n; i++) {
             datatableiter.iterNext();
         }
+        String number = getNumberAppeareance(x);
         dataregisterliststore.setValue(datatableiter,
                                        dataregistermemory,
-                                       Integer.valueOf(x).toString());
+                                       number);
     }
 
     public static void setadresstable(final int n, final int x) {
@@ -106,9 +113,10 @@ public final class UI {
         for (int i = 0; i < n; i++) {
             adresstableiter.iterNext();
         }
+        String number = getNumberAppeareance(x);
         adressregisterliststore.setValue(adresstableiter,
                                          dataregistermemory,
-                                         Integer.valueOf(x).toString());
+                                         number);
     }
 
     private static void createMainWindow() {
@@ -259,6 +267,43 @@ public final class UI {
                 Gtk.mainQuit();
             }
         });
+    }
+    
+    public static String getNumberAppeareance(final int x) {
+    	String number = "0";
+    	StringBuilder strb = new StringBuilder();
+    	switch (md) {
+    	case BIN :
+            number = Integer.toBinaryString(x);
+            for (int i = number.length(); i < 8; i++) {
+            	strb.append("0");
+            }
+            strb.append(number);
+    		break;
+    	case OKT :
+            number = Integer.toOctalString(x);
+            for (int i = number.length(); i < 4; i++) {
+            	strb.append("0");
+            }
+            strb.append(number);
+    		break;
+    	case DEZ :
+            number = Integer.toString(x);
+            for (int i = number.length(); i < 3; i++) {
+            	strb.append("0");
+            }
+            strb.append(number);
+    		break;
+    	case HEX :
+            number = Integer.toHexString(x);
+            for (int i = number.length(); i < 2; i++) {
+            	strb.append("0");
+            }
+            strb.append(number);
+    		break;
+    	}
+    	number = strb.toString();
+    	return number;
     }
 
     public static TextBuffer getFilebuffer() {

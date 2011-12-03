@@ -147,6 +147,9 @@ public final class Program {
                 ui.UI.printMessage("Command not found! "
                                    + tmp.getItem().getCommand().getPrefix());
             }
+            if ((rampointer % 2) == 1) {
+            	rampointer++;
+            }
         }
     }
 

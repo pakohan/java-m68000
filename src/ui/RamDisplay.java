@@ -84,13 +84,7 @@ public class RamDisplay {
         for (int i = m; i < n; i += 2) {
             iter.iterNext();
         }
-        StringBuilder strb = new StringBuilder();
-        String number = Integer.toBinaryString(x);
-        for (int i = number.length(); i < 8; i++) {
-        	strb.append("0");
-        }
-        strb.append(number);
-        number = strb.toString();
+        String number = UI.getNumberAppeareance(x);
         if ((n % 2) == 0) {
             ramlist.setValue(iter,
                              this.ramvalue1,

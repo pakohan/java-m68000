@@ -21,7 +21,7 @@ public final class TopMenuBar {
     private TopMenuBar() { }
     private static Program prog;
     private static String str;
-    private static MenuItem ram;
+    private static MenuItem settings;
 
     public static MenuBar createMenuBar() {
         MenuBar menuBar = new MenuBar();
@@ -43,7 +43,7 @@ public final class TopMenuBar {
 
         menu_file.append(open);
 
-        ram = new MenuItem("Display RAM");
+        MenuItem ram = new MenuItem("Display RAM");
         ram.connect(new MenuItem.Activate() {
             @Override
             public void onActivate(final MenuItem source) {
@@ -51,6 +51,16 @@ public final class TopMenuBar {
             }
         });
         menu_file.append(ram);
+        
+        settings = new MenuItem("Einstellungen");
+        settings.connect(new MenuItem.Activate() {
+            @Override
+            public void onActivate(final MenuItem source) {
+                UI.sw.window.showAll();
+            }
+        });
+        menu_file.append(settings);
+
 
         MenuItem exit = new MenuItem("Exit");
         exit.connect(new MenuItem.Activate() {
@@ -113,5 +123,6 @@ public final class TopMenuBar {
                                     UI.getFilebuffer().getIterEnd());
         UI.setCore1(new Processor(prog));
         UI.setSensitive(true);
+        settings.setSensitive(false);
     }
 }

@@ -1,12 +1,15 @@
         ORG     $10                               ;Gruppe 3 - Patrick Kohan (286085
         BRA     START                               ;Prozessor springt zu 'START'
+EINS    DC.L    30
+ZWEI    DC.L    10
 AUTO    DS.L    1
 STRING  DC.B    'Praktikum-Rechnerarchitektur',0    ;erzeuge String
 SUMME   DS.L    1                                   ;reserviere Speicher für die Summe
 MITTEL  DS.L    1                                   ;reserviere Speicher für den Mittelwert
 
 START   CLR.L   D1                                  ;Datenregister Stelle D1 und
-        ADD.B  #10,D6
+        SUB.L   EINS,ZWEI
+        ADD.B   #10,D6
         CLR.L   D2                                  ;Datenregister Stelle D2 ausnullen
         CLR.L   SUMME                               ;Speicher an der Stelle 'SUMME'
         CLR.L   MITTEL                              ;und der Stelle 'MITTEL' ausnullen
