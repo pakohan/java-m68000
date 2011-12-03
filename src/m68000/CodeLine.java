@@ -81,7 +81,8 @@ public final class CodeLine implements Cloneable {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append("The label ist {");
+        str.append(lineindex);
+        str.append(": The label ist {");
         str.append(this.label);
         str.append("}, the command is {");
         str.append(this.command);

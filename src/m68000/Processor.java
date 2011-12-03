@@ -128,7 +128,7 @@ public class Processor {
     public final void step() {
         this.execute = this.execute.getNext();
         step(this.execute.getItem());
-        ui.UI.markLine(this.execute.getItem().getLineindex() + 1);
+        ui.UI.markLine(this.execute.getNext().getItem().getLineindex());
     }
 
     /**

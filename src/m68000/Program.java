@@ -95,6 +95,7 @@ public final class Program {
         while ((line = source.readLine()) != null) {
             part = line.split(";");
             addCommand(deleteComments(part[0]));
+            counter++;
         }
         source.close();
         file.close();
@@ -249,17 +250,14 @@ public final class Program {
         switch (befehlsfolge.length) {
         case 1:
             this.prog.add(new CodeLine(counter, befehlsfolge[0], "", ""));
-            counter++;
             break;
         case 2:
             this.prog.add(new CodeLine(counter, befehlsfolge[0],
                     befehlsfolge[1], ""));
-            counter++;
             break;
         case MAX_TOKENS:
             this.prog.add(new CodeLine(counter, befehlsfolge[1],
                     befehlsfolge[2], befehlsfolge[0]));
-            counter++;
             break;
         default:
         }
