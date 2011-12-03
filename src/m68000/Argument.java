@@ -227,7 +227,10 @@ public final class Argument implements Cloneable {
             switch (argument.charAt(0)) {
             case '#':
                 Scanner scan = new Scanner(argument.substring(1));
-                if (scan.hasNextInt()) {
+                if (argument.charAt(1) == '$') {
+                    this.type = ArgType.CONST;
+                    this.value = Integer.parseInt(argument.substring(2), 16);
+                } else if (scan.hasNextInt()) {
                     this.type = ArgType.CONST;
                     this.value = scan.nextInt();
                 } else {
@@ -282,9 +285,8 @@ public final class Argument implements Cloneable {
                 this.valuearray[this.valuearray.length - 1] = 0;
                 break;
             case '$':
-                Scanner scan2 = new Scanner(argument.substring(1));
                 this.type = ArgType.MEMORY;
-                this.value = scan2.nextInt();
+                this.value = Integer.parseInt(argument.substring(1), 16);
                 break;
             default:
                 Scanner scan3 = new Scanner(argument);

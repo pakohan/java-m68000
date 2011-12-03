@@ -22,7 +22,7 @@ package m68000;
 public final class RAM {
 
     private byte[] memory;
-    public static final int MAX_BYTE = 4096;
+    public static final int MAX_BYTE = 40000;
 
     public RAM() {
         this.memory = new byte[MAX_BYTE];
