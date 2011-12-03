@@ -138,10 +138,8 @@ public final class TopMenuBar {
             while (scan.hasNextLine()) {
                 end = UI.getFilebuffer().getIterEnd();
                 line = scan.nextLine();
-                if (!line.isEmpty()) {
-                    UI.getFilebuffer().insert(end, line);
-                    UI.getFilebuffer().insert(end, "\n");
-                }
+                UI.getFilebuffer().insert(end, line);
+                UI.getFilebuffer().insert(end, "\n");
             }
         } catch (Exception e) {
             UI.printMessage("Datei \""

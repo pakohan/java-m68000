@@ -34,7 +34,7 @@ public class RamDisplay {
     private DataColumnString ramindex;
     private DataColumnString[] datacolumn;
 
-    private static final int WIDTH = 800;
+    private static final int WIDTH = 500;
     private static final int HEIGHT = 800;
 
     public RamDisplay() {
@@ -85,7 +85,12 @@ public class RamDisplay {
 
         for (int i = 0; i < 16; i++) {
             vertical = ramtable.appendColumn();
-            vertical.setTitle(Integer.toString(i));
+            StringBuilder str = new StringBuilder();
+            if (i < 10) {
+                str.append("0");
+            }
+            str.append(i);
+            vertical.setTitle(str.toString());
             renderer = new CellRendererText(vertical);
             renderer.setMarkup(datacolumn[i]);
         }
@@ -110,12 +115,9 @@ public class RamDisplay {
     }
 
     public final void setRamValue(final int n, final int x) {
+        //System.out.println();
         TreeIter iter = ramlist.getIterFirst();
-        int m = 0;
-        if ((n % 2) != 0) {
-            m++;
-        }
-        for (int i = m; i < n; i += 16) {
+        for (int i = 0; i < n; i += 16) {
             iter.iterNext();
         }
         String number = UI.getNumberAppeareance(x);

@@ -128,7 +128,43 @@ public class Processor {
     public final void step() {
         this.execute = this.execute.getNext();
         step(this.execute.getItem());
-        ui.UI.markLine(this.execute.getNext().getItem().getLineindex());
+        ui.UI.markLine(getNextLine(this.execute));
+    }
+
+    private int getNextLine(final LinkedList<CodeLine> com) {
+        switch (com.getItem().getCommand().getPrefix()) {
+        case BRA:
+            return jump(com.getItem().getArgument().getPrefix().getOtherArg())
+                    .getItem().getLineindex();
+        case BEQ:
+            if (this.compare) {
+                return jump(com.getItem().getArgument().getPrefix().getOtherArg())
+                        .getItem().getLineindex();
+            }
+            break;
+        case BNE:
+            if (!this.compare) {
+                return jump(com.getItem().getArgument().getPrefix().getOtherArg())
+                        .getItem().getLineindex();
+            }
+            break;
+        case ORG:
+        case EQU:
+        case DC:
+        case DS:
+        case HEAD:
+        case CLR:
+        case MOVE:
+        case ADD:
+        case SUB:
+        case MUL:
+        case DIVU:
+        case DIV:
+        case CMP:
+        case END:
+        default:
+        }
+        return com.getNext().getItem().getLineindex();
     }
 
     /**
