@@ -9,6 +9,7 @@ MITTEL  DS.L    1                                   ;reserviere Speicher für de
 
 START   CLR.L   D1                                  ;Datenregister Stelle D1 und
         SUB.L   EINS,ZWEI
+        MOVE.L  #EINS,A5
         ADD.B   #10,D6
         CLR.L   D2                                  ;Datenregister Stelle D2 ausnullen
         CLR.L   SUMME                               ;Speicher an der Stelle 'SUMME'

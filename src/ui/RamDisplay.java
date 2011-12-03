@@ -32,10 +32,9 @@ public class RamDisplay {
     private Window window;
     private ListStore ramlist;
     private DataColumnString ramindex;
-    private DataColumnString ramvalue1;
-    private DataColumnString ramvalue2;
+    private DataColumnString[] datacolumn;
 
-    private static final int WIDTH = 300;
+    private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
 
     public RamDisplay() {
@@ -45,16 +44,32 @@ public class RamDisplay {
         HBox hbox = new HBox(false, 0);
         ScrolledWindow scrolled = new ScrolledWindow();
         ramindex = new DataColumnString();
-        ramvalue1 = new DataColumnString();
-        ramvalue2 = new DataColumnString();
+        datacolumn = new DataColumnString[16];
+        for (int i = 0; i < 16; i++) {
+            datacolumn[i] = new DataColumnString();
+        }
         DataColumn[] ramDataColumn = new DataColumn[] {
                 ramindex,
-                ramvalue1,
-                ramvalue2 };
+                datacolumn[0],
+                datacolumn[1],
+                datacolumn[2],
+                datacolumn[3],
+                datacolumn[4],
+                datacolumn[5],
+                datacolumn[6],
+                datacolumn[7],
+                datacolumn[8],
+                datacolumn[9],
+                datacolumn[10],
+                datacolumn[11],
+                datacolumn[12],
+                datacolumn[13],
+                datacolumn[14],
+                datacolumn[15]};
         this.ramlist = new ListStore(ramDataColumn);
         TreeView ramtable = new TreeView(ramlist);
         TreeIter row;
-        for (int i = 0; i < m68000.RAM.MAX_BYTE; i += 2) {
+        for (int i = 0; i < m68000.RAM.MAX_BYTE; i += 16) {
             row = ramlist.appendRow();
             ramlist.setValue(row, ramindex, Integer.toHexString(i));
         }
@@ -68,15 +83,12 @@ public class RamDisplay {
         renderer = new CellRendererText(vertical);
         renderer.setMarkup(ramindex);
 
-        vertical = ramtable.appendColumn();
-        vertical.setTitle("Wert ger");
-        renderer = new CellRendererText(vertical);
-        renderer.setMarkup(ramvalue1);
-
-        vertical = ramtable.appendColumn();
-        vertical.setTitle("Wert unger");
-        renderer = new CellRendererText(vertical);
-        renderer.setMarkup(ramvalue2);
+        for (int i = 0; i < 16; i++) {
+            vertical = ramtable.appendColumn();
+            vertical.setTitle(Integer.toString(i));
+            renderer = new CellRendererText(vertical);
+            renderer.setMarkup(datacolumn[i]);
+        }
 
         scrolled.add(ramtable);
         hbox.packStart(scrolled, true, true, 0);
@@ -85,9 +97,10 @@ public class RamDisplay {
 
     public final void rebuildTable() {
         TreeIter iter = ramlist.getIterFirst();
-        for (int i = 0; i < m68000.RAM.MAX_BYTE; i += 2) {
-            ramlist.setValue(iter, this.ramvalue1, "0");
-            ramlist.setValue(iter, this.ramvalue2, "0");
+        for (int i = 0; i < m68000.RAM.MAX_BYTE; i += 16) {
+            for (int j = 0; j < 16; j++) {
+                ramlist.setValue(iter, this.datacolumn[j], "0");
+            }
             iter.iterNext();
         }
     }
@@ -102,14 +115,10 @@ public class RamDisplay {
         if ((n % 2) != 0) {
             m++;
         }
-        for (int i = m; i < n; i += 2) {
+        for (int i = m; i < n; i += 16) {
             iter.iterNext();
         }
         String number = UI.getNumberAppeareance(x);
-        if ((n % 2) == 0) {
-            ramlist.setValue(iter, this.ramvalue1, number);
-        } else {
-            ramlist.setValue(iter, this.ramvalue2, number);
-        }
+        ramlist.setValue(iter, this.datacolumn[n % 16], number);
     }
 }
