@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) Patrick Kohan 2011 <patrick.kohan@googlemail.com>
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ui;
 
 import java.io.File;
@@ -18,14 +34,16 @@ import org.gnome.gtk.TextIter;
 import org.gnome.gtk.TextTag;
 
 public final class TopMenuBar {
-    private TopMenuBar() { }
+    private TopMenuBar() {
+    }
+
     private static Program prog;
     private static String str;
     private static MenuItem settings;
 
     public static MenuBar createMenuBar() {
         MenuBar menuBar = new MenuBar();
-        Menu menu_file = new Menu();
+        Menu menufile = new Menu();
 
         MenuItem open = new MenuItem("Open ...");
         open.connect(new MenuItem.Activate() {
@@ -36,12 +54,12 @@ public final class TopMenuBar {
                 dialog.hide();
                 str = dialog.getFilename();
                 if (str != null) {
-                	loadsource();
+                    loadsource();
                 }
             }
         });
 
-        menu_file.append(open);
+        menufile.append(open);
 
         MenuItem ram = new MenuItem("Display RAM");
         ram.connect(new MenuItem.Activate() {
@@ -50,8 +68,8 @@ public final class TopMenuBar {
                 UI.ramdisplay.window.showAll();
             }
         });
-        menu_file.append(ram);
-        
+        menufile.append(ram);
+
         settings = new MenuItem("Einstellungen");
         settings.connect(new MenuItem.Activate() {
             @Override
@@ -59,8 +77,7 @@ public final class TopMenuBar {
                 UI.sw.window.showAll();
             }
         });
-        menu_file.append(settings);
-
+        menufile.append(settings);
 
         MenuItem exit = new MenuItem("Exit");
         exit.connect(new MenuItem.Activate() {
@@ -70,13 +87,13 @@ public final class TopMenuBar {
                 Gtk.mainQuit();
             }
         });
-        menu_file.append(exit);
+        menufile.append(exit);
 
         MenuItem menu1 = new MenuItem("File");
-        menu1.setSubmenu(menu_file);
+        menu1.setSubmenu(menufile);
         menuBar.append(menu1);
 
-        Menu menu_help = new Menu();
+        Menu menuhelp = new Menu();
         MenuItem about = new MenuItem("About ...");
         about.connect(new MenuItem.Activate() {
             @Override
@@ -86,17 +103,17 @@ public final class TopMenuBar {
                 aboutdialog.hide();
             }
         });
-        menu_help.append(about);
+        menuhelp.append(about);
         MenuItem menu2 = new MenuItem("About");
-        menu2.setSubmenu(menu_help);
+        menu2.setSubmenu(menuhelp);
         menuBar.append(menu2);
         return menuBar;
     }
-    
+
     public static void loadsource() {
-    	Scanner scan;
-    	try {
-			scan = new Scanner(new File(str));
+        Scanner scan;
+        try {
+            scan = new Scanner(new File(str));
             UI.printMessage("Datei \"" + str + "\" geladen");
             UI.clearFileBuffer();
             String line;
@@ -109,18 +126,25 @@ public final class TopMenuBar {
                     UI.getFilebuffer().insert(end, "\n");
                 }
             }
-		} catch (Exception e) { }
+        } catch (Exception e) {
+            UI.printMessage("Datei \""
+                    + str
+                    + "\" konnte nicht geladen werden");
+        }
         UI.ramdisplay.rebuildTable();
         DataTable.rebuildDataTable();
         AdressTable.rebuildAddressTable();
         try {
-			prog = new Program(str);
-		} catch (IOException e) { }
+            prog = new Program(str);
+        } catch (IOException e) {
+            UI.printMessage("Datei \""
+                    + str
+                    + "\" konnte nicht geladen werden (2. Versuch)");
+        }
         TextTag font = new TextTag();
         font.setFont("Monospace");
-        UI.getFilebuffer().applyTag(font,
-                                    UI.getFilebuffer().getIterStart(),
-                                    UI.getFilebuffer().getIterEnd());
+        UI.getFilebuffer().applyTag(font, UI.getFilebuffer().getIterStart(),
+                UI.getFilebuffer().getIterEnd());
         UI.setCore1(new Processor(prog));
         UI.setSensitive(true);
         settings.setSensitive(false);

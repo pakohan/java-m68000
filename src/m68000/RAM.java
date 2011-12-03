@@ -31,8 +31,6 @@ public final class RAM {
         this.memory = new byte[MAX_BYTE];
     }
 
-
-
     public int getByteInAddress(final int address) {
         return this.memory[address];
     }
@@ -41,8 +39,6 @@ public final class RAM {
         this.memory[address] = data;
         ui.UI.ramdisplay.setRamValue(address, data & 0xFF);
     }
-
-
 
     public short getWordInAddress(final int address) {
         short x;
@@ -57,8 +53,6 @@ public final class RAM {
         x = (short) (x >>> 8);
         setByteInAddress(address, (byte) x);
     }
-
-
 
     public int getLongWordInAddress(final int address) {
         int x;

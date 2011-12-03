@@ -22,16 +22,16 @@ import java.util.Scanner;
  * The Class Arguments cares about the Arguments of the source file.
  * <table border="1">
  * <tr>
- *   <td>Marker</td>
- *   <td>Command</td>
- *   <th>Argument</th>
- *   <td>Comment</td>
+ * <td>Marker</td>
+ * <td>Command</td>
+ * <th>Argument</th>
+ * <td>Comment</td>
  * </tr>
  * <tr>
- *   <td>ADR1</td>
- *   <td>EQU</td>
- *   <td>$2000</td>
- *   <td>;This command links the storage value $2000 to ADR1</td>
+ * <td>ADR1</td>
+ * <td>EQU</td>
+ * <td>$2000</td>
+ * <td>;This command links the storage value $2000 to ADR1</td>
  * </tr>
  * </table>
  */
@@ -40,7 +40,7 @@ public final class Argument implements Cloneable {
     /**
      * The Enum ArgType.
      */
-    static enum ArgType    {
+    static enum ArgType {
         ADDRESS_REGISTER,
         DATA_REGISTER,
         MEMORY,
@@ -59,7 +59,6 @@ public final class Argument implements Cloneable {
         NONE
     }
 
-
     private Arg firstOperand;
 
     /**
@@ -68,15 +67,15 @@ public final class Argument implements Cloneable {
     private Arg secondOperand;
 
     /**
-     * Indicates, if the argument of the command consists of two operands.
-     * I. e.: MOVE D1,D2
+     * Indicates, if the argument of the command consists of two operands. I.
+     * e.: MOVE D1,D2
      */
     private boolean twoOperands;
 
     /**
-     * Instantiates a new argument. It checks if the String contains a comma.
-     * If it does, the String will be splitted, if not, the String will be
-     * stored in the prefix.
+     * Instantiates a new argument. It checks if the String contains a comma. If
+     * it does, the String will be splitted, if not, the String will be stored
+     * in the prefix.
      *
      * @param arg the Argument
      */
@@ -84,33 +83,33 @@ public final class Argument implements Cloneable {
 
         if (arg.contains(",")) {
             String[] split = arg.split(",");
-            this.firstOperand    = new Arg(split[0]);
-            this.secondOperand   = new Arg(split[1]);
-            this.twoOperands  = true;
+            this.firstOperand = new Arg(split[0]);
+            this.secondOperand = new Arg(split[1]);
+            this.twoOperands = true;
         } else {
-            this.firstOperand    = new Arg(arg);
-            this.secondOperand   = new Arg("");
-            this.twoOperands  = false;
+            this.firstOperand = new Arg(arg);
+            this.secondOperand = new Arg("");
+            this.twoOperands = false;
         }
 
     }
 
     /**
-     * Instantiates a new argument. It checks if the String.length is > 1.
-     * If it is, the first element will be stored in prefix, the second in
-     * postfix.
+     * Instantiates a new argument. It checks if the String.length is > 1. If it
+     * is, the first element will be stored in prefix, the second in postfix.
      *
-     * @param arg the Argument
+     * @param arg
+     *            the Argument
      */
     public Argument(final String... arg) {
 
         if (arg.length > 1) {
-            this.firstOperand   = new Arg(arg[0]);
-            this.secondOperand  = new Arg(arg[1]);
+            this.firstOperand = new Arg(arg[0]);
+            this.secondOperand = new Arg(arg[1]);
             this.twoOperands = true;
         } else {
-            this.firstOperand   = new Arg(arg[0]);
-            this.secondOperand  = new Arg("");
+            this.firstOperand = new Arg(arg[0]);
+            this.secondOperand = new Arg("");
             this.twoOperands = false;
         }
 
@@ -119,8 +118,10 @@ public final class Argument implements Cloneable {
     /**
      * Instantiates a new argument.
      *
-     * @param pre the pre
-     * @param pos the pos
+     * @param pre
+     *            the pre
+     * @param pos
+     *            the pos
      */
     public Argument(final Arg pre, final Arg pos) {
         this.firstOperand = pre;
@@ -131,7 +132,8 @@ public final class Argument implements Cloneable {
     /**
      * Instantiates a new argument.
      *
-     * @param pre the pre
+     * @param pre
+     *            the pre
      */
     public Argument(final Arg pre) {
         this.firstOperand = pre;
@@ -213,7 +215,8 @@ public final class Argument implements Cloneable {
         /**
          * Instantiates a new arg.
          *
-         * @param argument the argument
+         * @param argument
+         *            the argument
          */
         public Arg(final String argument) {
             this.anotherArg = argument;
@@ -273,7 +276,8 @@ public final class Argument implements Cloneable {
                 String[] str = argument.split("'");
                 this.valuearray = new byte[str[1].length() + 1];
                 for (int i = 0; i < str[1].length(); i++) {
-                    this.valuearray[i] = (byte) Character.getNumericValue(str[1].charAt(i));
+                    this.valuearray[i] = (byte) Character
+                            .getNumericValue(str[1].charAt(i));
                 }
                 this.valuearray[this.valuearray.length - 1] = 0;
                 break;
@@ -282,13 +286,13 @@ public final class Argument implements Cloneable {
                 this.type = ArgType.MEMORY;
                 this.value = scan2.nextInt();
                 break;
-            default :
+            default:
                 Scanner scan3 = new Scanner(argument);
                 if (scan3.hasNextInt()) {
                     this.type = ArgType.CONST;
                     this.value = scan3.nextInt();
                 } else if (argument.length() == 2
-                           && new Scanner("" + argument.charAt(1)).hasNextInt()) { //WTF?! Scanner(true or false)
+                        && new Scanner("" + argument.charAt(1)).hasNextInt()) {
                     Scanner scan4 = new Scanner(argument.substring(1));
                     if (argument.charAt(0) == 'A') {
                         this.type = ArgType.ADDRESS_REGISTER;

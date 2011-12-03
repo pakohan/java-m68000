@@ -45,14 +45,16 @@ public final class Program {
     private int counter = 0;
 
     private RAM memory;
-    
+
     private int rampointer;
 
     /**
      * Instantiates a new Program.
      *
-     * @param arg source file
-     * @throws IOException Signals if the file can't be read.
+     * @param arg
+     *            source file
+     * @throws IOException
+     *             Signals if the file can't be read.
      */
     public Program(final String arg) throws IOException {
         this.prog = readSourceFile(arg);
@@ -76,12 +78,14 @@ public final class Program {
     /**
      * Reads the source File and stores it in a linked list.
      *
-     * @param sourcefile the sourcefile
+     * @param sourcefile
+     *            the sourcefile
      * @return the program stored in a linked list
-     * @throws IOException Signals if the file can't be read.
+     * @throws IOException
+     *             Signals if the file can't be read.
      */
     private LinkedList<CodeLine> readSourceFile(final String sourcefile)
-    throws IOException {
+            throws IOException {
         FileReader file = new FileReader(sourcefile);
         LineNumberReader source = new LineNumberReader(file);
         String[] part;
@@ -106,96 +110,100 @@ public final class Program {
      */
     private void linker() {
         LinkedList<CodeLine> tmp = this.prog;
-        Arg tmp_arg;
+        Arg tmparg;
         rampointer = 0;
         for (int i = this.prog.getSize(); i > 0; --i) {
             tmp = tmp.getNext();
-            tmp_arg = tmp.getItem().getArgument().getPrefix();
+            tmparg = tmp.getItem().getArgument().getPrefix();
             switch (tmp.getItem().getCommand().getPrefix()) {
-            case EQU :
+            case EQU:
                 replaceSymbolicConstant(tmp.getItem().getLabel(),
-                                        "$" + tmp_arg.getValue());
+                        "$" + tmparg.getValue());
                 break;
-            case DC :
-            	dc(tmp);
+            case DC:
+                dc(tmp.getItem());
                 break;
-            case DS :
-                replaceSymbolicConstant(tmp.getItem().getLabel(),
-                                        "$" + rampointer);
-                rampointer += (tmp_arg.getValue()
-                               * tmp.getItem().getCommand().getPostfix().ordinal());
+            case DS:
+                replaceSymbolicConstant(tmp.getItem().getLabel(), "$"
+                        + rampointer);
+                rampointer += (tmparg.getValue() * tmp.getItem().getCommand()
+                        .getPostfix().ordinal());
                 break;
             case ORG:
-                rampointer = tmp_arg.getValue();
+                rampointer = tmparg.getValue();
                 break;
             case BRA:
-            case CLR :
-            case MOVE :
-            case ADD :
-            case HEAD :
-            case END :
-            case MUL :
-            case SUB :
-            case DIV :
-            case CMP :
-            case BNE :
-            case BEQ :
-            case DIVU :
-            case SWAP :
+            case CLR:
+            case MOVE:
+            case ADD:
+            case HEAD:
+            case END:
+            case MUL:
+            case SUB:
+            case DIV:
+            case CMP:
+            case BNE:
+            case BEQ:
+            case DIVU:
+            case SWAP:
                 break;
-            default :
+            default:
                 ui.UI.printMessage("Command not found! "
-                                   + tmp.getItem().getCommand().getPrefix());
+                        + tmp.getItem().getCommand().getPrefix());
             }
-            if ((rampointer % 2) == 1) {
-            	rampointer++;
+            if ((rampointer % 2) != 0) {
+                rampointer++;
             }
         }
     }
 
-    private void dc(LinkedList<CodeLine> tmp) {
-        StringBuilder tmp_str = new StringBuilder();
-        tmp_str.append("$");
-        tmp_str.append(rampointer);
-        replaceSymbolicConstant(tmp.getItem().getLabel(), "$" + rampointer);
+    private void dc(final CodeLine tmp) {
+        StringBuilder tmpstr = new StringBuilder();
+        tmpstr.append("$");
+        tmpstr.append(rampointer);
+        replaceSymbolicConstant(tmp.getLabel(), "$" + rampointer);
 
-        if (tmp.getItem().getArgument().getPrefix().getType() == ArgType.CONST) {
-        	int x = tmp.getItem().getArgument().getPrefix().getValue();
-            switch (tmp.getItem().getCommand().getPostfix()) {
+        if (tmp.getArgument().getPrefix().getType()
+                == ArgType.CONST) {
+            int x = tmp.getArgument().getPrefix().getValue();
+            switch (tmp.getCommand().getPostfix()) {
             case B:
                 this.memory.setByteInAddress(rampointer, (byte) x);
                 rampointer += 1;
                 break;
             case W:
-            	this.memory.setWordInAddress(rampointer, (short) x);
+                this.memory.setWordInAddress(rampointer, (short) x);
                 rampointer += 2;
-            	break;
+                break;
             case L:
-            	this.memory.setLongWordInAddress(rampointer, x);
+                this.memory.setLongWordInAddress(rampointer, x);
                 rampointer += 4;
                 break;
             default:
                 ui.UI.printMessage("Fehler: falsche Kommandoendung!");
                 return;
             }
-        } else if (tmp.getItem().getArgument().getPrefix().getType()
-        		== ArgType.VALUEARRAY) {
-            byte[] x = tmp.getItem().getArgument().getPrefix().getValuearray();
+        } else if (tmp.getArgument().getPrefix().getType()
+                == ArgType.VALUEARRAY) {
+            byte[] x = tmp.getArgument().getPrefix().getValuearray();
             for (int i = 0; i < x.length; i++) {
                 this.memory.setByteInAddress(rampointer, x[i]);
                 rampointer++;
             }
         }
-        tmp.getItem().getArgument().replacePrefix(tmp_str.toString());
+        tmp.getArgument().replacePrefix(tmpstr.toString());
     }
+
     /**
      * Replace symbolic constant.
      *
-     * @param str the str
-     * @param newvalue the newvalue
+     * @param str
+     *            the str
+     * @param newvalue
+     *            the newvalue
      */
     private void replaceSymbolicConstant(final String str,
-                                         final String newvalue) {
+            final String newvalue) {
         LinkedList<CodeLine> tmp2 = this.prog;
         for (int i = this.prog.getSize(); i > 0; --i) {
             Argument tmparg = tmp2.getItem().getArgument();
@@ -207,10 +215,12 @@ public final class Program {
             }
         }
     }
+
     /**
      * Deletes the comments of the source code and returns the commands only.
      *
-     * @param str code line
+     * @param str
+     *            code line
      * @return the string[]
      */
     private String[] deleteComments(final String str) {
@@ -232,29 +242,23 @@ public final class Program {
     /**
      * Adds the commands one for one to the "compiled" program.
      *
-     * @param befehlsfolge the line of code
+     * @param befehlsfolge
+     *            the line of code
      */
     private void addCommand(final String[] befehlsfolge) {
         switch (befehlsfolge.length) {
         case 1:
-            this.prog.add(new CodeLine(counter,
-                                       befehlsfolge[0],
-                                       "",
-                                       ""));
+            this.prog.add(new CodeLine(counter, befehlsfolge[0], "", ""));
             counter++;
             break;
         case 2:
-            this.prog.add(new CodeLine(counter,
-                                       befehlsfolge[0],
-                                       befehlsfolge[1],
-                                       ""));
+            this.prog.add(new CodeLine(counter, befehlsfolge[0],
+                    befehlsfolge[1], ""));
             counter++;
             break;
         case MAX_TOKENS:
-            this.prog.add(new CodeLine(counter,
-                                       befehlsfolge[1],
-                                       befehlsfolge[2],
-                                       befehlsfolge[0]));
+            this.prog.add(new CodeLine(counter, befehlsfolge[1],
+                    befehlsfolge[2], befehlsfolge[0]));
             counter++;
             break;
         default:

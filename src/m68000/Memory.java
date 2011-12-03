@@ -32,8 +32,10 @@ public class Memory {
     /**
      * Instantiates a new memory.
      *
-     * @param bezeichner the bezeichner
-     * @param data the data
+     * @param bezeichner
+     *            the bezeichner
+     * @param data
+     *            the data
      */
     public Memory(final String bezeichner, final int data) {
         this.position = bezeichner;

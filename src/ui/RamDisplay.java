@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) Patrick Kohan 2011 <patrick.kohan@googlemail.com>
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ui;
 
 import org.gnome.gtk.CellRendererText;
@@ -13,7 +29,7 @@ import org.gnome.gtk.Window;
 
 public class RamDisplay {
 
-    public Window window;
+    protected Window window;
     private ListStore ramlist;
     private DataColumnString ramindex;
     private DataColumnString ramvalue1;
@@ -29,14 +45,13 @@ public class RamDisplay {
         ramvalue1 = new DataColumnString();
         ramvalue2 = new DataColumnString();
         DataColumn[] ramDataColumn = new DataColumn[] {
-            ramindex,
-            ramvalue1,
-            ramvalue2
-        };
+                ramindex,
+                ramvalue1,
+                ramvalue2 };
         this.ramlist = new ListStore(ramDataColumn);
         TreeView ramtable = new TreeView(ramlist);
         TreeIter row;
-        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i +=2) {
+        for (int i = 0; i <= m68000.RAM.MAX_BYTE; i += 2) {
             row = ramlist.appendRow();
             ramlist.setValue(row, ramindex, Integer.toString(i));
         }
@@ -54,7 +69,6 @@ public class RamDisplay {
         vertical.setTitle("Wert ger");
         renderer = new CellRendererText(vertical);
         renderer.setMarkup(ramvalue1);
-
 
         vertical = ramtable.appendColumn();
         vertical.setTitle("Wert unger");
@@ -86,13 +100,9 @@ public class RamDisplay {
         }
         String number = UI.getNumberAppeareance(x);
         if ((n % 2) == 0) {
-            ramlist.setValue(iter,
-                             this.ramvalue1,
-                             number);
+            ramlist.setValue(iter, this.ramvalue1, number);
         } else {
-            ramlist.setValue(iter,
-                             this.ramvalue2,
-                             number);
+            ramlist.setValue(iter, this.ramvalue2, number);
         }
     }
 }

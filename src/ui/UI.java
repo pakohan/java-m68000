@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) Patrick Kohan 2011 <patrick.kohan@googlemail.com>
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ui;
 
 import static org.gnome.gtk.WrapMode.WORD;
@@ -26,7 +42,9 @@ import org.gnome.gtk.Window;
 import m68000.Processor;
 
 public final class UI {
-    static enum MemoryDisplay {BIN, OKT, DEZ, HEX }
+    static enum MemoryDisplay {
+        BIN, OKT, DEZ, HEX
+    }
 
     private static Window window;
     private static TextBuffer msgbuffer;
@@ -36,19 +54,19 @@ public final class UI {
     private static Button close;
     private static Button step;
     private static Button reload;
-    public static DataColumnString dataregistermemory;
-    public static DataColumnString adressregistermemory;
-    public static ListStore dataregisterliststore;
-    public static ListStore adressregisterliststore;
+    protected static DataColumnString dataregistermemory;
+    protected static DataColumnString adressregistermemory;
+    protected static ListStore dataregisterliststore;
+    protected static ListStore adressregisterliststore;
     private static Processor core1;
     public static RamDisplay ramdisplay;
-    public static Pixbuf icon;
-	public static Object settingswindow;
-	public static MemoryDisplay md = MemoryDisplay.BIN;
-	public static SettingsWindow sw;
-    
+    protected static Pixbuf icon;
+    protected static Object settingswindow;
+    protected static MemoryDisplay md = MemoryDisplay.BIN;
+    protected static SettingsWindow sw;
 
-    private UI() { }
+    private UI() {
+    }
 
     public static void clearFileBuffer() {
         filebuffer.delete(filebuffer.getIterStart(), filebuffer.getIterEnd());
@@ -61,36 +79,30 @@ public final class UI {
     }
 
     public static void main(final String[] args) {
-        //try {
+        // try {
         Gtk.init(args);
-		try {
-			icon = new Pixbuf("/home/mogli/Dokumente/Programmierung/M68000/res/gnome-ccperiph.png");
-		} catch (FileNotFoundException e) { }
+        try {
+            icon = new Pixbuf(
+                    "/home/mogli/Dokumente/Programmierung/M68000/res/gnome-ccperiph.png");
+        } catch (FileNotFoundException e) {
+            printMessage("Icon wurde nicht gefunden");
+        }
         createMainWindow();
         ramdisplay = new RamDisplay();
         sw = new SettingsWindow();
         window.showAll();
         Gtk.main();
-        /*} catch (Exception x) {
-        	System.out.println(Gtk.eventsPending());
-            Writer result = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(result);
-            x.printStackTrace(printWriter);
-            ErrorMessageDialog error = new ErrorMessageDialog(window,
-            		"Fehler",
-            		result.toString());
-            error.connect(new Dialog.Response() {
-
-        		@Override
-        		public void onResponse(Dialog source, ResponseType response) {
-        			Gtk.mainQuit();
-        		}
-        	});
-            error.run();
-            error.hide();
-            Gtk.main();
-            Gtk.mainQuit();
-        }*/
+        /*
+         * } catch (Exception x) { System.out.println(Gtk.eventsPending());
+         * Writer result = new StringWriter(); PrintWriter printWriter = new
+         * PrintWriter(result); x.printStackTrace(printWriter);
+         * ErrorMessageDialog error = new ErrorMessageDialog(window, "Fehler",
+         * result.toString()); error.connect(new Dialog.Response() {
+         *
+         * @Override public void onResponse(Dialog source, ResponseType
+         * response) { Gtk.mainQuit(); } }); error.run(); error.hide();
+         * Gtk.main(); Gtk.mainQuit(); }
+         */
     }
 
     public static void setCore1(final Processor proc) {
@@ -103,9 +115,8 @@ public final class UI {
             datatableiter.iterNext();
         }
         String number = getNumberAppeareance(x);
-        dataregisterliststore.setValue(datatableiter,
-                                       dataregistermemory,
-                                       number);
+        dataregisterliststore.setValue(datatableiter, dataregistermemory,
+                number);
     }
 
     public static void setadresstable(final int n, final int x) {
@@ -114,9 +125,8 @@ public final class UI {
             adresstableiter.iterNext();
         }
         String number = getNumberAppeareance(x);
-        adressregisterliststore.setValue(adresstableiter,
-                                         dataregistermemory,
-                                         number);
+        adressregisterliststore.setValue(adresstableiter, dataregistermemory,
+                number);
     }
 
     private static void createMainWindow() {
@@ -126,7 +136,7 @@ public final class UI {
         window.setIcon(icon);
         window.connect(new Window.DeleteEvent() {
             public boolean onDeleteEvent(final Widget source,
-            final Event event) {
+                    final Event event) {
                 Gtk.mainQuit();
                 return false;
             }
@@ -141,10 +151,10 @@ public final class UI {
     private static VBox createVBox() {
         VBox vbox = new VBox(false, 2);
         createHBox2();
-        vbox.packStart(TopMenuBar.createMenuBar(),        false, true, 0);
-        vbox.packStart(createHBox1(),          true , true, 0);
-        vbox.packStart(createMsgScrolledWindow(), true , true, 0);
-        vbox.packStart(createHBox2(),          false, true, 0);
+        vbox.packStart(TopMenuBar.createMenuBar(), false, true, 0);
+        vbox.packStart(createHBox1(), true, true, 0);
+        vbox.packStart(createMsgScrolledWindow(), true, true, 0);
+        vbox.packStart(createHBox2(), false, true, 0);
         return vbox;
     }
 
@@ -191,9 +201,8 @@ public final class UI {
     public static void markLine(final int i) {
         TextTag black = new TextTag();
         black.setForeground("black");
-        filebuffer.applyTag(black,
-                            filebuffer.getIterStart(),
-                            filebuffer.getIterEnd());
+        filebuffer.applyTag(black, filebuffer.getIterStart(),
+                filebuffer.getIterEnd());
         TextIter pointerend = filebuffer.getIterStart();
         pointerend.forwardLines(i);
         TextIter pointerbegin = pointerend.copy();
@@ -211,7 +220,7 @@ public final class UI {
     }
 
     private static void createButtons() {
-        //run button is for running the program from begin to end
+        // run button is for running the program from begin to end
         run = new Button("RUN");
         run.setSensitive(false);
         run.connect(new Button.Clicked() {
@@ -219,11 +228,10 @@ public final class UI {
             @Override
             public void onClicked(final Button source) {
                 while (!core1.hasfinished()) {
-                	TextTag black = new TextTag();
+                    TextTag black = new TextTag();
                     black.setForeground("black");
-                    filebuffer.applyTag(black,
-                                        filebuffer.getIterStart(),
-                                        filebuffer.getIterEnd());
+                    filebuffer.applyTag(black, filebuffer.getIterStart(),
+                            filebuffer.getIterEnd());
                     core1.run();
                 }
                 printMessage("Program beendet!");
@@ -235,14 +243,14 @@ public final class UI {
         reload = new Button("RELOAD");
         reload.setSensitive(false);
         reload.connect(new Button.Clicked() {
-			
-			@Override
-			public void onClicked(Button source) {
-				TopMenuBar.loadsource();
-			}
-		});
-        
-        //step button is for running the program line for line
+
+            @Override
+            public void onClicked(final Button source) {
+                TopMenuBar.loadsource();
+            }
+        });
+
+        // step button is for running the program line for line
         step = new Button("STEP");
         step.setSensitive(false);
         step.connect(new Button.Clicked() {
@@ -268,42 +276,44 @@ public final class UI {
             }
         });
     }
-    
+
     public static String getNumberAppeareance(final int x) {
-    	String number = "0";
-    	StringBuilder strb = new StringBuilder();
-    	switch (md) {
-    	case BIN :
+        String number;
+        StringBuilder strb = new StringBuilder();
+        switch (md) {
+        case BIN:
             number = Integer.toBinaryString(x);
             for (int i = number.length(); i < 8; i++) {
-            	strb.append("0");
+                strb.append("0");
             }
             strb.append(number);
-    		break;
-    	case OKT :
+            break;
+        case OKT:
             number = Integer.toOctalString(x);
             for (int i = number.length(); i < 4; i++) {
-            	strb.append("0");
+                strb.append("0");
             }
             strb.append(number);
-    		break;
-    	case DEZ :
+            break;
+        case DEZ:
             number = Integer.toString(x);
             for (int i = number.length(); i < 3; i++) {
-            	strb.append("0");
+                strb.append("0");
             }
             strb.append(number);
-    		break;
-    	case HEX :
+            break;
+        case HEX:
             number = Integer.toHexString(x);
             for (int i = number.length(); i < 2; i++) {
-            	strb.append("0");
+                strb.append("0");
             }
             strb.append(number);
-    		break;
-    	}
-    	number = strb.toString();
-    	return number;
+            break;
+        default :
+            number = "0";
+        }
+        number = strb.toString();
+        return number;
     }
 
     public static TextBuffer getFilebuffer() {

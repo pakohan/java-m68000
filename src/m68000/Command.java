@@ -26,53 +26,34 @@ public final class Command implements Cloneable {
      */
     static enum InstructionSet {
         /**
-         * "ORG" defines at a real M68000 where the program will be stored
-         * in the main memory.
+         * "ORG" defines at a real M68000 where the program will be stored in
+         * the main memory.
          */
         ORG,
         /**
-         * "BRA" needs an argument. BRA jumps to the line of code in which
-         * the marker is equal to this argument.
+         * "BRA" needs an argument. BRA jumps to the line of code in which the
+         * marker is equal to this argument.
          */
         BRA,
         /**
-         * "EQU" needs a label and an argument, which is an memory address.
-         * In real, the assembler-compiler replaces every string in the
-         * source file, which is equal to the marker with the argument.
-         * We use it in a different way: Every time EQU appears in the
-         * source file, a new "Memory" Object will be created with the
-         * label as searching String. The content of this memory area will
-         * be asked before running the program.
+         * "EQU" needs a label and an argument, which is an memory address. In
+         * real, the assembler-compiler replaces every string in the source
+         * file, which is equal to the marker with the argument. We use it in a
+         * different way: Every time EQU appears in the source file, a new
+         * "Memory" Object will be created with the label as searching String.
+         * The content of this memory area will be asked before running the
+         * program.
          */
-        EQU,
-        DC,
-        DS,
-        CLR,
-        MOVE,
-        ADD,
-        END,
-        ZERO,
-        HEAD,
-        SUB,
-        MUL,
-        DIV,
-        CMP,
-        BNE,
-        BEQ,
-        DIVU,
-        SWAP
+        EQU, DC, DS, CLR, MOVE, ADD,
+        END, ZERO, HEAD, SUB, MUL, DIV, CMP, BNE, BEQ, DIVU, SWAP
     };
 
     /**
-     * The Enum CommandPostfix. BE CAREFUL! IF YOU CHANGE THE ORDER,
-     * THE PROGRAM WILL NOT WORK ANY MORE!
+     * The Enum CommandPostfix. BE CAREFUL! IF YOU CHANGE THE ORDER, THE PROGRAM
+     * WILL NOT WORK ANY MORE!
      */
-    static enum CommandPostfix    {
-        ZERO,
-        B,
-        W,
-        B3,
-        L,
+    static enum CommandPostfix {
+        ZERO, B, W, B3, L,
     }
 
     /**
@@ -81,9 +62,9 @@ public final class Command implements Cloneable {
     private InstructionSet instruction;
 
     /**
-     * The postfix is the part of the command, which comes after an comma.
-     * It is not used at this time, but already stored, so the it will not be
-     * hard to implement its function in this class.
+     * The postfix is the part of the command, which comes after an comma. It is
+     * not used at this time, but already stored, so the it will not be hard to
+     * implement its function in this class.
      */
     private CommandPostfix postfix;
 
@@ -97,22 +78,24 @@ public final class Command implements Cloneable {
      * Instantiates a new command. Checks if the given String contains a dot,
      * and splits the String if necessary.
      *
-     * @param str the whole Command (postfix and prefix)
+     * @param str
+     *            the whole Command (postfix and prefix)
      */
     public Command(final String str) {
         if (str.contains(".")) {
             String[] parts = str.split("[.]");
-            this.postfix   = getPostfix(parts[1]);
-            this.instruction    = getInstruction(parts[0]);
-            this.twoParts  = true;
+            this.postfix = getPostfix(parts[1]);
+            this.instruction = getInstruction(parts[0]);
+            this.twoParts = true;
         } else {
-            this.instruction    = getInstruction(str);
-            this.twoParts  = false;
+            this.instruction = getInstruction(str);
+            this.twoParts = false;
         }
     }
 
     /**
-     * @param instruction instruction with postfix
+     * @param instruction
+     *            instruction with postfix
      * @return postfix of an instruction.
      */
     private static CommandPostfix getPostfix(final String instruction) {
@@ -133,14 +116,16 @@ public final class Command implements Cloneable {
      * greater than zero, and stores this arrays first element as Command
      * postfix, if necessary.
      *
-     * @param com the Command
-     * @param str the Postfix
+     * @param com
+     *            the Command
+     * @param str
+     *            the Postfix
      */
     public Command(final InstructionSet com, final String... str) {
 
         if (str.length > 0) {
             this.twoParts = true;
-            this.postfix  = getPostfix(str[0]);
+            this.postfix = getPostfix(str[0]);
         }
 
         this.instruction = com;
@@ -149,8 +134,10 @@ public final class Command implements Cloneable {
     /**
      * Instantiates a new command.
      *
-     * @param pre the pre
-     * @param pos the pos
+     * @param pre
+     *            the pre
+     * @param pos
+     *            the pos
      */
     public Command(final InstructionSet pre, final CommandPostfix pos) {
         this.instruction = pre;
@@ -168,7 +155,8 @@ public final class Command implements Cloneable {
     }
 
     /**
-     * @param com the Command Prefix as String
+     * @param com
+     *            the Command Prefix as String
      * @return the Command Prefix as one of the enum InstructionSet
      */
     private static InstructionSet getInstruction(final String com) {
