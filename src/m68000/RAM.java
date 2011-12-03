@@ -24,9 +24,6 @@ public final class RAM {
     private byte[] memory;
     public static final int MAX_BYTE = 4096;
 
-    /**
-     * Instantiates a new RAM array.
-     */
     public RAM() {
         this.memory = new byte[MAX_BYTE];
     }
