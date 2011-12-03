@@ -61,7 +61,7 @@ public class Processor {
             x = this.adressRegister[adr.getValue()];
         default:
         }
-        ui.UI.setadresstable(adr.getValue(),
+        ui.AdressTable.setadresstable(adr.getValue(),
                 this.adressRegister[adr.getValue()]);
         return x;
     }
@@ -97,7 +97,7 @@ public class Processor {
             break;
         default:
         }
-        ui.UI.setadresstable(adr.getValue(),
+        ui.AdressTable.setadresstable(adr.getValue(),
                 this.adressRegister[adr.getValue()]);
     }
 
@@ -322,7 +322,7 @@ public class Processor {
             break;
         case DATA_REGISTER:
             this.dataRegister[dataPlace.getValue()] = x;
-            ui.UI.setdatatable(dataPlace.getValue(), x);
+            ui.DataTable.setdatatable(dataPlace.getValue(), x);
             break;
         case MEMORY:
             this.ram.setLongWordInAddress(dataPlace.getValue(), x);

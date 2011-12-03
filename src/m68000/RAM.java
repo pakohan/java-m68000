@@ -50,7 +50,7 @@ public final class RAM {
     public void setWordInAddress(final int address, final short data) {
         short x = data;
         setByteInAddress(address + 1, (byte) x);
-        x = (short) (x >>> 8);
+        x = (byte) (x >>> 8);
         setByteInAddress(address, (byte) x);
     }
 
@@ -64,7 +64,7 @@ public final class RAM {
     public void setLongWordInAddress(final int address, final int data) {
         int x = data;
         setWordInAddress(address + 2, (short) x);
-        x = x >>> 16;
+        x = (short) (x >>> 16);
         setWordInAddress(address, (short) x);
     }
 }

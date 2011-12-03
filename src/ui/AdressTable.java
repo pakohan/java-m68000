@@ -25,26 +25,31 @@ import org.gnome.gtk.TreeView;
 import org.gnome.gtk.TreeViewColumn;
 
 public final class AdressTable {
+    private static ListStore adressregisterliststore;
+    private static DataColumnString adressregistermemory;
+
     private AdressTable() {
     }
 
     public static TreeView createTreeView() {
         DataColumnString adressregisterindex = new DataColumnString();
-        UI.adressregistermemory = new DataColumnString();
+        AdressTable.adressregistermemory = new DataColumnString();
         DataColumn[] table = new DataColumn[] {
                 adressregisterindex,
-                UI.adressregistermemory };
+                AdressTable.adressregistermemory };
 
-        UI.adressregisterliststore = new ListStore(table);
+        AdressTable.adressregisterliststore = new ListStore(table);
         TreeIter row;
         for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
-            row = UI.adressregisterliststore.appendRow();
-            UI.adressregisterliststore.setValue(row, adressregisterindex,
+            row = AdressTable.adressregisterliststore.appendRow();
+            AdressTable.adressregisterliststore.setValue(row,
+                    adressregisterindex,
                     Integer.valueOf(i).toString());
         }
         rebuildAddressTable();
 
-        TreeView dataRegister = new TreeView(UI.adressregisterliststore);
+        TreeView dataRegister =
+                new TreeView(AdressTable.adressregisterliststore);
         TreeViewColumn vertical;
         CellRendererText renderer;
 
@@ -56,17 +61,30 @@ public final class AdressTable {
         vertical = dataRegister.appendColumn();
         vertical.setTitle("Datenwert");
         renderer = new CellRendererText(vertical);
-        renderer.setMarkup(UI.adressregistermemory);
+        renderer.setMarkup(AdressTable.adressregistermemory);
 
         return dataRegister;
     }
 
     public static void rebuildAddressTable() {
-        TreeIter iter = UI.adressregisterliststore.getIterFirst();
+        TreeIter iter = AdressTable.adressregisterliststore.getIterFirst();
         for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
-            UI.adressregisterliststore.setValue(iter, UI.adressregistermemory,
+            AdressTable.adressregisterliststore.setValue(iter,
+                    AdressTable.adressregistermemory,
                     "0");
             iter.iterNext();
         }
+    }
+
+    public static void setadresstable(final int n, final int x) {
+        TreeIter adresstableiter
+        = AdressTable.adressregisterliststore.getIterFirst();
+        for (int i = 0; i < n; i++) {
+            adresstableiter.iterNext();
+        }
+        String number = UI.getNumberAppeareance(x);
+        AdressTable.adressregisterliststore.setValue(adresstableiter,
+                AdressTable.adressregistermemory,
+                number);
     }
 }

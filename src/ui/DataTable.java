@@ -25,26 +25,30 @@ import org.gnome.gtk.TreeView;
 import org.gnome.gtk.TreeViewColumn;
 
 public final class DataTable {
+    private static ListStore dataregisterliststore;
+    private static DataColumnString dataregistermemory;
+
     private DataTable() {
     }
 
     public static TreeView createTreeView() {
         DataColumnString dataregisterindex = new DataColumnString();
-        UI.dataregistermemory = new DataColumnString();
+        DataTable.dataregistermemory = new DataColumnString();
         DataColumn[] table = new DataColumn[] {
                 dataregisterindex,
-                UI.dataregistermemory };
+                DataTable.dataregistermemory };
 
-        UI.dataregisterliststore = new ListStore(table);
+        DataTable.dataregisterliststore = new ListStore(table);
         TreeIter row;
         for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
-            row = UI.dataregisterliststore.appendRow();
-            UI.dataregisterliststore.setValue(row, dataregisterindex, Integer
-                    .valueOf(i).toString());
+            row = DataTable.dataregisterliststore.appendRow();
+            DataTable.dataregisterliststore.setValue(row,
+                    dataregisterindex,
+                    Integer.valueOf(i).toString());
         }
         rebuildDataTable();
 
-        TreeView dataRegister = new TreeView(UI.dataregisterliststore);
+        TreeView dataRegister = new TreeView(DataTable.dataregisterliststore);
         TreeViewColumn vertical;
         CellRendererText renderer;
 
@@ -56,16 +60,29 @@ public final class DataTable {
         vertical = dataRegister.appendColumn();
         vertical.setTitle("Datenwert");
         renderer = new CellRendererText(vertical);
-        renderer.setMarkup(UI.dataregistermemory);
+        renderer.setMarkup(DataTable.dataregistermemory);
 
         return dataRegister;
     }
 
     public static void rebuildDataTable() {
-        TreeIter iter = UI.dataregisterliststore.getIterFirst();
+        TreeIter iter = DataTable.dataregisterliststore.getIterFirst();
         for (int i = 0; i < m68000.Processor.REG_AMOUNT; i++) {
-            UI.dataregisterliststore.setValue(iter, UI.dataregistermemory, "0");
+            DataTable.dataregisterliststore.setValue(iter,
+                    DataTable.dataregistermemory,
+                    "0");
             iter.iterNext();
         }
+    }
+
+    public static void setdatatable(final int n, final int x) {
+        TreeIter datatableiter = DataTable.dataregisterliststore.getIterFirst();
+        for (int i = 0; i < n; i++) {
+            datatableiter.iterNext();
+        }
+        String number = UI.getNumberAppeareance(x);
+        DataTable.dataregisterliststore.setValue(datatableiter,
+                DataTable.dataregistermemory,
+                number);
     }
 }

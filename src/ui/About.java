@@ -44,7 +44,7 @@ public final class About {
         aboutdialog.setWebsiteLabel("Projet auf Google Code");
 
         try {
-            aboutdialog.setLogo(UI.icon);
+            aboutdialog.setLogo(Ressources.icon);
             FileReader fr = new FileReader(
                     "/home/mogli/Dokumente/Programmierung/M68000/src/COPYING");
             Scanner scan = new Scanner(fr);

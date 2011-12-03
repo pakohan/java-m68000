@@ -19,21 +19,15 @@ package ui;
 import static org.gnome.gtk.WrapMode.WORD;
 import static org.gnome.gtk.WrapMode.NONE;
 
-import java.io.FileNotFoundException;
-
 import org.gnome.gdk.Event;
-import org.gnome.gdk.Pixbuf;
 import org.gnome.gtk.Button;
-import org.gnome.gtk.DataColumnString;
 import org.gnome.gtk.Gtk;
 import org.gnome.gtk.HBox;
-import org.gnome.gtk.ListStore;
 import org.gnome.gtk.ScrolledWindow;
 import org.gnome.gtk.TextBuffer;
 import org.gnome.gtk.TextIter;
 import org.gnome.gtk.TextTag;
 import org.gnome.gtk.TextView;
-import org.gnome.gtk.TreeIter;
 import org.gnome.gtk.TreeView;
 import org.gnome.gtk.VBox;
 import org.gnome.gtk.Widget;
@@ -54,16 +48,15 @@ public final class UI {
     private static Button close;
     private static Button step;
     private static Button reload;
-    protected static DataColumnString dataregistermemory;
-    protected static DataColumnString adressregistermemory;
-    protected static ListStore dataregisterliststore;
-    protected static ListStore adressregisterliststore;
     private static Processor core1;
     public static RamDisplay ramdisplay;
-    protected static Pixbuf icon;
     protected static Object settingswindow;
-    protected static MemoryDisplay md = MemoryDisplay.BIN;
+    protected static MemoryDisplay md;
+    protected static MemoryDisplay mdtmp = MemoryDisplay.BIN;
     protected static SettingsWindow sw;
+
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 700;
 
     private UI() {
     }
@@ -81,12 +74,7 @@ public final class UI {
     public static void main(final String[] args) {
         // try {
         Gtk.init(args);
-        try {
-            icon = new Pixbuf(
-                    "/home/mogli/Dokumente/Programmierung/M68000/res/gnome-ccperiph.png");
-        } catch (FileNotFoundException e) {
-            printMessage("Icon wurde nicht gefunden");
-        }
+        Ressources.initRessources();
         createMainWindow();
         ramdisplay = new RamDisplay();
         sw = new SettingsWindow();
@@ -109,31 +97,11 @@ public final class UI {
         UI.core1 = proc;
     }
 
-    public static void setdatatable(final int n, final int x) {
-        TreeIter datatableiter = dataregisterliststore.getIterFirst();
-        for (int i = 0; i < n; i++) {
-            datatableiter.iterNext();
-        }
-        String number = getNumberAppeareance(x);
-        dataregisterliststore.setValue(datatableiter, dataregistermemory,
-                number);
-    }
-
-    public static void setadresstable(final int n, final int x) {
-        TreeIter adresstableiter = adressregisterliststore.getIterFirst();
-        for (int i = 0; i < n; i++) {
-            adresstableiter.iterNext();
-        }
-        String number = getNumberAppeareance(x);
-        adressregisterliststore.setValue(adresstableiter, dataregistermemory,
-                number);
-    }
-
     private static void createMainWindow() {
         window = new Window();
         window.setTitle("M68000");
-        window.setDefaultSize(800, 700);
-        window.setIcon(icon);
+        window.setDefaultSize(WIDTH, HEIGHT);
+        window.setIcon(Ressources.icon);
         window.connect(new Window.DeleteEvent() {
             public boolean onDeleteEvent(final Widget source,
                     final Event event) {
@@ -220,7 +188,6 @@ public final class UI {
     }
 
     private static void createButtons() {
-        // run button is for running the program from begin to end
         run = new Button("RUN");
         run.setSensitive(false);
         run.connect(new Button.Clicked() {
@@ -250,7 +217,6 @@ public final class UI {
             }
         });
 
-        // step button is for running the program line for line
         step = new Button("STEP");
         step.setSensitive(false);
         step.connect(new Button.Clicked() {

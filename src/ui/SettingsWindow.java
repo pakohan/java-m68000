@@ -19,6 +19,7 @@ package ui;
 import org.gnome.gdk.EventButton;
 import org.gnome.gtk.Button;
 import org.gnome.gtk.Frame;
+import org.gnome.gtk.HBox;
 import org.gnome.gtk.RadioButton;
 import org.gnome.gtk.RadioGroup;
 import org.gnome.gtk.VBox;
@@ -42,7 +43,7 @@ public final class SettingsWindow {
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.md = MemoryDisplay.BIN;
+                UI.mdtmp = MemoryDisplay.BIN;
                 return false;
             }
         });
@@ -53,18 +54,19 @@ public final class SettingsWindow {
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.md = MemoryDisplay.OKT;
+                UI.mdtmp = MemoryDisplay.OKT;
                 return false;
             }
         });
 
-        RadioButton dez = new RadioButton(group, "dezimal");
+        RadioButton dez = new RadioButton(group, "dezimal (kaputt)");
+        dez.setSensitive(false);
         dez.connect(new Widget.ButtonPressEvent() {
 
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.md = MemoryDisplay.DEZ;
+                UI.mdtmp = MemoryDisplay.DEZ;
                 return false;
             }
         });
@@ -75,12 +77,12 @@ public final class SettingsWindow {
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.md = MemoryDisplay.HEX;
+                UI.mdtmp = MemoryDisplay.HEX;
                 return false;
             }
         });
 
-        VBox vbox1 = new VBox(false, 0);
+        VBox vbox1 = new VBox(false, 5);
         vbox1.add(bin);
         vbox1.add(okt);
         vbox1.add(dez);
@@ -91,7 +93,7 @@ public final class SettingsWindow {
 
         VBox vbox2 = new VBox(false, 0);
 
-        vbox2.packStart(speicherart, false, true, 0);
+        vbox2.packStart(speicherart, false, true, 10);
 
         Button close = new Button("CLOSE");
         close.connect(new Button.Clicked() {
@@ -102,8 +104,12 @@ public final class SettingsWindow {
             }
         });
 
-        vbox2.packStart(close, false, true, 0);
+        vbox2.packStart(close, false, true, 10);
 
-        this.window.add(vbox2);
+        HBox hbox = new HBox(false, 0);
+
+        hbox.packStart(vbox2, false, true, 10);
+
+        this.window.add(hbox);
     }
 }

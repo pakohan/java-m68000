@@ -112,6 +112,7 @@ public final class TopMenuBar {
 
     public static void loadsource() {
         Scanner scan;
+        UI.md = UI.mdtmp;
         try {
             scan = new Scanner(new File(str));
             UI.printMessage("Datei \"" + str + "\" geladen");
@@ -147,6 +148,5 @@ public final class TopMenuBar {
                 UI.getFilebuffer().getIterEnd());
         UI.setCore1(new Processor(prog));
         UI.setSensitive(true);
-        settings.setSensitive(false);
     }
 }
