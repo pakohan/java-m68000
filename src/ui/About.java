@@ -42,9 +42,9 @@ public final class About {
         aboutdialog.setDocumenters(commenters);
         aboutdialog.setWebsite("code.google.com/p/java-m68000");
         aboutdialog.setWebsiteLabel("Projet auf Google Code");
+        aboutdialog.setLogo(Ressources.getIcon());
 
         try {
-            aboutdialog.setLogo(Ressources.icon);
             FileReader fr = new FileReader(
                     "/home/mogli/Dokumente/Programmierung/M68000/src/COPYING");
             Scanner scan = new Scanner(fr);

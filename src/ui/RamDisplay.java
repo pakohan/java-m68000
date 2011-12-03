@@ -29,16 +29,19 @@ import org.gnome.gtk.Window;
 
 public class RamDisplay {
 
-    protected Window window;
+    private Window window;
     private ListStore ramlist;
     private DataColumnString ramindex;
     private DataColumnString ramvalue1;
     private DataColumnString ramvalue2;
 
+    private static final int WIDTH = 300;
+    private static final int HEIGHT = 800;
+
     public RamDisplay() {
         this.window = new Window();
         window.setTitle("RAM");
-        window.setDefaultSize(300, 800);
+        window.setDefaultSize(WIDTH, HEIGHT);
         HBox hbox = new HBox(false, 0);
         ScrolledWindow scrolled = new ScrolledWindow();
         ramindex = new DataColumnString();
@@ -87,6 +90,10 @@ public class RamDisplay {
             ramlist.setValue(iter, this.ramvalue2, "0");
             iter.iterNext();
         }
+    }
+
+    public final void showAll() {
+        window.showAll();
     }
 
     public final void setRamValue(final int n, final int x) {

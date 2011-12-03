@@ -29,7 +29,7 @@ import org.gnome.gtk.Window;
 import ui.UI.MemoryDisplay;
 
 public final class SettingsWindow {
-    protected Window window;
+    private Window window;
 
     public SettingsWindow() {
         this.window = new Window();
@@ -43,7 +43,7 @@ public final class SettingsWindow {
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.mdtmp = MemoryDisplay.BIN;
+                TopMenuBar.setMdtmp(MemoryDisplay.BIN);
                 return false;
             }
         });
@@ -54,7 +54,7 @@ public final class SettingsWindow {
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.mdtmp = MemoryDisplay.OKT;
+                TopMenuBar.setMdtmp(MemoryDisplay.OKT);
                 return false;
             }
         });
@@ -66,7 +66,7 @@ public final class SettingsWindow {
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.mdtmp = MemoryDisplay.DEZ;
+                TopMenuBar.setMdtmp(MemoryDisplay.DEZ);
                 return false;
             }
         });
@@ -77,7 +77,7 @@ public final class SettingsWindow {
             @Override
             public boolean onButtonPressEvent(final Widget source,
                     final EventButton event) {
-                UI.mdtmp = MemoryDisplay.HEX;
+                TopMenuBar.setMdtmp(MemoryDisplay.HEX);
                 return false;
             }
         });
@@ -111,5 +111,9 @@ public final class SettingsWindow {
         hbox.packStart(vbox2, false, true, 10);
 
         this.window.add(hbox);
+    }
+
+    public void showAll() {
+        window.showAll();
     }
 }

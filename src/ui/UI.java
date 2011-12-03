@@ -49,11 +49,7 @@ public final class UI {
     private static Button step;
     private static Button reload;
     private static Processor core1;
-    public static RamDisplay ramdisplay;
-    protected static Object settingswindow;
-    protected static MemoryDisplay md;
-    protected static MemoryDisplay mdtmp = MemoryDisplay.BIN;
-    protected static SettingsWindow sw;
+    private static MemoryDisplay md;
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 700;
@@ -76,8 +72,6 @@ public final class UI {
         Gtk.init(args);
         Ressources.initRessources();
         createMainWindow();
-        ramdisplay = new RamDisplay();
-        sw = new SettingsWindow();
         window.showAll();
         Gtk.main();
         /*
@@ -101,7 +95,7 @@ public final class UI {
         window = new Window();
         window.setTitle("M68000");
         window.setDefaultSize(WIDTH, HEIGHT);
-        window.setIcon(Ressources.icon);
+        window.setIcon(Ressources.getIcon());
         window.connect(new Window.DeleteEvent() {
             public boolean onDeleteEvent(final Widget source,
                     final Event event) {
@@ -185,6 +179,10 @@ public final class UI {
         msgbuffer.insert(end, msg);
         msgbuffer.insert(end, "\n");
         msgtextview.scrollTo(end);
+    }
+
+    public static void setMd(final MemoryDisplay memory) {
+        UI.md = memory;
     }
 
     private static void createButtons() {

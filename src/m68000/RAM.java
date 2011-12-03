@@ -34,7 +34,7 @@ public final class RAM {
 
     public void setByteInAddress(final int address, final byte data) {
         this.memory[address] = data;
-        ui.UI.ramdisplay.setRamValue(address, data & 0xFF);
+        ui.TopMenuBar.ramdisplaySetValue(address, data & 0xFF);
     }
 
     public short getWordInAddress(final int address) {

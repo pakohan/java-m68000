@@ -33,6 +33,8 @@ import org.gnome.gtk.MenuItem;
 import org.gnome.gtk.TextIter;
 import org.gnome.gtk.TextTag;
 
+import ui.UI.MemoryDisplay;
+
 public final class TopMenuBar {
     private TopMenuBar() {
     }
@@ -40,8 +42,14 @@ public final class TopMenuBar {
     private static Program prog;
     private static String str;
     private static MenuItem settings;
+    private static MemoryDisplay mdtmp = MemoryDisplay.BIN;
+    private static RamDisplay ramdisplay;
+    private static SettingsWindow sw;
 
     public static MenuBar createMenuBar() {
+        ramdisplay = new RamDisplay();
+        sw = new SettingsWindow();
+
         MenuBar menuBar = new MenuBar();
         Menu menufile = new Menu();
 
@@ -65,7 +73,7 @@ public final class TopMenuBar {
         ram.connect(new MenuItem.Activate() {
             @Override
             public void onActivate(final MenuItem source) {
-                UI.ramdisplay.window.showAll();
+                ramdisplay.showAll();
             }
         });
         menufile.append(ram);
@@ -74,7 +82,7 @@ public final class TopMenuBar {
         settings.connect(new MenuItem.Activate() {
             @Override
             public void onActivate(final MenuItem source) {
-                UI.sw.window.showAll();
+                sw.showAll();
             }
         });
         menufile.append(settings);
@@ -110,9 +118,17 @@ public final class TopMenuBar {
         return menuBar;
     }
 
+    public static void ramdisplaySetValue(final int n, final int x) {
+        ramdisplay.setRamValue(n, x);
+    }
+
+    public static void setMdtmp(final MemoryDisplay memory) {
+        TopMenuBar.mdtmp = memory;
+    }
+
     public static void loadsource() {
         Scanner scan;
-        UI.md = UI.mdtmp;
+        UI.setMd(mdtmp);
         try {
             scan = new Scanner(new File(str));
             UI.printMessage("Datei \"" + str + "\" geladen");
@@ -132,7 +148,7 @@ public final class TopMenuBar {
                     + str
                     + "\" konnte nicht geladen werden");
         }
-        UI.ramdisplay.rebuildTable();
+        ramdisplay.rebuildTable();
         DataTable.rebuildDataTable();
         AdressTable.rebuildAddressTable();
         try {
