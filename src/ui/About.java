@@ -38,7 +38,7 @@ public final class About {
         aboutdialog.setProgramName("Java-M68000");
         aboutdialog.setComments("Ein einfacher Simulator für einen M68000");
         aboutdialog.setAuthors(authors);
-        aboutdialog.setVersion("2011.11.27 - r71");
+        aboutdialog.setVersion("2011.12.04 - r100");
         aboutdialog.setDocumenters(commenters);
         aboutdialog.setWebsite("code.google.com/p/java-m68000");
         aboutdialog.setWebsiteLabel("Projet auf Google Code");
