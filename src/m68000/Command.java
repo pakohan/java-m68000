@@ -103,7 +103,7 @@ public final class Command implements Cloneable {
         CommandPostfix post;
 
         try {
-            post = CommandPostfix.valueOf(instruction);
+            post = CommandPostfix.valueOf(instruction.toUpperCase());
         } catch (IllegalArgumentException e) {
             ui.UI.printMessage(instruction + " is not a value postfix!");
             post = CommandPostfix.NONE;
@@ -163,7 +163,7 @@ public final class Command implements Cloneable {
     private static InstructionSet getInstruction(final String com) {
         InstructionSet command;
         try {
-            command = InstructionSet.valueOf(com);
+            command = InstructionSet.valueOf(com.toUpperCase());
         } catch (IllegalArgumentException e) {
             ui.UI.printMessage(com + " is not a command!");
             command = InstructionSet.ZERO;
