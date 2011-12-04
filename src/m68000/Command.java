@@ -45,7 +45,7 @@ public final class Command implements Cloneable {
          * program.
          */
         EQU, DC, DS, CLR, MOVE, ADD,
-        END, ZERO, HEAD, SUB, MUL, DIV, CMP, BNE, BEQ, DIVU, SWAP
+        END, ZERO, HEAD, SUB, MUL, CMP, BNE, BEQ, DIVU, DIVS, SWAP
     };
 
     /**
@@ -53,7 +53,7 @@ public final class Command implements Cloneable {
      * WILL NOT WORK ANY MORE!
      */
     static enum CommandPostfix {
-        ZERO, B, W, B3, L,
+        NONE, B, W, B3, L,
     }
 
     /**
@@ -88,6 +88,7 @@ public final class Command implements Cloneable {
             this.instruction = getInstruction(parts[0]);
             this.twoParts = true;
         } else {
+            this.postfix = CommandPostfix.NONE;
             this.instruction = getInstruction(str);
             this.twoParts = false;
         }
@@ -105,7 +106,7 @@ public final class Command implements Cloneable {
             post = CommandPostfix.valueOf(instruction);
         } catch (IllegalArgumentException e) {
             ui.UI.printMessage(instruction + " is not a value postfix!");
-            post = CommandPostfix.ZERO;
+            post = CommandPostfix.NONE;
         }
 
         return post;

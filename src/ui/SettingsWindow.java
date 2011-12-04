@@ -88,6 +88,9 @@ public final class SettingsWindow {
         vbox1.add(dez);
         vbox1.add(hex);
 
+        hex.setActive(true);
+        TopMenuBar.setMdtmp(MemoryDisplay.HEX);
+
         Frame speicherart = new Frame("Speicherdarstellung");
         speicherart.add(vbox1);
 

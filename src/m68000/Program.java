@@ -141,7 +141,7 @@ public final class Program {
             case END:
             case MUL:
             case SUB:
-            case DIV:
+            case DIVS:
             case CMP:
             case BNE:
             case BEQ:
