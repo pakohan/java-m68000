@@ -17,6 +17,7 @@
 package m68000;
 
 import m68000.Argument.Arg;
+import m68000.Argument.ArgType;
 import m68000.Command.CommandPostfix;
 
 public class Processor {
@@ -313,6 +314,9 @@ public class Processor {
                         .getPrev();
             }
             break;
+        case SWAP:
+            swap(com.getArgument().getPrefix());
+            break;
         case END:
             this.finished = true;
             break;
@@ -377,6 +381,18 @@ public class Processor {
             int newval = getData(args.getPostfix(), CommandPostfix.L);
             newval = (newval / x);
             setData(args.getPostfix(), newval, CommandPostfix.L);
+        }
+    }
+
+
+    private void swap(final Arg prefix) {
+        if (prefix.getType() == ArgType.DATA_REGISTER) {
+            int x = this.dataRegister[prefix.getValue()];
+            int begin = (short) x;
+            int end = (short) (x >>> 16);
+            x = (begin << 16);
+            x += end;
+            setDataRegister(prefix.getValue(), x);
         }
     }
 }
