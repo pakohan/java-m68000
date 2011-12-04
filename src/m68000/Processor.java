@@ -39,18 +39,18 @@ public class Processor {
         switch (adr.getInk()) {
         case POSTINKREMENT:
             x = this.adressRegister[adr.getValue()];
-            this.adressRegister[adr.getValue()]++;
+            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
             break;
         case PREINKREMENT:
-            adressRegister[adr.getValue()]++;
+            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
             x = adressRegister[adr.getValue()];
             break;
         case POSTDEKREMENT:
             x = this.adressRegister[adr.getValue()];
-            this.adressRegister[adr.getValue()]--;
+            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
             break;
         case PREDEKREMENT:
-            this.adressRegister[adr.getValue()]--;
+            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
             x = this.adressRegister[adr.getValue()];
             break;
         case NOINKREMENT:
@@ -78,20 +78,20 @@ public class Processor {
         case POSTINKREMENT:
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
                     x);
-            ++this.adressRegister[adr.getValue()];
+            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
             break;
         case PREINKREMENT:
-            ++this.adressRegister[adr.getValue()];
+            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
                     x);
             break;
         case POSTDEKREMENT:
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
                     x);
-            --this.adressRegister[adr.getValue()];
+            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
             break;
         case PREDEKREMENT:
-            --this.adressRegister[adr.getValue()];
+            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
             this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
                     x);
             break;
@@ -148,21 +148,6 @@ public class Processor {
                         .getItem().getLineindex();
             }
             break;
-        case ORG:
-        case EQU:
-        case DC:
-        case DS:
-        case HEAD:
-        case CLR:
-        case MOVE:
-        case ADD:
-        case SUB:
-        case MUL:
-        case DIVU:
-        case DIV:
-        case CMP:
-        case END:
-        default:
         }
         return com.getNext().getItem().getLineindex();
     }
@@ -202,6 +187,7 @@ public class Processor {
             mul(com.getArgument(), com.getCommand().getPostfix());
             break;
         case DIVU:
+            break;
         case DIV:
             div(com.getArgument());
             break;
