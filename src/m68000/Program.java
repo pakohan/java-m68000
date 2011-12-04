@@ -118,15 +118,14 @@ public final class Program {
             tmparg = tmp.getItem().getArgument().getPrefix();
             switch (tmp.getItem().getCommand().getPrefix()) {
             case EQU:
-                replaceSymbolicConstant(tmp.getItem().getLabel(),
-                        "$" + tmparg.getValue());
+                replaceSymbolicHexConstant(tmp.getItem().getLabel(),
+                        tmparg.getValue());
                 break;
             case DC:
                 dc(tmp.getItem());
                 break;
             case DS:
-                replaceSymbolicConstant(tmp.getItem().getLabel(), "$"
-                        + rampointer);
+                replaceSymbolicHexConstant(tmp.getItem().getLabel(), rampointer);
                 rampointer += (tmparg.getValue() * tmp.getItem().getCommand()
                         .getPostfix().ordinal());
                 break;
@@ -162,7 +161,7 @@ public final class Program {
         StringBuilder tmpstr = new StringBuilder();
         tmpstr.append("$");
         tmpstr.append(rampointer);
-        replaceSymbolicConstant(tmp.getLabel(), "$" + rampointer);
+        replaceSymbolicHexConstant(tmp.getLabel(), rampointer);
 
         if (tmp.getArgument().getPrefix().getType()
                 == ArgType.CONST) {
@@ -203,8 +202,8 @@ public final class Program {
      * @param newvalue
      *            the newvalue
      */
-    private void replaceSymbolicConstant(final String str,
-            final String newvalue) {
+    private void replaceSymbolicHexConstant(final String str, final int x) {
+        String newvalue = "$" + Integer.toHexString(x);
         LinkedList<CodeLine> tmp2 = this.prog;
         for (int i = this.prog.getSize(); i > 0; --i) {
             Argument tmparg = tmp2.getItem().getArgument();

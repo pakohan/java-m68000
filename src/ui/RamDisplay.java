@@ -115,9 +115,8 @@ public class RamDisplay {
     }
 
     public final void setRamValue(final int n, final int x) {
-        //System.out.println();
         TreeIter iter = ramlist.getIterFirst();
-        for (int i = 0; i < n; i += 16) {
+        for (int i = 16; i <= n; i += 16) {
             iter.iterNext();
         }
         String number = UI.getNumberAppeareance(x);

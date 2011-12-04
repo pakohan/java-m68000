@@ -19,9 +19,6 @@ package m68000;
 import m68000.Argument.Arg;
 import m68000.Command.CommandPostfix;
 
-/**
- * The Class Processor simulates a m68000 processor.
- */
 public class Processor {
 
     /** REG_AMOUNT defines the amount of the registers. */
@@ -29,96 +26,12 @@ public class Processor {
 
     private int[] dataRegister = new int[REG_AMOUNT];
     private int[] adressRegister = new int[REG_AMOUNT];
-
-    public final int[] getDataRegister() {
-        return dataRegister;
-    }
-
-    private int getAdressRegister(final Arg adr) {
-        int x = 0;
-        switch (adr.getInk()) {
-        case POSTINKREMENT:
-            x = this.adressRegister[adr.getValue()];
-            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
-            break;
-        case PREINKREMENT:
-            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
-            x = adressRegister[adr.getValue()];
-            break;
-        case POSTDEKREMENT:
-            x = this.adressRegister[adr.getValue()];
-            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
-            break;
-        case PREDEKREMENT:
-            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
-            x = this.adressRegister[adr.getValue()];
-            break;
-        case NOINKREMENT:
-            x = this.ram.getLongWordInAddress(this.adressRegister[adr
-                    .getValue()]);
-            break;
-        case NONE:
-            x = this.adressRegister[adr.getValue()];
-        default:
-        }
-        ui.AdressTable.setadresstable(adr.getValue(),
-                this.adressRegister[adr.getValue()]);
-        return x;
-    }
-
-    private void setAdressRegister(final Arg adr, final int x) {
-        switch (adr.getInk()) {
-        case NOINKREMENT:
-            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
-                    x);
-            break;
-        case NONE:
-            this.adressRegister[adr.getValue()] = x;
-            break;
-        case POSTINKREMENT:
-            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
-                    x);
-            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
-            break;
-        case PREINKREMENT:
-            this.adressRegister[adr.getValue()] += this.execute.getItem().getCommand().getPostfix().ordinal();
-            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
-                    x);
-            break;
-        case POSTDEKREMENT:
-            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
-                    x);
-            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
-            break;
-        case PREDEKREMENT:
-            this.adressRegister[adr.getValue()] -= this.execute.getItem().getCommand().getPostfix().ordinal();
-            this.ram.setLongWordInAddress(this.adressRegister[adr.getValue()],
-                    x);
-            break;
-        default:
-        }
-        ui.AdressTable.setadresstable(adr.getValue(),
-                this.adressRegister[adr.getValue()]);
-    }
-
     private int size;
-
-    /** The compare. */
     private boolean compare;
-    /** The exe. */
     private LinkedList<CodeLine> execute;
-
-    /** The finished. */
     private boolean finished = false;
-
     private RAM ram;
 
-    /**
-     * Instantiates a new processor.
-     *
-     * @param prog
-     *            the prog
-     */
     public Processor(final Program prog) {
         this.execute = prog.getProg();
         this.ram = prog.getRAM();
@@ -134,31 +47,130 @@ public class Processor {
     private int getNextLine(final LinkedList<CodeLine> com) {
         switch (com.getItem().getCommand().getPrefix()) {
         case BRA:
-            return jump(com.getItem().getArgument().getPrefix().getOtherArg())
-                    .getItem().getLineindex();
+            return jump(com.getItem().getArgument().getPrefix()
+                    .getOtherArg()).getItem().getLineindex();
         case BEQ:
             if (this.compare) {
-                return jump(com.getItem().getArgument().getPrefix().getOtherArg())
-                        .getItem().getLineindex();
+                return jump(com.getItem().getArgument().getPrefix()
+                        .getOtherArg()).getItem().getLineindex();
             }
             break;
         case BNE:
             if (!this.compare) {
-                return jump(com.getItem().getArgument().getPrefix().getOtherArg())
-                        .getItem().getLineindex();
+                return jump(com.getItem().getArgument().getPrefix()
+                        .getOtherArg()).getItem().getLineindex();
             }
             break;
+        default:
         }
         return com.getNext().getItem().getLineindex();
     }
 
-    /**
-     * The main processing unit. It searches the given program line for known
-     * coms and executes it.
-     *
-     * @param com
-     *            the com
-     */
+    public final int[] getDataRegister() {
+        return dataRegister;
+    }
+
+    private int getAdressRegister(final Arg adr) {
+        int x = 0;
+        switch (adr.getInk()) {
+        case POSTINKREMENT:
+            x = getRAM(this.adressRegister[adr.getValue()]);
+            this.adressRegister[adr.getValue()]
+                += this.execute.getItem().getCommand().getPostfix().ordinal();
+            break;
+        case PREINKREMENT:
+            this.adressRegister[adr.getValue()]
+                += this.execute.getItem().getCommand().getPostfix().ordinal();
+            x = getRAM(adressRegister[adr.getValue()]);
+            break;
+        case POSTDEKREMENT:
+            x = getRAM(this.adressRegister[adr.getValue()]);
+            this.adressRegister[adr.getValue()]
+                -= this.execute.getItem().getCommand().getPostfix().ordinal();
+            break;
+        case PREDEKREMENT:
+            this.adressRegister[adr.getValue()]
+                -= this.execute.getItem().getCommand().getPostfix().ordinal();
+            x = getRAM(this.adressRegister[adr.getValue()]);
+            break;
+        case NOINKREMENT:
+            x = getRAM(this.adressRegister[adr.getValue()]);
+            break;
+        case NONE:
+            x = this.adressRegister[adr.getValue()];
+        default:
+        }
+        ui.AdressTable.setadresstable(adr.getValue(),
+                this.adressRegister[adr.getValue()]);
+        return x;
+    }
+
+    private void setAdressRegister(final Arg adr, final int x) {
+        switch (adr.getInk()) {
+        case NOINKREMENT:
+            setRAM(this.adressRegister[adr.getValue()], x);
+            break;
+        case NONE:
+            this.adressRegister[adr.getValue()] = x;
+            break;
+        case POSTINKREMENT:
+            setRAM(this.adressRegister[adr.getValue()],
+                    x);
+            this.adressRegister[adr.getValue()]
+                += this.execute.getItem().getCommand().getPostfix().ordinal();
+            break;
+        case PREINKREMENT:
+            this.adressRegister[adr.getValue()]
+                += this.execute.getItem().getCommand().getPostfix().ordinal();
+            setRAM(this.adressRegister[adr.getValue()],
+                    x);
+            break;
+        case POSTDEKREMENT:
+            setRAM(this.adressRegister[adr.getValue()],
+                    x);
+            this.adressRegister[adr.getValue()]
+                -= this.execute.getItem().getCommand().getPostfix().ordinal();
+            break;
+        case PREDEKREMENT:
+            this.adressRegister[adr.getValue()]
+                -= this.execute.getItem().getCommand().getPostfix().ordinal();
+            setRAM(this.adressRegister[adr.getValue()],
+                    x);
+            break;
+        default:
+        }
+        ui.AdressTable.setadresstable(adr.getValue(),
+                this.adressRegister[adr.getValue()]);
+    }
+
+    private void setRAM(final int adr, final int x) {
+        switch (this.execute.getItem().getCommand().getPostfix()) {
+        case B:
+            this.ram.setByteInAddress(adr, (byte) x);
+            break;
+        case W:
+            this.ram.setWordInAddress(adr, (short) x);
+            break;
+        case L:
+            this.ram.setLongWordInAddress(adr, x);
+            break;
+            default:
+        }
+    }
+
+    private int getRAM(final int adr) {
+        switch (this.execute.getItem().getCommand().getPostfix()) {
+        case B:
+            return this.ram.getByteInAddress(adr);
+        case W:
+            return this.ram.getWordInAddress(adr);
+        case L:
+            return this.ram.getLongWordInAddress(adr);
+        default:
+        }
+        return 0;
+    }
+
     private void step(final CodeLine com) {
         switch (com.getCommand().getPrefix()) {
         case ORG:
@@ -215,12 +227,6 @@ public class Processor {
         }
     }
 
-    /**
-     * Cmp.
-     *
-     * @param args
-     *            the args
-     */
     private void cmp(final Argument args) {
         if (getData(args.getPrefix()) == getData(args.getPostfix())) {
             this.compare = true;
@@ -229,22 +235,46 @@ public class Processor {
         }
     }
 
-    /**
-     * Overwrites the data stored in argument two with the data stored in
-     * argument one.
-     *
-     * @param args
-     *            the args
-     * @param commandPostfix
-     */
     private void move(final Argument args, final CommandPostfix cpf) {
         int x = getData(args.getPrefix());
         x = recognizeCommandPostfix(x, cpf);
         setData(args.getPostfix(), x);
     }
 
-    private int recognizeCommandPostfix(final int x,
-            final CommandPostfix cpf) {
+    private void clr(final Argument args) {
+        setData(args.getPrefix(), 0);
+    }
+
+    private void add(final Argument args, final CommandPostfix cpf) {
+        int x = getData(args.getPrefix());
+        x = recognizeCommandPostfix(x, cpf);
+        x = getData(args.getPostfix()) + x;
+        setData(args.getPostfix(), x);
+    }
+
+    private void sub(final Argument args, final CommandPostfix cpf) {
+        int x = getData(args.getPrefix());
+        x = recognizeCommandPostfix(x, cpf);
+        x = getData(args.getPostfix()) - x;
+        setData(args.getPostfix(), x);
+    }
+
+    private void mul(final Argument args, final CommandPostfix cpf) {
+        int x = getData(args.getPrefix());
+        x = recognizeCommandPostfix(x, cpf);
+        x = getData(args.getPostfix()) * x;
+        setData(args.getPostfix(), x);
+    }
+
+    private void div(final Argument args) {
+        int x = getData(args.getPrefix());
+        if (x != 0) {
+            x = getData(args.getPostfix()) / x;
+            setData(args.getPostfix(), x);
+        }
+    }
+
+    private int recognizeCommandPostfix(final int x, final CommandPostfix cpf) {
         int z;
         switch (cpf) {
         case B:
@@ -263,80 +293,6 @@ public class Processor {
         return z;
     }
 
-    /**
-     * sets the data stored in the argument to 0. If there are two arguments,
-     * only the first will be treated.
-     *
-     * @param args
-     *            the args
-     */
-    private void clr(final Argument args) {
-        setData(args.getPrefix(), 0);
-    }
-
-    /**
-     * Adds up the data stored in the first argument to the data in the second
-     * one.
-     *
-     * @param args
-     *            the args
-     */
-    private void add(final Argument args, final CommandPostfix cpf) {
-        int x = getData(args.getPrefix());
-        x = recognizeCommandPostfix(x, cpf);
-        x = getData(args.getPostfix()) + x;
-        setData(args.getPostfix(), x);
-    }
-
-    /**
-     * Sub.
-     *
-     * @param args
-     *            the args
-     */
-    private void sub(final Argument args, final CommandPostfix cpf) {
-        int x = getData(args.getPrefix());
-        x = recognizeCommandPostfix(x, cpf);
-        x = getData(args.getPostfix()) - x;
-        setData(args.getPostfix(), x);
-    }
-
-    /**
-     * Mul.
-     *
-     * @param args
-     *            the args
-     */
-    private void mul(final Argument args, final CommandPostfix cpf) {
-        int x = getData(args.getPrefix());
-        x = recognizeCommandPostfix(x, cpf);
-        x = getData(args.getPostfix()) * x;
-        setData(args.getPostfix(), x);
-    }
-
-    /**
-     * Div.
-     *
-     * @param args
-     *            the args
-     */
-    private void div(final Argument args) {
-        int x = getData(args.getPrefix());
-        if (x != 0) {
-            x = getData(args.getPostfix()) / x;
-            setData(args.getPostfix(), x);
-        }
-    }
-
-    /**
-     * Searches for the place of data with the string dataPlace and overwrites
-     * it with the given x.
-     *
-     * @param dataPlace
-     *            the data place
-     * @param x
-     *            the x
-     */
     private void setData(final Arg dataPlace, final int x) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER:
@@ -347,27 +303,31 @@ public class Processor {
             ui.DataTable.setdatatable(dataPlace.getValue(), x);
             break;
         case MEMORY:
-            this.ram.setLongWordInAddress(dataPlace.getValue(), x);
+            switch (this.execute.getItem().getCommand().getPostfix()) {
+            case B:
+                this.ram.setByteInAddress(dataPlace.getValue(), (byte) x);
+                break;
+            case W:
+                this.ram.setWordInAddress(dataPlace.getValue(), (short) x);
+                break;
+            case L:
+                this.ram.setLongWordInAddress(dataPlace.getValue(), x);
+                break;
+                default:
+            }
             break;
         default:
         }
     }
 
-    /**
-     * Searches for the place of data with the string dataPlace and returns it.
-     *
-     * @param dataPlace
-     *            the data place
-     * @return the data
-     */
     private int getData(final Arg dataPlace) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER:
-            return this.ram.getLongWordInAddress(getAdressRegister(dataPlace));
+            return getAdressRegister(dataPlace);
         case DATA_REGISTER:
             return this.dataRegister[dataPlace.getValue()];
         case MEMORY:
-            return this.ram.getLongWordInAddress(dataPlace.getValue());
+            return getRAM(dataPlace.getValue());
         case CONST:
             return dataPlace.getValue();
         case ADRESSOFMARKER:
@@ -377,10 +337,6 @@ public class Processor {
         }
     }
 
-    /**
-     * Does a single step. This means that the the Processor will set the
-     * execution pointer to the next element and executes it.
-     */
     public final void run() {
         while (!this.hasfinished()) {
             this.execute = this.execute.getNext();
@@ -388,22 +344,10 @@ public class Processor {
         }
     }
 
-    /**
-     * Checks, if the program has finished.
-     *
-     * @return true, if it has finished
-     */
     public final boolean hasfinished() {
         return finished;
     }
 
-    /**
-     * Jump.
-     *
-     * @param str
-     *            the str
-     * @return the linked list
-     */
     public final LinkedList<CodeLine> jump(final String str) {
         LinkedList<CodeLine> tmp = this.execute;
         for (int i = 0; i < this.size; i++) {
