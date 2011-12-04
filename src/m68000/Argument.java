@@ -320,7 +320,16 @@ public final class Argument implements Cloneable {
 
         @Override
         public String toString() {
-            return this.anotherArg + "(" + this.type + "_" + this.ink + "   " + this.value + ")";
+            StringBuilder str = new StringBuilder();
+            str.append(this.anotherArg)
+            .append("(")
+            .append(this.type)
+            .append("_")
+            .append(this.ink)
+            .append("   ")
+            .append(this.value)
+            .append(")");
+            return str.toString();
         }
 
         public Arg(final int x) {

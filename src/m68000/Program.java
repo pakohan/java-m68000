@@ -125,7 +125,8 @@ public final class Program {
                 dc(tmp.getItem());
                 break;
             case DS:
-                replaceSymbolicHexConstant(tmp.getItem().getLabel(), rampointer);
+                replaceSymbolicHexConstant(tmp.getItem().getLabel(),
+                        rampointer);
                 rampointer += (tmparg.getValue() * tmp.getItem().getCommand()
                         .getPostfix().ordinal());
                 break;

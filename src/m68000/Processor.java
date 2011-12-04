@@ -38,38 +38,6 @@ public class Processor {
         this.size = this.execute.getSize();
     }
 
-    public final void step() {
-        this.execute = this.execute.getNext();
-        step(this.execute.getItem());
-        ui.UI.markLine(getNextLine(this.execute));
-    }
-
-    private int getNextLine(final LinkedList<CodeLine> com) {
-        switch (com.getItem().getCommand().getPrefix()) {
-        case BRA:
-            return jump(com.getItem().getArgument().getPrefix()
-                    .getOtherArg()).getItem().getLineindex();
-        case BEQ:
-            if (this.compare) {
-                return jump(com.getItem().getArgument().getPrefix()
-                        .getOtherArg()).getItem().getLineindex();
-            }
-            break;
-        case BNE:
-            if (!this.compare) {
-                return jump(com.getItem().getArgument().getPrefix()
-                        .getOtherArg()).getItem().getLineindex();
-            }
-            break;
-        default:
-        }
-        return com.getNext().getItem().getLineindex();
-    }
-
-    public final int[] getDataRegister() {
-        return dataRegister;
-    }
-
     private int getAdressRegister(final Arg adr) {
         int x = 0;
         switch (adr.getInk()) {
@@ -169,6 +137,108 @@ public class Processor {
         default:
         }
         return 0;
+    }
+
+    private void setData(final Arg dataPlace, final int x) {
+        switch (dataPlace.getType()) {
+        case ADDRESS_REGISTER:
+            setAdressRegister(dataPlace, x);
+            break;
+        case DATA_REGISTER:
+            this.dataRegister[dataPlace.getValue()] = x;
+            ui.DataTable.setdatatable(dataPlace.getValue(), x);
+            break;
+        case MEMORY:
+            setRAM(dataPlace.getValue(), x);
+            break;
+        default:
+        }
+    }
+
+    private int getData(final Arg dataPlace) {
+        switch (dataPlace.getType()) {
+        case ADDRESS_REGISTER:
+            return getAdressRegister(dataPlace);
+        case DATA_REGISTER:
+            return this.dataRegister[dataPlace.getValue()];
+        case MEMORY:
+            return getRAM(dataPlace.getValue());
+        case CONST:
+            return dataPlace.getValue();
+        case ADRESSOFMARKER:
+            return dataPlace.getValue();
+        default:
+            return 0;
+        }
+    }
+
+    private int recognizeCommandPostfix(final int x, final CommandPostfix cpf) {
+        int z;
+        switch (cpf) {
+        case B:
+            z = ((byte) x) & 0xFF;
+            break;
+        case W:
+            z = ((short) x) & 0xFFFF;
+            break;
+        case L:
+            z = x;
+            break;
+        default:
+            ui.UI.printMessage("Fehler: falsche Kommandoendung!");
+            return 0;
+        }
+        return z;
+    }
+
+    public final LinkedList<CodeLine> jump(final String str) {
+        LinkedList<CodeLine> tmp = this.execute;
+        for (int i = 0; i < this.size; i++) {
+            if (tmp.getItem().getLabel().equals(str)) {
+                return tmp;
+            }
+            tmp = tmp.getNext();
+        }
+        return this.execute;
+    }
+
+    public final void run() {
+        while (!this.hasfinished()) {
+            this.execute = this.execute.getNext();
+            step(this.execute.getItem());
+        }
+    }
+
+    public final boolean hasfinished() {
+        return finished;
+    }
+
+    private int getNextLine(final LinkedList<CodeLine> com) {
+        switch (com.getItem().getCommand().getPrefix()) {
+        case BRA:
+            return jump(com.getItem().getArgument().getPrefix()
+                    .getOtherArg()).getItem().getLineindex();
+        case BEQ:
+            if (this.compare) {
+                return jump(com.getItem().getArgument().getPrefix()
+                        .getOtherArg()).getItem().getLineindex();
+            }
+            break;
+        case BNE:
+            if (!this.compare) {
+                return jump(com.getItem().getArgument().getPrefix()
+                        .getOtherArg()).getItem().getLineindex();
+            }
+            break;
+        default:
+        }
+        return com.getNext().getItem().getLineindex();
+    }
+
+    public final void step() {
+        this.execute = this.execute.getNext();
+        step(this.execute.getItem());
+        ui.UI.markLine(getNextLine(this.execute));
     }
 
     private void step(final CodeLine com) {
@@ -272,90 +342,5 @@ public class Processor {
             x = getData(args.getPostfix()) / x;
             setData(args.getPostfix(), x);
         }
-    }
-
-    private int recognizeCommandPostfix(final int x, final CommandPostfix cpf) {
-        int z;
-        switch (cpf) {
-        case B:
-            z = ((byte) x) & 0xFF;
-            break;
-        case W:
-            z = ((short) x) & 0xFFFF;
-            break;
-        case L:
-            z = x;
-            break;
-        default:
-            ui.UI.printMessage("Fehler: falsche Kommandoendung!");
-            return 0;
-        }
-        return z;
-    }
-
-    private void setData(final Arg dataPlace, final int x) {
-        switch (dataPlace.getType()) {
-        case ADDRESS_REGISTER:
-            setAdressRegister(dataPlace, x);
-            break;
-        case DATA_REGISTER:
-            this.dataRegister[dataPlace.getValue()] = x;
-            ui.DataTable.setdatatable(dataPlace.getValue(), x);
-            break;
-        case MEMORY:
-            switch (this.execute.getItem().getCommand().getPostfix()) {
-            case B:
-                this.ram.setByteInAddress(dataPlace.getValue(), (byte) x);
-                break;
-            case W:
-                this.ram.setWordInAddress(dataPlace.getValue(), (short) x);
-                break;
-            case L:
-                this.ram.setLongWordInAddress(dataPlace.getValue(), x);
-                break;
-                default:
-            }
-            break;
-        default:
-        }
-    }
-
-    private int getData(final Arg dataPlace) {
-        switch (dataPlace.getType()) {
-        case ADDRESS_REGISTER:
-            return getAdressRegister(dataPlace);
-        case DATA_REGISTER:
-            return this.dataRegister[dataPlace.getValue()];
-        case MEMORY:
-            return getRAM(dataPlace.getValue());
-        case CONST:
-            return dataPlace.getValue();
-        case ADRESSOFMARKER:
-            return dataPlace.getValue();
-        default:
-            return 0;
-        }
-    }
-
-    public final void run() {
-        while (!this.hasfinished()) {
-            this.execute = this.execute.getNext();
-            step(this.execute.getItem());
-        }
-    }
-
-    public final boolean hasfinished() {
-        return finished;
-    }
-
-    public final LinkedList<CodeLine> jump(final String str) {
-        LinkedList<CodeLine> tmp = this.execute;
-        for (int i = 0; i < this.size; i++) {
-            if (tmp.getItem().getLabel().equals(str)) {
-                return tmp;
-            }
-            tmp = tmp.getNext();
-        }
-        return this.execute;
     }
 }
