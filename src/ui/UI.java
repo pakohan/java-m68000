@@ -20,6 +20,7 @@ import static org.gnome.gtk.WrapMode.WORD;
 import static org.gnome.gtk.WrapMode.NONE;
 
 import org.gnome.gdk.Event;
+import org.gnome.gdk.EventButton;
 import org.gnome.gtk.Button;
 import org.gnome.gtk.Gtk;
 import org.gnome.gtk.HBox;
@@ -147,6 +148,25 @@ public final class UI {
         TextView filetextview = new TextView(filebuffer);
         filetextview.setWrapMode(NONE);
         filetextview.setEditable(false);
+        filetextview.setCursorVisible(false);
+
+        filetextview.connect(new Widget.ButtonReleaseEvent() {
+            @Override
+            public boolean onButtonReleaseEvent(Widget source, EventButton event) {
+                int line = filebuffer.getInsert().getIter().getLine();
+                if (core1.toggleBreakPoint(line)) {
+                    TextTag blue = new TextTag();
+                    blue.setForeground("blue");
+                    markLine(line, blue);
+                } else {
+                    TextTag black = new TextTag();
+                    black.setForeground("black");
+                    markLine(line, black);
+                }
+                return false;
+            }
+        });
+
         ScrolledWindow scrolledFileWindow = new ScrolledWindow();
         scrolledFileWindow.add(filetextview);
         return scrolledFileWindow;
@@ -156,6 +176,9 @@ public final class UI {
         msgbuffer = new TextBuffer();
         msgtextview = new TextView(msgbuffer);
         msgtextview.setWrapMode(WORD);
+        msgtextview.setEditable(false);
+        msgtextview.setCursorVisible(false);
+
         ScrolledWindow scrolledWindow = new ScrolledWindow();
         scrolledWindow.add(msgtextview);
 
@@ -165,18 +188,12 @@ public final class UI {
         return scrolledWindow;
     }
 
-    public static void markLine(final int i) {
-        TextTag black = new TextTag();
-        black.setForeground("black");
-        filebuffer.applyTag(black, filebuffer.getIterStart(),
-                filebuffer.getIterEnd());
+    public static void markLine(final int i, final TextTag texttag) {
         TextIter pointerend = filebuffer.getIterStart();
         pointerend.forwardLines(i);
         TextIter pointerbegin = pointerend.copy();
         pointerend.forwardLine();
-        TextTag tag = new TextTag();
-        tag.setForeground("red");
-        filebuffer.applyTag(tag, pointerbegin, pointerend);
+        filebuffer.applyTag(texttag, pointerbegin, pointerend);
     }
 
     public static void printMessage(final String msg) {
@@ -197,16 +214,12 @@ public final class UI {
 
             @Override
             public void onClicked(final Button source) {
-                while (!core1.hasfinished()) {
-                    TextTag black = new TextTag();
-                    black.setForeground("black");
-                    filebuffer.applyTag(black, filebuffer.getIterStart(),
-                            filebuffer.getIterEnd());
                     core1.run();
-                }
-                printMessage("Program beendet!");
-                source.setSensitive(false);
-                step.setSensitive(false);
+                    if (core1.hasfinished()) {
+                        printMessage("Program beendet!");
+                        source.setSensitive(false);
+                        step.setSensitive(false);
+                    }
             }
         });
 
@@ -226,9 +239,8 @@ public final class UI {
 
             @Override
             public void onClicked(final Button source) {
-                if (!core1.hasfinished()) {
                     core1.step();
-                } else {
+                if (core1.hasfinished()) {
                     printMessage("Program beendet!");
                     source.setSensitive(false);
                     run.setSensitive(false);

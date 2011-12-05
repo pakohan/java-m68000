@@ -135,11 +135,15 @@ public final class TopMenuBar {
             UI.clearFileBuffer();
             String line;
             TextIter end;
+            int number = 0;
             while (scan.hasNextLine()) {
                 end = UI.getFilebuffer().getIterEnd();
+                String linenumber = String.format("%4d:\t", number);
                 line = scan.nextLine();
+                UI.getFilebuffer().insert(end, linenumber);
                 UI.getFilebuffer().insert(end, line);
                 UI.getFilebuffer().insert(end, "\n");
+                number++;
             }
         } catch (Exception e) {
             UI.printMessage("Datei \""

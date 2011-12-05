@@ -16,6 +16,8 @@
  */
 package m68000;
 
+import org.gnome.gtk.TextTag;
+
 import m68000.Argument.Arg;
 import m68000.Argument.ArgType;
 import m68000.Command.CommandPostfix;
@@ -33,9 +35,12 @@ public class Processor {
     private RAM ram;
 
     public Processor(final Program prog) {
-        this.execute = prog.getProg();
+        this.size = prog.getProg().getSize();
+        this.execute = prog.getProg().getNext();
         this.ram = prog.getRAM();
-        this.size = this.execute.getSize();
+        TextTag red = new TextTag();
+        red.setForeground("red");
+        ui.UI.markLine(this.execute.getItem().getLineindex(), red);
     }
 
     private int getAdressRegister(final Arg adr, final CommandPostfix cpf) {
@@ -196,9 +201,22 @@ public class Processor {
     }
 
     public final void run() {
+        if (this.execute.getItem().hasBreakPoint()) {
+            TextTag blue = new TextTag();
+            blue.setForeground("blue");
+            ui.UI.markLine(this.execute.getItem().getLineindex(), blue);
+        } else {
+            TextTag black = new TextTag();
+            black.setForeground("black");
+            ui.UI.markLine(this.execute.getItem().getLineindex(), black);
+        }
         while (!this.hasfinished()) {
-            this.execute = this.execute.getNext();
             step(this.execute.getItem());
+            if (this.execute.getItem().hasBreakPoint()) {
+                ui.UI.printMessage("Breakpoint in Zeile "
+            + this.execute.getItem().getLineindex());
+                break;
+            }
         }
     }
 
@@ -206,84 +224,94 @@ public class Processor {
         return finished;
     }
 
-    private int getNextLine(final LinkedList<CodeLine> com) {
-        switch (com.getItem().getCommand().getPrefix()) {
-        case BRA:
-            return jump(com.getItem().getArgument().getPrefix()
-                    .getOtherArg()).getItem().getLineindex();
-        case BEQ:
-            if (this.compare) {
-                return jump(com.getItem().getArgument().getPrefix()
-                        .getOtherArg()).getItem().getLineindex();
+    public final boolean toggleBreakPoint(final int x) {
+        LinkedList<CodeLine> tmp = this.execute;
+        for (int i = 0; i <= this.size; i++) {
+            if (tmp.getItem().getLineindex() == x) {
+                tmp.getItem().toggleBreakPoint();
+                return tmp.getItem().hasBreakPoint();
             }
-            break;
-        case BNE:
-            if (!this.compare) {
-                return jump(com.getItem().getArgument().getPrefix()
-                        .getOtherArg()).getItem().getLineindex();
-            }
-            break;
-        default:
+            tmp = tmp.getNext();
         }
-        return com.getNext().getItem().getLineindex();
+        return false;
     }
 
     public final void step() {
-        this.execute = this.execute.getNext();
+        if (this.execute.getItem().hasBreakPoint()) {
+            TextTag blue = new TextTag();
+            blue.setForeground("blue");
+            ui.UI.markLine(this.execute.getItem().getLineindex(), blue);
+        } else {
+            TextTag black = new TextTag();
+            black.setForeground("black");
+            ui.UI.markLine(this.execute.getItem().getLineindex(), black);
+        }
         step(this.execute.getItem());
-        ui.UI.markLine(getNextLine(this.execute));
+        if (!this.hasfinished()) {
+            TextTag red = new TextTag();
+            red.setForeground("red");
+            ui.UI.markLine(this.execute.getItem().getLineindex(), red);
+        }
     }
 
     private void step(final CodeLine com) {
         switch (com.getCommand().getPrefix()) {
         case ORG:
+            this.execute = this.execute.getNext();
+            break;
         case EQU:
         case DC:
         case DS:
         case HEAD:
             break;
         case BRA:
-            this.execute = jump(com.getArgument().getPrefix().getOtherArg())
-                    .getPrev();
+            this.execute = jump(com.getArgument().getPrefix().getOtherArg());
             break;
         case CLR:
             clr(com.getArgument(), com.getCommand().getPostfix());
+            this.execute = this.execute.getNext();
             break;
         case MOVE:
             move(com.getArgument(), com.getCommand().getPostfix());
+            this.execute = this.execute.getNext();
             break;
         case ADD:
             add(com.getArgument(), com.getCommand().getPostfix());
+            this.execute = this.execute.getNext();
             break;
         case SUB:
             sub(com.getArgument(), com.getCommand().getPostfix());
+            this.execute = this.execute.getNext();
             break;
         case MUL:
             mul(com.getArgument(), com.getCommand().getPostfix());
+            this.execute = this.execute.getNext();
             break;
         case DIVU:
             divu(com.getArgument());
+            this.execute = this.execute.getNext();
             break;
         case DIVS:
             divs(com.getArgument());
+            this.execute = this.execute.getNext();
             break;
         case CMP:
             cmp(com.getArgument());
+            this.execute = this.execute.getNext();
             break;
         case BEQ:
             if (this.compare) {
-                this.execute = jump(com.getArgument().getPrefix().getOtherArg())
-                        .getPrev();
+                this.execute = jump(com.getArgument().getPrefix().getOtherArg());
             }
             break;
         case BNE:
             if (!this.compare) {
-                this.execute = jump(com.getArgument().getPrefix().getOtherArg())
-                        .getPrev();
+                this.execute = jump(com.getArgument().getPrefix().getOtherArg());
             }
             break;
         case SWAP:
             swap(com.getArgument().getPrefix());
+            this.execute = this.execute.getNext();
             break;
         case END:
             this.finished = true;

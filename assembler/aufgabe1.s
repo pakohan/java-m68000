@@ -6,8 +6,6 @@ AUTO    DS.L    1
 STRING  DC.B    'Praktikum-Rechnerarchitektur',0    ;erzeuge String
 SUMME   DS.L    1                                   ;reserviere Speicher für die Summe
 MITTEL  DS.L    1                                   ;reserviere Speicher für den Mittelwert
-                ;TEST
-
 START   CLR.L   D1                                  ;Datenregister Stelle D1 und
         SUB.L   EINS,ZWEI
         MOVE.L  #EINS,A5

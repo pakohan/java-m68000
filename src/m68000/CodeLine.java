@@ -25,6 +25,7 @@ public final class CodeLine implements Cloneable {
     private String label;
     private Argument argument;
     private int lineindex;
+    private boolean breakpoint = false;
 
     /**
      * Instantiates a new line of code.
@@ -97,6 +98,14 @@ public final class CodeLine implements Cloneable {
         CodeLine clone = new CodeLine(this.lineindex, this.command.clone(),
                 this.argument.clone(), this.label);
         return clone;
+    }
+
+    public void toggleBreakPoint() {
+        this.breakpoint = !this.breakpoint;
+    }
+
+    public boolean hasBreakPoint() {
+        return this.breakpoint;
     }
 
     public int getLineindex() {
