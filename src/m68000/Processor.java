@@ -112,13 +112,23 @@ public class Processor {
 
     private void setDataRegister(final int adr, final int val) {
         int adrold = this.dataRegister[adr];
-        if (this.execute.getItem().getCommand().getPostfix()
-                != CommandPostfix.NONE) {
-            int shift = 32 - (8
-                * this.execute.getItem().getCommand().getPostfix().ordinal());
-            adrold = ((adrold >>> shift) << shift);
+        int x = val;
+        CommandPostfix cpf = this.execute.getItem().getCommand().getPostfix();
+        switch (cpf) {
+        case B:
+            adrold = adrold & 0xFFFFFF00;
+            x = x & 0x000000FF;
+            break;
+        case W:
+            adrold = adrold & 0xFFFF0000;
+            x = x & 0x0000FFFF;
+            break;
+        default:
+            adrold = 0;
         }
-        adrold = adrold + val;
+        adrold += val;
+        System.out.println(Integer.toBinaryString(val));
+        this.dataRegister[adr] = adrold;
         ui.DataTable.setdatatable(adr, adrold);
     }
 
@@ -382,10 +392,10 @@ public class Processor {
     private void swap(final Arg prefix) {
         if (prefix.getType() == ArgType.DATA_REGISTER) {
             int x = this.dataRegister[prefix.getValue()];
-            int begin = (short) x;
-            int end = (short) (x >>> 16);
-            x = (begin << 16);
-            x += ((short) end);
+            short begin = (short) x;
+            short end = (short) (x >>> 16);
+            x = (begin << 16) & 0xFFFF0000;
+            x += (end & 0xFFFF);
             setDataRegister(prefix.getValue(), x);
         }
     }
