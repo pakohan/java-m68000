@@ -280,7 +280,9 @@ public final class Argument implements Cloneable {
                 this.valuearray = new byte[str[1].length() + 1];
                 for (int i = 0; i < str[1].length(); i++) {
                     this.valuearray[i] = (byte) Character
-                            .getNumericValue(str[1].charAt(i));
+                            .getNumericValue((int) str[1].charAt(i));
+                    this.valuearray[i] = (byte)
+                            (this.valuearray[i] & 0x000000FF);
                 }
                 this.valuearray[this.valuearray.length - 1] = 0;
                 break;

@@ -33,6 +33,7 @@ public class Processor {
     private LinkedList<CodeLine> execute;
     private boolean finished = false;
     private RAM ram;
+    private boolean error = false;
 
     public Processor(final Program prog) {
         this.size = prog.getProg().getSize();
@@ -112,27 +113,92 @@ public class Processor {
 
     private void setDataRegister(final int adr, final int val) {
         int adrold = this.dataRegister[adr];
-        int x = val;
         CommandPostfix cpf = this.execute.getItem().getCommand().getPostfix();
         switch (cpf) {
         case B:
-            adrold = adrold & 0xFFFFFF00;
-            x = x & 0x000000FF;
+            adrold = mergeBytetoLongWord(adrold, getLowerByte(getLowerWord(val)));
             break;
         case W:
-            adrold = adrold & 0xFFFF0000;
-            x = x & 0x0000FFFF;
+            adrold = mergeWordtoLongWord(adrold, getLowerWord(val));
             break;
         default:
-            adrold = 0;
+            adrold = val;
         }
-        adrold += val;
-        System.out.println(Integer.toBinaryString(val));
         this.dataRegister[adr] = adrold;
         ui.DataTable.setdatatable(adr, adrold);
     }
 
+    @SuppressWarnings("unused")
+    private short mergeBytes(final byte higher, final byte lower) {
+        short high = (short) (higher << 8);
+        high = (short) (high & 0xFF00);
+        short low = (short) lower;
+        low = (short) (low & 0x00FF);
+        return (short) (high + low);
+    }
+
+    @SuppressWarnings("unused")
+    private int mergeWords(final short higher, final short lower) {
+        int high = higher << 16;
+        high = high & 0xFFFF0000;
+        int low = lower;
+        low = low & 0x0000FFFF;
+        return (high + low);
+    }
+
+    @SuppressWarnings("unused")
+    private byte getHigherByte(final short x) {
+        short tmp = (short) (x >>> 8);
+        byte b = (byte) tmp;
+        b = (byte) (b & 0x000000FF);
+        return b;
+    }
+
+    private byte getLowerByte(final short x) {
+        byte b = (byte) x;
+        b = (byte) (b & 0x000000FF);
+        return b;
+    }
+
+    @SuppressWarnings("unused")
+    private short getHigherWord(final int x) {
+        int tmp = (x >>> 16);
+        short s = (short) tmp;
+        s = (short) (s & 0x0000FFFF);
+        return s;
+    }
+
+    private short getLowerWord(final int x) {
+        short s = (short) x;
+        s = (short) (s & 0x0000FFFF);
+        return s;
+    }
+
+    private int mergeBytetoLongWord(final int i, final byte b) {
+        int tmp = i & 0xFFFFFF00;
+        int tmp2 = b & 0x000000FF;
+        return (tmp + tmp2);
+    }
+
+    private int mergeWordtoLongWord(final int i, final short s) {
+        int tmp = i & 0xFFFF0000;
+        int tmp2 = s & 0x0000FFFF;
+        return (tmp + tmp2);
+    }
+
+    @SuppressWarnings("unused")
+    private int mergeBytetoWord(final short s, final byte b) {
+        short tmp = (short) (s & 0x0000FF00);
+        short tmp2 = (short) (b & 0x000000FF);
+        return (short) (tmp + tmp2);
+    }
+
     private void setRAM(final int adr, final int x, final CommandPostfix pf) {
+        if (adr > (RAM.MAX_BYTE - 1) || adr < 0) {
+            ui.UI.printMessage("Fehler, RAM Überlauf");
+            error = true;
+            return;
+        }
         switch (pf) {
         case B:
             this.ram.setByteInAddress(adr, (byte) x);
@@ -148,6 +214,11 @@ public class Processor {
     }
 
     private int getRAM(final int adr, final CommandPostfix pf) {
+        if (adr > (RAM.MAX_BYTE - 1) || adr < 0) {
+            ui.UI.printMessage("Fehler, RAM Überlauf");
+            error = true;
+            return 0;
+        }
         switch (pf) {
         case B:
             return this.ram.getByteInAddress(adr);
@@ -219,7 +290,7 @@ public class Processor {
             ui.UI.markLine(this.execute.getItem().getLineindex(),
                     Marker.UNMARK);
         }
-        while (!this.hasfinished()) {
+        while (!this.hasfinished() && !error) {
             step(this.execute.getItem());
             if (this.execute.getItem().hasBreakPoint()) {
                 ui.UI.printMessage("Breakpoint in Zeile "
@@ -309,12 +380,16 @@ public class Processor {
             if (this.compare) {
                 this.execute
                 = jump(com.getArgument().getPrefix().getOtherArg());
+            } else {
+                this.execute = this.execute.getNext();
             }
             break;
         case BNE:
             if (!this.compare) {
                 this.execute
                 = jump(com.getArgument().getPrefix().getOtherArg());
+            } else {
+                this.execute = this.execute.getNext();
             }
             break;
         case SWAP:
@@ -331,10 +406,8 @@ public class Processor {
     }
 
     private void cmp(final Argument args) {
-        if (getData(args.getPrefix(),
-                this.execute.getItem().getCommand().getPostfix())
-                == getData(args.getPostfix(),
-                        this.execute.getItem().getCommand().getPostfix())) {
+        CommandPostfix cpf = this.execute.getItem().getCommand().getPostfix();
+        if (getData(args.getPrefix(), cpf) == getData(args.getPostfix(), cpf)) {
             this.compare = true;
         } else {
             this.compare = false;

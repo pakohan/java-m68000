@@ -155,10 +155,12 @@ public final class UI {
             public boolean onButtonReleaseEvent(final Widget source,
                     final EventButton event) {
                 int line = filebuffer.getInsert().getIter().getLine();
-                if (core1.toggleBreakPoint(line)) {
-                    markLine(line, Marker.BREAK);
-                } else {
-                    markLine(line, Marker.UNMARK);
+                if (core1 != null) {
+                    if (core1.toggleBreakPoint(line)) {
+                        markLine(line, Marker.BREAK);
+                    } else {
+                        markLine(line, Marker.UNMARK);
+                    }
                 }
                 return false;
             }
