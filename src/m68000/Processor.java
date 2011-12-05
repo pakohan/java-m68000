@@ -116,7 +116,8 @@ public class Processor {
         CommandPostfix cpf = this.execute.getItem().getCommand().getPostfix();
         switch (cpf) {
         case B:
-            adrold = mergeBytetoLongWord(adrold, getLowerByte(getLowerWord(val)));
+            adrold = mergeBytetoLongWord(adrold,
+                    getLowerByte(getLowerWord(val)));
             break;
         case W:
             adrold = mergeWordtoLongWord(adrold, getLowerWord(val));
@@ -148,8 +149,7 @@ public class Processor {
 
     @SuppressWarnings("unused")
     private byte getHigherByte(final short x) {
-        short tmp = (short) (x >>> 8);
-        byte b = (byte) tmp;
+        byte b = (byte) (x >>> 8);
         b = (byte) (b & 0x000000FF);
         return b;
     }
@@ -162,8 +162,7 @@ public class Processor {
 
     @SuppressWarnings("unused")
     private short getHigherWord(final int x) {
-        int tmp = (x >>> 16);
-        short s = (short) tmp;
+        short s = (short) (x >>> 16);
         s = (short) (s & 0x0000FFFF);
         return s;
     }
