@@ -16,13 +16,13 @@
  */
 package m68000;
 
-import org.gnome.gtk.TextTag;
-
 import m68000.Argument.Arg;
 import m68000.Argument.ArgType;
 import m68000.Command.CommandPostfix;
 
 public class Processor {
+
+    public static enum Marker { EXE, UNMARK, BREAK }
 
     public static final int REG_AMOUNT = 8;
 
@@ -38,9 +38,7 @@ public class Processor {
         this.size = prog.getProg().getSize();
         this.execute = prog.getProg().getNext();
         this.ram = prog.getRAM();
-        TextTag red = new TextTag();
-        red.setForeground("red");
-        ui.UI.markLine(this.execute.getItem().getLineindex(), red);
+        ui.UI.markLine(this.execute.getItem().getLineindex(), Marker.EXE);
     }
 
     private int getAdressRegister(final Arg adr, final CommandPostfix cpf) {
@@ -75,7 +73,8 @@ public class Processor {
         return x;
     }
 
-    private void setAdressRegister(final Arg adr, final int x, final CommandPostfix cpf) {
+    private void setAdressRegister(final Arg adr, final int x,
+            final CommandPostfix cpf) {
         switch (adr.getInk()) {
         case NOINKREMENT:
             setRAM(this.adressRegister[adr.getValue()], x, cpf);
@@ -83,12 +82,11 @@ public class Processor {
         case NONE:
             int adrold = this.adressRegister[adr.getValue()];
             if (cpf != CommandPostfix.NONE) {
-                int shift = 32 - (8 *
-                    cpf.ordinal());
+                int shift = 32 - (8 * cpf.ordinal());
                 adrold = ((adrold >>> shift) << shift);
             }
             adrold = adrold + x;
-            this.adressRegister[adr.getValue()] = x;
+            this.adressRegister[adr.getValue()] = adrold;
             break;
         case POSTINKREMENT:
             setRAM(this.adressRegister[adr.getValue()], x, cpf);
@@ -116,12 +114,12 @@ public class Processor {
         int adrold = this.dataRegister[adr];
         if (this.execute.getItem().getCommand().getPostfix()
                 != CommandPostfix.NONE) {
-            int shift = 32 - (8 *
-                this.execute.getItem().getCommand().getPostfix().ordinal());
+            int shift = 32 - (8
+                * this.execute.getItem().getCommand().getPostfix().ordinal());
             adrold = ((adrold >>> shift) << shift);
         }
         adrold = adrold + val;
-        ui.DataTable.setdatatable(adr, val);
+        ui.DataTable.setdatatable(adr, adrold);
     }
 
     private void setRAM(final int adr, final int x, final CommandPostfix pf) {
@@ -135,6 +133,7 @@ public class Processor {
         case L:
             this.ram.setLongWordInAddress(adr, x);
             break;
+        default:
         }
     }
 
@@ -151,7 +150,9 @@ public class Processor {
         return 0;
     }
 
-    private void setData(final Arg dataPlace, final int x, final CommandPostfix pf) {
+    private void setData(final Arg dataPlace,
+            final int x,
+            final CommandPostfix pf) {
         switch (dataPlace.getType()) {
         case ADDRESS_REGISTER:
             setAdressRegister(dataPlace, x, pf);
@@ -202,13 +203,11 @@ public class Processor {
 
     public final void run() {
         if (this.execute.getItem().hasBreakPoint()) {
-            TextTag blue = new TextTag();
-            blue.setForeground("blue");
-            ui.UI.markLine(this.execute.getItem().getLineindex(), blue);
+            ui.UI.markLine(this.execute.getItem().getLineindex(),
+                    Marker.BREAK);
         } else {
-            TextTag black = new TextTag();
-            black.setForeground("black");
-            ui.UI.markLine(this.execute.getItem().getLineindex(), black);
+            ui.UI.markLine(this.execute.getItem().getLineindex(),
+                    Marker.UNMARK);
         }
         while (!this.hasfinished()) {
             step(this.execute.getItem());
@@ -238,19 +237,16 @@ public class Processor {
 
     public final void step() {
         if (this.execute.getItem().hasBreakPoint()) {
-            TextTag blue = new TextTag();
-            blue.setForeground("blue");
-            ui.UI.markLine(this.execute.getItem().getLineindex(), blue);
+            ui.UI.markLine(this.execute.getItem().getLineindex(),
+                    Marker.BREAK);
         } else {
-            TextTag black = new TextTag();
-            black.setForeground("black");
-            ui.UI.markLine(this.execute.getItem().getLineindex(), black);
+            ui.UI.markLine(this.execute.getItem().getLineindex(),
+                    Marker.UNMARK);
         }
         step(this.execute.getItem());
         if (!this.hasfinished()) {
-            TextTag red = new TextTag();
-            red.setForeground("red");
-            ui.UI.markLine(this.execute.getItem().getLineindex(), red);
+            ui.UI.markLine(this.execute.getItem().getLineindex(),
+                    Marker.EXE);
         }
     }
 
@@ -301,12 +297,14 @@ public class Processor {
             break;
         case BEQ:
             if (this.compare) {
-                this.execute = jump(com.getArgument().getPrefix().getOtherArg());
+                this.execute
+                = jump(com.getArgument().getPrefix().getOtherArg());
             }
             break;
         case BNE:
             if (!this.compare) {
-                this.execute = jump(com.getArgument().getPrefix().getOtherArg());
+                this.execute
+                = jump(com.getArgument().getPrefix().getOtherArg());
             }
             break;
         case SWAP:

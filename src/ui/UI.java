@@ -35,6 +35,7 @@ import org.gnome.gtk.Widget;
 import org.gnome.gtk.Window;
 
 import m68000.Processor;
+import m68000.Processor.Marker;
 
 public final class UI {
     static enum MemoryDisplay {
@@ -56,8 +57,7 @@ public final class UI {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 700;
 
-    private UI() {
-    }
+    private UI() { }
 
     public static void clearFileBuffer() {
         filebuffer.delete(filebuffer.getIterStart(), filebuffer.getIterEnd());
@@ -152,16 +152,13 @@ public final class UI {
 
         filetextview.connect(new Widget.ButtonReleaseEvent() {
             @Override
-            public boolean onButtonReleaseEvent(Widget source, EventButton event) {
+            public boolean onButtonReleaseEvent(final Widget source,
+                    final EventButton event) {
                 int line = filebuffer.getInsert().getIter().getLine();
                 if (core1.toggleBreakPoint(line)) {
-                    TextTag blue = new TextTag();
-                    blue.setForeground("blue");
-                    markLine(line, blue);
+                    markLine(line, Marker.BREAK);
                 } else {
-                    TextTag black = new TextTag();
-                    black.setForeground("black");
-                    markLine(line, black);
+                    markLine(line, Marker.UNMARK);
                 }
                 return false;
             }
@@ -188,12 +185,26 @@ public final class UI {
         return scrolledWindow;
     }
 
-    public static void markLine(final int i, final TextTag texttag) {
+    public static void markLine(final int i, final Marker type) {
+        TextTag tt = new TextTag();
+        switch (type) {
+        case EXE:
+            tt.setForeground("red");
+            break;
+        case UNMARK:
+            tt.setForeground("black");
+            break;
+        case BREAK:
+            tt.setForeground("blue");
+            break;
+        default:
+            tt.setForeground("black");
+        }
         TextIter pointerend = filebuffer.getIterStart();
         pointerend.forwardLines(i);
         TextIter pointerbegin = pointerend.copy();
         pointerend.forwardLine();
-        filebuffer.applyTag(texttag, pointerbegin, pointerend);
+        filebuffer.applyTag(tt, pointerbegin, pointerend);
     }
 
     public static void printMessage(final String msg) {
