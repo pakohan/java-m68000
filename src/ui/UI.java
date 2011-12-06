@@ -33,6 +33,7 @@ import org.gnome.gtk.TreeView;
 import org.gnome.gtk.VBox;
 import org.gnome.gtk.Widget;
 import org.gnome.gtk.Window;
+import org.gnome.gtk.WindowPosition;
 
 import m68000.Processor;
 import m68000.Processor.Marker;
@@ -105,6 +106,7 @@ public final class UI {
                 return false;
             }
         });
+        window.setPosition(WindowPosition.CENTER);
         window.add(createVBox());
     }
 
@@ -113,8 +115,7 @@ public final class UI {
     }
 
     private static VBox createVBox() {
-        VBox vbox = new VBox(false, 2);
-        createHBox2();
+        VBox vbox = new VBox(false, 5);
         vbox.packStart(TopMenuBar.createMenuBar(), false, true, 0);
         vbox.packStart(createHBox1(), true, true, 0);
         vbox.packStart(createMsgScrolledWindow(), true, true, 0);
@@ -123,7 +124,7 @@ public final class UI {
     }
 
     private static HBox createHBox1() {
-        HBox hbox1 = new HBox(false, 2);
+        HBox hbox1 = new HBox(false, 5);
         createFileScrolledWindow();
         hbox1.packStart(createFileScrolledWindow(), true, true, 0);
         TreeView dataRegister = DataTable.createTreeView();
@@ -134,7 +135,7 @@ public final class UI {
     }
 
     private static HBox createHBox2() {
-        HBox hbox2 = new HBox(false, 2);
+        HBox hbox2 = new HBox(false, 5);
         createButtons();
         hbox2.add(run);
         hbox2.add(step);
