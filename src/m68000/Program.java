@@ -149,7 +149,7 @@ public final class Program {
             case SWAP:
                 break;
             default:
-                ui.UI.printMessage("Command not found! "
+                gtk.UI.printMessage("Command not found! "
                         + tmp.getItem().getCommand().getPrefix());
             }
             if ((rampointer % 2) != 0) {
@@ -181,7 +181,7 @@ public final class Program {
                 rampointer += 4;
                 break;
             default:
-                ui.UI.printMessage("Fehler: falsche Kommandoendung!");
+                gtk.UI.printMessage("Fehler: falsche Kommandoendung!");
                 return;
             }
         } else if (tmp.getArgument().getPrefix().getType()

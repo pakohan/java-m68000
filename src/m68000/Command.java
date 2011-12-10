@@ -105,7 +105,7 @@ public final class Command implements Cloneable {
         try {
             post = CommandPostfix.valueOf(instruction.toUpperCase());
         } catch (IllegalArgumentException e) {
-            ui.UI.printMessage(instruction + " is not a value postfix!");
+            gtk.UI.printMessage(instruction + " is not a value postfix!");
             post = CommandPostfix.NONE;
         }
 
@@ -165,7 +165,7 @@ public final class Command implements Cloneable {
         try {
             command = InstructionSet.valueOf(com.toUpperCase());
         } catch (IllegalArgumentException e) {
-            ui.UI.printMessage(com + " is not a command!");
+            gtk.UI.printMessage(com + " is not a command!");
             command = InstructionSet.ZERO;
         }
         return command;

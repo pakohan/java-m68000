@@ -39,7 +39,7 @@ public class Processor {
         this.size = prog.getProg().getSize();
         this.execute = prog.getProg().getNext();
         this.ram = prog.getRAM();
-        ui.UI.markLine(this.execute.getItem().getLineindex(), Marker.EXE);
+        gtk.UI.markLine(this.execute.getItem().getLineindex(), Marker.EXE);
     }
 
     private int getAdressRegister(final Arg adr, final CommandPostfix cpf) {
@@ -69,7 +69,7 @@ public class Processor {
             break;
         default:
         }
-        ui.AdressTable.setadresstable(adr.getValue(),
+        gtk.AdressTable.setadresstable(adr.getValue(),
                 this.adressRegister[adr.getValue()]);
         return x;
     }
@@ -107,7 +107,7 @@ public class Processor {
             break;
         default:
         }
-        ui.AdressTable.setadresstable(adr.getValue(),
+        gtk.AdressTable.setadresstable(adr.getValue(),
                 this.adressRegister[adr.getValue()]);
     }
 
@@ -126,7 +126,7 @@ public class Processor {
             adrold = val;
         }
         this.dataRegister[adr] = adrold;
-        ui.DataTable.setdatatable(adr, adrold);
+        gtk.DataTable.setdatatable(adr, adrold);
     }
 
     @SuppressWarnings("unused")
@@ -194,7 +194,7 @@ public class Processor {
 
     private void setRAM(final int adr, final int x, final CommandPostfix pf) {
         if (adr > (RAM.MAX_BYTE - 1) || adr < 0) {
-            ui.UI.printMessage("Fehler, RAM Überlauf");
+            gtk.UI.printMessage("Fehler, RAM Überlauf");
             error = true;
             return;
         }
@@ -214,7 +214,7 @@ public class Processor {
 
     private int getRAM(final int adr, final CommandPostfix pf) {
         if (adr > (RAM.MAX_BYTE - 1) || adr < 0) {
-            ui.UI.printMessage("Fehler, RAM Überlauf");
+            gtk.UI.printMessage("Fehler, RAM Überlauf");
             error = true;
             return 0;
         }
@@ -283,16 +283,16 @@ public class Processor {
 
     public final void run() {
         if (this.execute.getItem().hasBreakPoint()) {
-            ui.UI.markLine(this.execute.getItem().getLineindex(),
+            gtk.UI.markLine(this.execute.getItem().getLineindex(),
                     Marker.BREAK);
         } else {
-            ui.UI.markLine(this.execute.getItem().getLineindex(),
+            gtk.UI.markLine(this.execute.getItem().getLineindex(),
                     Marker.UNMARK);
         }
         while (!this.hasfinished() && !error) {
             step(this.execute.getItem());
             if (this.execute.getItem().hasBreakPoint()) {
-                ui.UI.printMessage("Breakpoint in Zeile "
+                gtk.UI.printMessage("Breakpoint in Zeile "
             + this.execute.getItem().getLineindex());
                 break;
             }
@@ -317,15 +317,15 @@ public class Processor {
 
     public final void step() {
         if (this.execute.getItem().hasBreakPoint()) {
-            ui.UI.markLine(this.execute.getItem().getLineindex(),
+            gtk.UI.markLine(this.execute.getItem().getLineindex(),
                     Marker.BREAK);
         } else {
-            ui.UI.markLine(this.execute.getItem().getLineindex(),
+            gtk.UI.markLine(this.execute.getItem().getLineindex(),
                     Marker.UNMARK);
         }
         step(this.execute.getItem());
         if (!this.hasfinished()) {
-            ui.UI.markLine(this.execute.getItem().getLineindex(),
+            gtk.UI.markLine(this.execute.getItem().getLineindex(),
                     Marker.EXE);
         }
     }
@@ -399,7 +399,7 @@ public class Processor {
             this.finished = true;
             break;
         default:
-            ui.UI.printMessage("Command '" + com.getCommand().getPrefix()
+            gtk.UI.printMessage("Command '" + com.getCommand().getPrefix()
                     + "' not found!");
         }
     }
